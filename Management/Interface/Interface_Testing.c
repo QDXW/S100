@@ -19,6 +19,8 @@ uint16 BOUNDARY_VALUE = 2500;
 extern uint16 SignalSample_count;
 extern uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT];
 
+uint8 SignalBuffer[1024] = {0};
+
 /******************************************************************************/
 block_attr_Testing block_Testing_1 = {
 	ENABLE,								/* Interface Testing rect */
@@ -155,6 +157,7 @@ void Acquisition_Signal(void)
 	{
 		/* 采样 */
 		SignalSample_SampleStrip();
+		memset(SignalBuffer,0,1024);
 		/* 运行算法 */
 		memcpy(&SignalProcess_Alg_data.sampleBuffer[0], SignalProcess_sampleBuffer, SignalSample_count << 1);
 		SignalProcess_Alg_data.sampleNumber = SignalSample_count;
@@ -164,9 +167,10 @@ void Acquisition_Signal(void)
 		Result_Judge();
 
 		/* 调试输出 */
-//		HostComm_Cmd_Send_RawData(SignalProcess_Alg_data.sampleNumber, SignalProcess_Alg_data.sampleBuffer);
-//		Delay_ms(1000);
-		HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
+		memcpy(SignalBuffer,SignalProcess_sampleBuffer,SignalSample_count);
+		HostComm_Cmd_Send_RawData(SignalSample_count*2,SignalBuffer);
+		Delay_ms(50);
+//		HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
 
 		/* 转动电机转动30° */
 		if(NowCup_Count%3 == 1)
