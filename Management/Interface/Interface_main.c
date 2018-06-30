@@ -203,7 +203,6 @@ uint8 Interface_Process(uint16* KeyCode)
 			Interface_Record,				/* Interface Record Display */
 			Interface_Setting,				/* Interface Setting Display */
 			Interface_Testing,				/* Interface Test Display */
-			Interface_Quick_font,			/* Interface Quick font Display */
 			Interface_Result,				/* Interface Result Display */
 			Interface_Result_2,				/* Interface Start Display */
 			Interface_Insert_Cup,			/* Interface insert cup Display */
@@ -213,6 +212,7 @@ uint8 Interface_Process(uint16* KeyCode)
 			Interface_About_Machine,		/* Interface Setting font Display */
 			Interface_System_Time,			/* Interface Setting font Display */
 			Interface_Time_Process,			/* Interface Setting font Display */
+			Interface_Down_Time_Process,	/* Interface Setting font Display */
 	};
 	uint8 state;
 	do										/* Polling each state */
@@ -292,6 +292,7 @@ void UI_Draw_Block(block_attr* block)
 /******************************************************************************/
 uint8 Interface_Key_Event(uint16 KeyCode)
 {
+	uint8 state = 0;
 	if(key_state)
 	{
 		switch(Interface_Key)
@@ -348,15 +349,7 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 					break;
 
 					case 1:
-						if(Key_record == 1)
-						{
-							Display_Time = 0;
-							Lcd_ColorBox(0,20,128, 140,White);
-							DisplayDriver_Text16(24, 80, Black,"Waiting...");
-							Display_Time = 1;
-							Delay_ms_SW(60000*(QR_Date.head.time));
-						}
-						UI_state = UI_STATE_TESTING;
+						UI_state = UI_STATE_INSERT_CUP;
 						key_state_confirm = DISABLE;
 						Key_control = 1;
 					break;
@@ -534,8 +527,26 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 
 			default:
 			break;
-		}
+			case 8:
+				switch(key_state_confirm)
+				{
+					case 0:
+						if(Key_control == 1)
+						{
+							UI_state = UI_STATE_MAIN_WINDOW;
+							key_state_confirm = DISABLE;
+							Key_control = 1;
+						}
+						break;
+					case 1:
+						UI_state = UI_STATE_DOWN_TIME_PROCESS;
+						key_state_confirm = DISABLE;
+						Key_control = 2;
+					break;
+				}
+			}
 	}
+	return state;
 }
 
 /******************************************************************************/
@@ -809,6 +820,11 @@ void Battery_Display (void)
 //				SystemManage_CheckPowerOff();
 		}
 	}
+}
+
+/******************************************************************************/
+void Bluetooth_Connection (void)
+{
 	if (Printer_isConnected())
 	{
 		if (!Bluetooth_Connect)

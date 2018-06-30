@@ -14,12 +14,11 @@ uint8 NowCup_Count = 0;
 uint8 Zero_Count = 0;
 uint8 Forever_Value = 2;
 extern uint8  Cup_Count;
-extern uint8 QRCode_existed;
 uint16 BOUNDARY_VALUE = 2500;
 extern uint16 SignalSample_count;
 extern uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT];
 
-uint8 SignalBuffer[1024] = {0};
+uint8 SignalBuffer[500] = {0};
 
 /******************************************************************************/
 block_attr_Testing block_Testing_1 = {
@@ -140,7 +139,7 @@ void UI_Draw_block_Testing(block_attr_Testing* block)
 void Acquisition_Signal(void)
 {
 	uint8 j = 0,Step_Count = 22,Step_Start = 8;
-	volatile uint16 tmpBuffer[2] = {0};
+
 	uint8 i = 0;
 	NowCup_Count = 0;
 	Storage_Time();
@@ -157,7 +156,7 @@ void Acquisition_Signal(void)
 	{
 		/* 采样 */
 		SignalSample_SampleStrip();
-		memset(SignalBuffer,0,1024);
+		memset(SignalBuffer,0,500);
 		/* 运行算法 */
 		memcpy(&SignalProcess_Alg_data.sampleBuffer[0], SignalProcess_sampleBuffer, SignalSample_count << 1);
 		SignalProcess_Alg_data.sampleNumber = SignalSample_count;
@@ -167,10 +166,9 @@ void Acquisition_Signal(void)
 		Result_Judge();
 
 		/* 调试输出 */
-		memcpy(SignalBuffer,SignalProcess_sampleBuffer,SignalSample_count);
-		HostComm_Cmd_Send_RawData(SignalSample_count*2,SignalBuffer);
-		Delay_ms(50);
-//		HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
+//		memcpy(SignalBuffer, &SignalProcess_Alg_data.processBuffer[0], SignalProcess_Alg_data.processNumder << 1);
+//		HostComm_Cmd_Send_RawData(SignalProcess_Alg_data.processNumder << 1, SignalBuffer);
+		HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
 
 		/* 转动电机转动30° */
 		if(NowCup_Count%3 == 1)

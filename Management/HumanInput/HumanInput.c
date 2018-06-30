@@ -336,7 +336,11 @@ void Key_Left(void)
 			Key_control = 1;
 			key_state = ENABLE;
 		break;
-
+		case 8:
+			key_state_confirm = 0;
+			Key_control = 1;
+			key_state = ENABLE;
+		break;
 		default:
 		break;
 	}

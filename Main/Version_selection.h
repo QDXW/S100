@@ -29,10 +29,7 @@
 #include "DisplayDriver_touch.h"
 #include "SignalProcess_Sample.h"
 #include "ScanMotorDriver_PositionSensor.h"
-
 #include "RotationMotorDriver_PositionSensor.h"
-
-
 
 
 

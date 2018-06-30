@@ -19,14 +19,14 @@ uint8 SignalSample_endDetection = 0;
 uint16 SignalSample_count = 0;
 extern uint8 NowCup_Count;
 uint16 SignalSample_ProcessCount = 0;
-uint8 SignalSample_startSampling = 0;	 //always sample
+uint8 SignalSample_startSampling = 0;	 		//always sample
 
 /* Original data */
 uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint16 SignalProcess_sampleBuffer_BK[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint8 SignalProcess_outputBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 
-uint8 SignalSample_resistorValue = 8;   //14
+uint8 SignalSample_resistorValue = 10;   		//MAX = 14
 uint8 SignalSample_resistorValueStored = 0;
 
 uint8 SignalProcess_output = 0;

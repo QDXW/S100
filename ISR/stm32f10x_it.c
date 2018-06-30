@@ -4,16 +4,15 @@
  * Mail: han_liu_zju@sina.com
  * Date: 2014.12 ~ Now
  ******************************************************************************/
-#include "main.h"
 #include "stm32f10x_it.h"
-#include "DisplayDriver.h"
-#include "Interface_main.h"
-#include "ScanMotorDriver.h"
 
 /******************************************************************************/
 extern uint8 SignalSample_moveThenSample;
 extern uint8 Power_Open;
 extern uint8 Display_Time;
+uint8 time_second = 60;
+extern uint8 Open_time;
+
 /******************************************************************************/
 void Delay_ms_SW(__IO uint32 nCount)
 {
@@ -86,25 +85,6 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
 	TimingDelay_Decrement();								/* Decrease TimingDelay */
-	se_count++;
-	if(se_count > 499)   			//1秒钟进入一次
-	{
-		se_count = 0;
-		if((!MotorDriver_Ctr) && Display_Time)
-		{
-			if(Interface_Key == 2)
-			{
-
-			}
-			else
-			{
-				Display_Time = 0;
-				Battery_Display();
-				Display_Time = 1;
-			}
-			UI_Draw_Status_Bar();
-		}
-	}
 
 	 if(key_fall_flag == 1)									//发生按键按下事件
 	 {
@@ -181,10 +161,43 @@ void TIM4_IRQHandler(void)
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  	//检查TIM4更新中断发生与否
 	{
 		TIM_ClearITPendingBit(TIM4, TIM_IT_Update  );  		//清除TIMx更新中断标志
+		if(Display_Time)
+		{
+			Display_Time = 0;
+			Bluetooth_Connection();
+			Display_Time = 1;
+		}
 
-		USB_VirtualCOM_Process();
-		HostComm_Process();
+		if((!MotorDriver_Ctr) && Display_Time)
+		{
+			Display_Time = 0;
+			Battery_Display();
+			Display_Time = 1;
+			UI_Draw_Status_Bar();
+		}
 	}
+
+	if(Open_time)
+	{
+		time_second--;
+		Display_Down_Time_second();
+		if(time_second < 1)
+		{
+			time_second = 60;
+			Action_time--;
+			Display_Down_Time_Msec();
+			if(Action_time < 1)
+			{
+				Open_time = 0;
+				time_second = 60;
+			}
+		}
+	}
+	else
+	{
+		time_second = 60;
+	}
+
 }
 
 /******************************************************************************/
@@ -283,4 +296,25 @@ void EXTI15_10_IRQHandler(void)
 /******************************************************************************/
 void PVD_IRQHandler(void)
 {
+}
+
+
+/******************************************************************************/
+void Display_Down_Time_second (void)
+{
+	char tbuf[4] = {0};
+	sprintf((char*)tbuf,"%02d",time_second);
+	Display_Time = 0;
+	DisplayDriver_Text16_B(68,82,Black,Light_Gray,tbuf);
+	Display_Time = 1;
+}
+
+/******************************************************************************/
+void Display_Down_Time_Msec (void)
+{
+	char tbuf[4] = {0};
+	sprintf((char*)tbuf,"%02d:",Action_time);
+	Display_Time = 0;
+	DisplayDriver_Text16_B(44,82,Black,Light_Gray,tbuf);
+	Display_Time = 1;
 }

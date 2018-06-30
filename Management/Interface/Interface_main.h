@@ -104,7 +104,6 @@ typedef enum {
 	UI_STATE_RECORD, 				/* Interface Record Display */
 	UI_STATE_SETTING, 				/* Interface Setting Display */
 	UI_STATE_TESTING,				/* Interface Testing Display */
-	UI_STATE_QUICK_FONT,			/* Interface Quick font */
 	UI_STATE_RESULT,				/* Interface Result Display */
 	UI_STATE_RESULT_2,				/* Interface Start Display */
 	UI_STATE_INSERT_CUP,			/* Interface insert cup Display */
@@ -114,6 +113,7 @@ typedef enum {
 	UI_STATE_ABOUT_MACHINE,			/* Interface Start font Display */
 	UI_STATE_SYSTEM_TIME,			/* Interface Start font Display */
 	UI_STATE_TIME_PROCESS,			/* Interface Start font Display */
+	UI_STATE_DOWN_TIME_PROCESS,			/* Interface Start font Display */
 
 	UI_STATE_MAX_STATE_NUM,
 } UI_STATE;
@@ -123,6 +123,7 @@ void Battery_Display (void);
 extern void Battery_Empty_ICO(void);
 extern void UI_Draw_Status_Bar (void);
 extern uint16 Get_Start_Postion(void);
+extern void Bluetooth_Connection (void);
 extern void UI_Draw_Window(uint16 blockNum);
 extern uint8 Interface_Main(uint16 KeyCode);
 extern uint8 Interface_Quick(uint16 KeyCode);
@@ -139,13 +140,13 @@ extern uint8 Interface_Main_font(uint16 KeyCode);
 extern uint8 Interface_Key_Event(uint16 KeyCode);
 extern uint8 Interface_Start_font(uint16 KeyCode);
 extern uint8 Interface_Insert_Cup(uint16 KeyCode);
-extern uint8 Interface_Quick_font(uint16 blockNum);
 extern uint8 Interface_System_Time(uint16 KeyCode);
 extern uint8 Interface_Time_Process(uint16 KeyCode);
 extern uint8 Interface_Setting_font(uint16 blockNum);
 extern uint8 Interface_Standard_font(uint16 KeyCode);
 extern uint8 Interface_About_Machine(uint16 KeyCode);
 extern void UI_Draw_Window_Quick_font(uint16 blockNum);
+extern uint8 Interface_Down_Time_Process(uint16 blockNum);
 extern void SignalSample_Moving_Average_Data(uint16 *Data,uint16 Length,uint16 Period);
 
 

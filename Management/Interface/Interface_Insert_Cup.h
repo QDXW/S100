@@ -1,7 +1,7 @@
 /*
- * Interface_Input_Cup.h
+ * Interface_Insert_Cup.h
  *
- *  Created on: 2018年3月19日
+ *  Created on: 2018年6月30日
  *      Author: Administrator
  */
 
@@ -9,7 +9,7 @@
 #define MANAGEMENT_INTERFACE_INTERFACE_INSERT_CUP_H_
 
 /******************************************************************************/
-#include "Interface_main.h"
+#include "Version_selection.h"
 
 /******************************************************************************/
 uint16 UI_WindowBlocks_Insert_Cup = 0;
@@ -24,5 +24,6 @@ typedef struct {
 
 /******************************************************************************/
 extern void UI_Draw_Window_Insert_Cup(uint16 blockNum);
+extern void Display_Down_Time_Bar(void);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_INSERT_CUP_H_ */

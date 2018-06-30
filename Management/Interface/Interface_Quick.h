@@ -32,6 +32,5 @@ typedef struct {
 
 /******************************************************************************/
 extern void UI_Draw_Window_Quick(uint16 blockNum);
-void UI_Draw_Window_Quick_font(uint16 blockNum);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_QUICK_H_ */

@@ -83,13 +83,13 @@ static void HostComm_GPIO_Init()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	/*Configure USART2 Tx as alternate function push-pull*/
+	/*Configure USART1 Tx as alternate function push-pull*/
 	GPIO_InitStructure.GPIO_Pin = HOSTCOMM_TX_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(HOSTCOMM_TX_PORT, &GPIO_InitStructure);
 
-	/*Configure USART2 Rx as input floating*/
+	/*Configure USART1 Rx as input floating*/
 	GPIO_InitStructure.GPIO_Pin = HOSTCOMM_RX_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(HOSTCOMM_RX_PORT, &GPIO_InitStructure);
@@ -936,7 +936,7 @@ void HostComm_Cmd_Send_C_T(uint16 CValue, uint16 TValue)
 /******************************************************************************
 !! ISR: Host communication interrupt service routine
 ******************************************************************************/
-//void USART2_IRQHandler(void)
+//void USART1_IRQHandler(void)
 //{
 //	uint8 value;
 //	if(USART_GetITStatus(HOSTCOMM_USART, USART_IT_RXNE) != RESET)
@@ -1168,7 +1168,7 @@ void USART1_IRQHandler(void)
 }
 
 /******************************************************************************/
-void HostComm_Cmd_Send_RawData(uint8 length, uint8 dataBuf[])
+void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[])
 {
 	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
 	uint16 cmdDataLength = 0;

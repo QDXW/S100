@@ -44,6 +44,7 @@
 
 /******************************************************************************/
 extern uint16 QRCode_count;
+extern uint8 Action_time;
 extern uint8 QRCode_existed;
 extern uint8 QRCode_received;
 extern uint8 QRCode_Buffer[QRCODE_BUFFER_SIZE];

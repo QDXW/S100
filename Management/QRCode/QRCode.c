@@ -11,6 +11,8 @@
 
 QRCODE_STRUCT QR_Date;
 uint8 QRCode_received = 0;
+uint8 QRCode_existed = 0;
+uint8 Action_time = 0;
 uint16 QRCode_count = 0;
 extern uint16 SignalProcess_sampleBuffer[512];
 uint8 QRCode_Buffer[QRCODE_BUFFER_SIZE] = 0;
@@ -147,8 +149,7 @@ void USART3_IRQHandler(void)
 		else
 		{
 			QRCode_received = 1;
-			QRCode_existed = 1;
-
+			QRCode_existed = 0;
 		}
 	}
 
@@ -162,22 +163,21 @@ void QRCode_Received(void)
 /* Scan interface: receive data from QR code scanner */
 	if (QRCode_received == 1)
 	{
-		QRCode_received = 0;
-
 		if (QRCode_Identify())						/* Decode */
 		{
+			QRCode_received = 1;
 			QRCode_existed = 1;
 		}
 		else
 		{
+			QRCode_received = 1;
+			QRCode_existed = 0;
 			Display_Time = 0;
 			Lcd_ColorBox(5, 142,35,15,BACKCOLOR_CONTENT_BACK);
 			Lcd_ColorBox(7,62,114, 78,White);
 			DisplayDriver_Text16_B(27, 75, Red, White, "Invalid QR");
-			DisplayDriver_Text16_B(47, 95, Red, White, "Code!");
-			DisplayDriver_Text16_B(20, 115,Red,White,"Scan Again!");
+			DisplayDriver_Text16_B(47, 95, Red, White, "Code");
 			Display_Time = 1;
-			QRCode_existed = 0;
 		}
 		QRCode_count = 0;							/* Clear size */
 	}
@@ -191,9 +191,6 @@ uint8 QRCode_Identify(void)
 	uint16 crcRec = 0;
 	uint8 singleLineSize = 0;
 	uint8 headLineSize = 0;
-
-	status = 0;
-	QRCode_received = 1;
 
 	/* Calculate CRC */
 	crcCalc = Common_CalculateCRC(&QRCode_Buffer[2], QRCode_count - 2, 0xFFFF, 0x0000);
@@ -213,6 +210,7 @@ uint8 QRCode_Identify(void)
 		if(QR_Date.head.stripNum > 8)
 			QR_Date.head.stripNum = 8;
 		Cup_Count = QR_Date.head.stripNum;
+		Action_time = QR_Date.head.time;
 		Storage_Data.StripNum = QR_Date.head.stripNum;
 
 		switch (QR_Date.head.stripNum)
@@ -257,15 +255,10 @@ uint8 QRCode_Identify(void)
 			default:
 				break;
 		}
-
-		QRCode_received = 1;
-		QRCode_existed = 1;
 		status = 1;
 	}
 	else
 	{
-		QRCode_received = 1;
-		QRCode_existed = 0;
 		status = 0;
 	}
 	QRCode_Trigger_Disabled();

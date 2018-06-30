@@ -8,8 +8,7 @@
 #define ISR_STM32F10x_IT_H
 
 /******************************************************************************/
-#include "stm32f10x.h"
-#include "comDef.h"
+#include "Version_selection.h"
 
 /******************************************************************************/
 uint8 Exti_lock = DISABLE;
@@ -28,5 +27,7 @@ void DebugMon_Handler(void);
 void HardFault_Handler(void);
 void MemManage_Handler(void);
 void UsageFault_Handler(void);
+void Display_Down_Time_Msec (void);
+void Display_Down_Time_second (void);
 					 
 #endif /* ISR_STM32F10x_IT_H */

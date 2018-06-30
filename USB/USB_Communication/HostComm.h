@@ -12,19 +12,19 @@
 #include "Interface_main.h"
 
 /******************************************************************************/
-#define HOSTCOMM_USART (USART1)
-#define HOSTCOMM_USART_IRQN (USART1_IRQn)
-#define HOSTCOMM_TX_PORT (GPIOA)
-#define HOSTCOMM_TX_PIN (GPIO_Pin_9)
-#define HOSTCOMM_RX_PORT (GPIOA)
-#define HOSTCOMM_RX_PIN (GPIO_Pin_10)
-#define PASSWORD_MAX_LENGTH (100)
-#define TESTNAME_MAX_LENGTH (30)
-#define UI_DATA_TRANSFER_ON (1)
-#define UI_DATA_TRANSFER_OFF (0)
+#define HOSTCOMM_USART 				(USART1)
+#define HOSTCOMM_USART_IRQN 		(USART1_IRQn)
+#define HOSTCOMM_TX_PORT 			(GPIOA)
+#define HOSTCOMM_TX_PIN 			(GPIO_Pin_9)
+#define HOSTCOMM_RX_PORT 			(GPIOA)
+#define HOSTCOMM_RX_PIN 			(GPIO_Pin_10)
+#define PASSWORD_MAX_LENGTH 		(100)
+#define TESTNAME_MAX_LENGTH 		(30)
+#define UI_DATA_TRANSFER_ON 		(1)
+#define UI_DATA_TRANSFER_OFF 		(0)
 
-#define DEVICE_AREA_SIZE           (50)
-#define FLASH_CALI_STATUS_ADDR     ((0X08000000 + 0x80000) - DEVICE_AREA_SIZE)
+#define DEVICE_AREA_SIZE           	(50)
+#define FLASH_CALI_STATUS_ADDR     	((0X08000000 + 0x80000) - DEVICE_AREA_SIZE)
 
 /******************************************************************************/
 /* Size information */
@@ -145,7 +145,7 @@ extern void HostComm_Send(USART_TypeDef* USARTx, uint8 *Data,...);
 char *itoa(int32 value, char *string, int radix);
 uint16 HostComm_CalculateCRC(uint8 * message,uint32 length,
 uint16 remainder, uint16 xorMask);
-extern void HostComm_Cmd_Send_RawData(uint8 length, uint8 dataBuf[]);
+extern void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[]);
 extern void HostComm_SendThrUSB(uint16 len, uint8 *srcPtr);
 extern void HostComm_Report_ReadRecords_LastOne(void);
 extern void HostComm_Report_ReadRecords(HOSTCOMM_REPORT_ATTR data);

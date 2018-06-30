@@ -14,7 +14,7 @@
 static u32 TimingDelay;					/* Timer Delay Count */
 uint8 Power_Open = 0;
 uint8 Display_Time = 1;
-
+uint8 Open_time = 0;
 uint8 MBuffer[20] = {0};
 uint8 asd = 1;
 uint16 insk[4] = {0,0,0,255};
@@ -48,9 +48,9 @@ void main(void)
 
 	SignalSample_Sample_Init();			/* SignalSample Sample Initialize */
 
-	USB_VirtualCOM_Init();				/* USB VirtualCOM Initialize */
-
 	HostComm_Init();					/* HostComm Initialize */
+
+	TIM4_Int_Init(9999,7199);			/* 10Khz的计数频率，计数到10000为1s */
 
 	Status_Init();						/* Status Initialize */
 
@@ -77,6 +77,8 @@ void main(void)
 //			Display_Time = 1;
 //
 //			SystemManage_5V_Enabled();
+//
+//			SignalSample_Sample_EnterCriticalArea();
 //
 //			QRCode_Trigger_Enabled();
 //
