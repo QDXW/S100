@@ -63,8 +63,6 @@ static void Printer_GPIO_Init(void)
 //	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
 //	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 //	EXTI_Init(&EXTI_InitStructure);
-
-	GPIO_SetBits(GPIOE, GPIO_Pin_4);
 }
 
 /******************************************************************************/

@@ -8,31 +8,21 @@
 /******************************************************************************/
 #include "Interface_Setting.h"
 
+uint8 Bluetooth_switch = 0;
+
 /******************************************************************************/
 block_attr_Setting block_Setting_1 = {
-	ENABLE,								/*Interface Setting rect*/
+	ENABLE,									/* Parting line */
 	{
-		0,   20,
-		128, 140,
-		BACKCOLOR_CONTENT_BACK
+		64,  20,
+		64,  160,
+		Thint_Blue
 	},
 
-	DISABLE,							/*Display HZ16X8*/
-	{0},
-
-	DISABLE,
-	{0},
-};
-
-/******************************************************************************/
-block_attr_Setting block_Setting_2 = {
-	DISABLE,							/*Interface Setting rect*/
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
+	DISABLE,								/*Display HZ16X8*/
 	{
-		"System Time",
-		20,   73,
+		"Time",
+		74,  71,
 		White,BACKCOLOR_CONTENT_BAR,
 		White
 	},
@@ -40,20 +30,24 @@ block_attr_Setting block_Setting_2 = {
 	ENABLE,								/*Display Picture*/
 	{
 		gImage_PIC_System_Time,
-		41, 28,
+		71,  24,
 		45, 45
 	},
 };
 
 /******************************************************************************/
-block_attr_Setting block_Setting_3 = {
-	DISABLE,							/*Interface Setting rect*/
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
+block_attr_Setting block_Setting_2 = {
+	ENABLE,									/* Parting line */
 	{
-		"About Machine",
-		15,   137,
+		0,    90,
+		128,  90,
+		Light_Gray
+	},
+
+	DISABLE,								/*Display HZ16X8*/
+	{
+		"About",
+		12,  71,
 		White,BACKCOLOR_CONTENT_BAR,
 		White
 	},
@@ -61,40 +55,125 @@ block_attr_Setting block_Setting_3 = {
 	ENABLE,								/*Display Picture*/
 	{
 		gImage_PIC_About_Machine,
-		41,  92,
+		10, 24,
 		45,  45
 	},
+};
+
+/******************************************************************************/
+block_attr_Setting block_Setting_3 = {
+	ENABLE,									/* Parting line */
+	{
+		0,    91,
+		128,  91,
+		Thint_Blue
+	},
+
+	DISABLE,								/*Display HZ16X8*/
+	{
+		"BLT",
+		20,  141,
+		White,BACKCOLOR_CONTENT_BAR,
+		White
+	},
+
+	ENABLE,								/*Display Picture*/
+	{
+		gImage_Blutooth_Open,
+		10,  92,
+		45,  45
+	},
+};
+
+/******************************************************************************/
+block_attr_Setting block_Setting_4 = {
+	ENABLE,									/* Parting line */
+	{
+		63,  20,
+		63,  160,
+		Light_Gray
+	},
+
+	DISABLE,								/*Display HZ16X8*/
+	{
+		"BLT",
+		20,  141,
+		White,BACKCOLOR_CONTENT_BAR,
+		White
+	},
+
+	DISABLE,								/*Display Picture*/
+	{0},
 };
 
 /******************************************************************************/
 block_attr_Setting_font Setting_block_font = {
 	ENABLE,								/*Display HZ16X8*/
 	{
-		"System Time",
-		20,   73,
+		"About",
+		12,  71,
+		White,Magenta,
+		Baby_Blue
+	},
+	ENABLE,								/*Display HZ16X8*/
+	{
+		"Time",
+		80,  71,
+		White,Magenta,
+		Baby_Blue
+	},
+
+	DISABLE,								/*Display HZ16X8*/
+	{
+		"NO",
+		24,  141,
+		White,Magenta,
+		White
+	},
+};
+
+/******************************************************************************/
+block_attr_Setting_font Setting_block_font_2 = {
+	ENABLE,								/*Display HZ16X8*/
+	{
+		"About",
+		12,  71,
+		White,Magenta,
+		Baby_Blue
+	},
+	ENABLE,								/*Display HZ16X8*/
+	{
+		"Time",
+		80,  71,
 		White,Magenta,
 		Baby_Blue
 	},
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		"About Machine",
-		15,   137,
+		"OFF",
+		20,  141,
 		White,Magenta,
 		Baby_Blue
 	},
+
 };
+
 /******************************************************************************/
 block_attr_Setting* UI_WindowBlocksAttrArray_Setting[] = {/* Window: Standard entry */
 		&block_Setting_1,
 		&block_Setting_2,
 		&block_Setting_3,
+		&block_Setting_4,
 };
 
 block_attr_Setting_font* UI_WindowBlocksAttrArray_Setting_font[] = {
 		&Setting_block_font,
 };
 
+block_attr_Setting_font* UI_WindowBlocksAttrArray_Setting_font_2[] = {
+		&Setting_block_font_2,
+};
 /******************************************************************************/
 void UI_Draw_Block_Setting(block_attr_Setting* block);
 void UI_Draw_Block_Setting_font(block_attr_Setting_font* block);
@@ -105,6 +184,7 @@ uint8 Interface_Setting(uint16 KeyCode)
 	uint8 state = 0;
 	Exti_lock = DISABLE;
 	Interface_Key = 5;
+	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
 	UI_WindowBlocks_Setting = sizeof(UI_WindowBlocksAttrArray_Setting) >> 2;
 	UI_Draw_Window_Setting(UI_WindowBlocks_Setting);
 	UI_state = UI_STATE_SETTING_FONT;
@@ -125,20 +205,22 @@ void UI_Draw_Window_Setting(uint16 blockNum)
 void UI_Draw_Block_Setting(block_attr_Setting* block)
 {
 	Display_Time = 0;
-	if (block->rect_enabled)				/* 1. Draw Rect*/
+	if (block->line_enabled)					/* 3.Parting line */
 	{
-		Lcd_ColorBox(block->rect_attr.startX, block->rect_attr.startY,
-				block->rect_attr.width, block->rect_attr.height,
-				block->rect_attr.color);
+		DisplayDriver_DrawLine(block->Parting_line_attr.startX,
+				block->Parting_line_attr.startY,
+				block->Parting_line_attr.endX,
+				block->Parting_line_attr.endY,
+				block->Parting_line_attr.color);
 	}
 
 	if (block->char_enabled)				/* 2. Draw character */
 	{
 
-			DisplayDriver_Text16_B(
-					block->char_attr.offsetX,block->char_attr.offsetY,
-					block->char_attr.color,block->char_attr.faceColor,
-					block->char_attr.str);
+		DisplayDriver_Text16_B(
+				block->char_attr.offsetX,block->char_attr.offsetY,
+				block->char_attr.color,block->char_attr.faceColor,
+				block->char_attr.str);
 	}
 
 	if (block->pic_enabled)				/* 2. Draw picture */
@@ -156,8 +238,16 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 	uint8 state = 0;
 	Exti_lock = DISABLE;
 	Interface_Key = 5;
-	UI_WindowBlocks_Setting = sizeof(UI_WindowBlocksAttrArray_Setting_font) >> 2;
-	UI_Draw_Window_Setting_font(UI_WindowBlocks_Setting);
+	if(Bluetooth_switch)
+	{
+		UI_WindowBlocks_Setting = sizeof(UI_WindowBlocksAttrArray_Setting_font) >> 2;
+		UI_Draw_Window_Setting_font(UI_WindowBlocks_Setting);
+	}
+	else
+	{
+		UI_WindowBlocks_Setting = sizeof(UI_WindowBlocksAttrArray_Setting_font_2) >> 2;
+		UI_Draw_Window_Setting_font(UI_WindowBlocks_Setting);
+	}
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
@@ -168,7 +258,15 @@ void UI_Draw_Window_Setting_font(uint16 blockNum)
 	uint8 blockIndex = 0;					/* Draw blocks one by one */
 	for (blockIndex = 0; blockIndex < blockNum; blockIndex++)
 	{
-		UI_Draw_Block_Setting_font(UI_WindowBlocksAttrArray_Setting_font[blockIndex]);
+		if(Bluetooth_switch)
+		{
+			Lcd_ColorBox(20,141,26,18,BACKCOLOR_CONTENT_BACK);
+			UI_Draw_Block_Setting_font(UI_WindowBlocksAttrArray_Setting_font[blockIndex]);
+		}
+		else
+		{
+			UI_Draw_Block_Setting_font(UI_WindowBlocksAttrArray_Setting_font_2[blockIndex]);
+		}
 	}
 }
 
@@ -210,7 +308,43 @@ void UI_Draw_Block_Setting_font(block_attr_Setting_font* block)
 					block->char1_attr.color,block->char1_attr.faceColor,
 					block->char1_attr.str);
 		}
+	}
+
+	if (block->char1_enabled)				/* 2. Draw character */
+	{
+		if(Key_control == 3)
+		{
+			DisplayDriver_Text16_B(
+					block->char2_attr.offsetX,block->char2_attr.offsetY,
+					block->char2_attr.color,block->char2_attr.backColor,
+					block->char2_attr.str);
 		}
+		else
+		{
+			DisplayDriver_Text16_B(
+					block->char2_attr.offsetX,block->char2_attr.offsetY,
+					block->char2_attr.color,block->char2_attr.faceColor,
+					block->char2_attr.str);
+		}
+	}
 	Display_Time = 1;
 	key_state = DISABLE;
+}
+
+/******************************************************************************/
+uint8 Interface_Bluet_switch_Process(uint16 blockNum)
+{
+	uint8 state = 0;
+	if(Bluetooth_switch)
+	{
+		GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+		Bluetooth_switch = 0;
+	}
+	else
+	{
+		GPIO_SetBits(GPIOE, GPIO_Pin_4);
+		Bluetooth_switch = 1;
+	}
+	UI_state = UI_STATE_SETTING_FONT;
+	return state;
 }

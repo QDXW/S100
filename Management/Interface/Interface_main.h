@@ -114,6 +114,7 @@ typedef enum {
 	UI_STATE_SYSTEM_TIME,			/* Interface Start font Display */
 	UI_STATE_TIME_PROCESS,			/* Interface Start font Display */
 	UI_STATE_DOWN_TIME_PROCESS,			/* Interface Start font Display */
+	UI_STATE_BLUET_SWITCH_PROCESS,			/* Interface Start font Display */
 
 	UI_STATE_MAX_STATE_NUM,
 } UI_STATE;
@@ -147,6 +148,7 @@ extern uint8 Interface_Standard_font(uint16 KeyCode);
 extern uint8 Interface_About_Machine(uint16 KeyCode);
 extern void UI_Draw_Window_Quick_font(uint16 blockNum);
 extern uint8 Interface_Down_Time_Process(uint16 blockNum);
+extern uint8 Interface_Bluet_switch_Process(uint16 blockNum);
 extern void SignalSample_Moving_Average_Data(uint16 *Data,uint16 Length,uint16 Period);
 
 

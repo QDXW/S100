@@ -131,7 +131,7 @@ void Display_Down_Time_Bar (void)
 {
 	char tbuf[8] = {0};
 	Display_Time = 0;
-	Lcd_ColorBox(0,20,128, 140,BACKCOLOR_CONTENT_BACK);
+	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
 	Lcd_ColorBox(36,75,56,30,Light_Gray);
 //	Lcd_ColorBox(36,75,56,30,White);
 	sprintf((char*)tbuf,"%02d:%02d",(Action_time-1),59);

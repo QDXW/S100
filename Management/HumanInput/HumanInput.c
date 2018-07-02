@@ -232,7 +232,6 @@ void Key_Right(void)
 	switch(Interface_Key)
 	{
 		case 0:
-
 			key_state_confirm = 0;
 			if(Key_control < 4)
 			{
@@ -262,7 +261,14 @@ void Key_Right(void)
 
 		case 5:
 			key_state_confirm = 0;
-			Key_control = 2;
+			if(Key_control < 3)
+			{
+				Key_control += 1;
+			}
+			else
+			{
+				Key_control = 3;
+			}
 			key_state = ENABLE;
 		break;
 
@@ -321,13 +327,13 @@ void Key_Left(void)
 
 		case 5:
 			key_state_confirm = 0;
-			if(Key_control == 1)
+			if(Key_control > 0)
 			{
-				Key_control = 0;
+				Key_control -= 1;
 			}
 			else
 			{
-				Key_control = 1;
+				Key_control = 0;
 			}
 			key_state = ENABLE;
 		break;

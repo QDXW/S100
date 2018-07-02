@@ -35,7 +35,7 @@ block_attr block_standard = {
 		ENABLE,									/* Display Picture */
 		{
 			gImage_PIC_Standard,
-			12, 24,
+			10, 24,
 			45, 45
 		},
 
@@ -91,7 +91,7 @@ block_attr block_record = {
 		ENABLE,									/* Display Picture */
 		{
 			gImage_PIC_Record,
-			12,  94,
+			10,  94,
 			45, 45
 		},
 
@@ -213,6 +213,7 @@ uint8 Interface_Process(uint16* KeyCode)
 			Interface_System_Time,			/* Interface Setting font Display */
 			Interface_Time_Process,			/* Interface Setting font Display */
 			Interface_Down_Time_Process,	/* Interface Setting font Display */
+			Interface_Bluet_switch_Process,	/* Interface Setting font Display */
 	};
 	uint8 state;
 	do										/* Polling each state */
@@ -497,14 +498,20 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 						switch(Key_control)
 						{
 							case 1:
-								UI_state = UI_STATE_SYSTEM_TIME;
-								key_state_confirm = DISABLE;
-								Key_control = 1;
-							break;
-							case 2:
 								UI_state = UI_STATE_ABOUT_MACHINE;
 								key_state_confirm = DISABLE;
-								Key_control = 1;
+								Key_control = 2;
+							break;
+							case 2:
+								UI_state = UI_STATE_SYSTEM_TIME;
+								key_state_confirm = DISABLE;
+								Key_control = 2;
+							break;
+
+							case 3:
+								UI_state = UI_STATE_BLUET_SWITCH_PROCESS;
+								key_state_confirm = DISABLE;
+								Key_control = 3;
 							break;
 
 							default:
