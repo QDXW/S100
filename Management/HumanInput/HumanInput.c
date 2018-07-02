@@ -4,11 +4,7 @@
  *  Created on: 2018年1月25日
  *      Author: Administrator
  ******************************************************************************/
-#include "Font.h"
 #include "HumanInput.h"
-#include "DisplayDriver.h"
-#include "RotationMotor.h"
-#include "Version_selection.h"
 
 /******************************************************************************/
 extern uint8 Power_Open;
@@ -157,6 +153,83 @@ void EXTI_Key_Confirm_Enable(void)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
+/******************************************************************************/
+void EXTI_Key_Left_Disable(void)
+{
+	EXTI_InitTypeDef EXTI_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	//GPIOC.7	  中断线以及中断初始化配置  上升沿触发
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOC,GPIO_PinSource7);
+
+	EXTI_InitStructure.EXTI_Line = EXTI_Line7;					//向左按钮
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_LineCmd = DISABLE;
+	EXTI_Init(&EXTI_InitStructure);
+}
+
+/******************************************************************************/
+void EXTI_Key_Right_Disable(void)
+{
+	EXTI_InitTypeDef EXTI_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	//GPIOC.6 中断线以及中断初始化配置   上升沿触发
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOC,GPIO_PinSource6);
+
+	EXTI_InitStructure.EXTI_Line = EXTI_Line6;					//向右按钮
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+	EXTI_Init(&EXTI_InitStructure);
+
+}
+
+
+/******************************************************************************/
+void EXTI_Key_Left_Enable(void)
+{
+	EXTI_InitTypeDef EXTI_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	//GPIOC.7	  中断线以及中断初始化配置  上升沿触发
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOC,GPIO_PinSource7);
+
+	EXTI_InitStructure.EXTI_Line = EXTI_Line7;					//向左按钮
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+	EXTI_Init(&EXTI_InitStructure);
+
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02;	//抢占优先级2
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;			//子优先级0
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;					//使能外部中断通道
+	NVIC_Init(&NVIC_InitStructure);
+}
+
+/******************************************************************************/
+void EXTI_Key_Right_Enable(void)
+{
+	EXTI_InitTypeDef EXTI_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	//GPIOC.6 中断线以及中断初始化配置   上升沿触发
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOC,GPIO_PinSource6);
+
+	EXTI_InitStructure.EXTI_Line = EXTI_Line6;					//向右按钮
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+	EXTI_Init(&EXTI_InitStructure);
+
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02;	//抢占优先级2
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;			//子优先级0
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;					//使能外部中断通道
+	NVIC_Init(&NVIC_InitStructure);
+}
 /*******************************************************************************
 	函数名：KeyX_Work
 	输  入: 无
@@ -183,6 +256,9 @@ void Key_Confirm(void)
 					key_state_confirm = 0;
 					doubleClick = 0;
 					GPIO_SetBits(GPIOE, GPIO_Pin_5);   //改动关掉
+					Display_Time = 0;
+					DisplayDriver_DrawPic(60,3,19,15,gImage_LED_Switch);
+					Display_Time = 1;
 					EXTI_Key_Confirm_Enable();
 					LED = 1;
 				}
@@ -191,6 +267,9 @@ void Key_Confirm(void)
 					key_state_confirm = 0;
 					doubleClick = 0;
 					GPIO_ResetBits(GPIOE, GPIO_Pin_5);
+					Display_Time = 0;
+					Lcd_ColorBox(60,3,19,15,BACKCOLOR_CONTENT_BAR);
+					Display_Time = 1;
 					EXTI_Key_Confirm_Enable();
 					LED = 0;
 				}
@@ -211,7 +290,7 @@ void Key_Confirm(void)
 				long_key_flag = 0;
 				if (Printer_isConnected())
 				{
-						UI_Process_BLE_Print();
+					UI_Process_BLE_Print();
 				}
 
 				EXTI_Key_Confirm_Enable();
@@ -350,6 +429,51 @@ void Key_Left(void)
 		default:
 		break;
 	}
+}
+
+/******************************************************************************/
+void SystemManage_Sleep_Process(void)
+{
+	SystemManage_5V_Disabled();
+
+	GPIO_ResetBits(GPIOD,GPIO_Pin_2);
+
+	EXTI_Key_Left_Disable();
+
+	EXTI_Key_Right_Disable();
+
+	EXTI_Key_Confirm_Enable();
+
+	SystemManage_EnterExitStop();
+}
+
+/******************************************************************************/
+void SystemManage_EnterExitStop(void)
+{
+    /* Request to enter STOP mode with regulator in low power mode*/
+    PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
+
+    /* At this stage the system has resumed from STOP mode,
+     * like external interrupt, internal timer interrupt, etc */
+
+    /* Configures system clock after wake-up from STOP: enable HSE, PLL and
+     * select PLL as system clock source
+     *  (HSE and PLL are disabled in STOP mode) */
+    SYSCLKConfig_STOP();
+}
+
+/******************************************************************************/
+void SYSCLKConfig_STOP(void)
+{
+	if(MotorDriver_Ctr)
+	{
+		SystemManage_5V_Enabled();
+	}
+
+	EXTI_Key_Left_Enable();
+	EXTI_Key_Right_Enable();
+	EXTI_Key_Confirm_Enable();
+	GPIO_SetBits(GPIOD,GPIO_Pin_2);
 }
 
 /******************************************************************************/

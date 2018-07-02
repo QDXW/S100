@@ -18,12 +18,12 @@ uint8 Open_time = 0;
 uint8 MBuffer[20] = {0};
 uint8 asd = 1;
 uint16 insk[4] = {0,0,0,255};
+uint8 Power_Switch = 0;
+uint8 Bluetooth_switch = 0;
 
 /******************************************************************************/
 void main(void)
 {
-	uint8 Bluetooth_Connect = 0;
-
 	RCC_Configuration();				/* RCC Initialize */
 
 	HumanInput_Init();					/* KEY HumanInput Initialize */

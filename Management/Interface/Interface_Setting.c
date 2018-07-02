@@ -8,7 +8,7 @@
 /******************************************************************************/
 #include "Interface_Setting.h"
 
-uint8 Bluetooth_switch = 0;
+
 
 /******************************************************************************/
 block_attr_Setting block_Setting_1 = {
@@ -335,15 +335,16 @@ void UI_Draw_Block_Setting_font(block_attr_Setting_font* block)
 uint8 Interface_Bluet_switch_Process(uint16 blockNum)
 {
 	uint8 state = 0;
-	if(Bluetooth_switch)
-	{
-		GPIO_ResetBits(GPIOE, GPIO_Pin_4);
-		Bluetooth_switch = 0;
-	}
-	else
+	if(!Bluetooth_switch)
 	{
 		GPIO_SetBits(GPIOE, GPIO_Pin_4);
 		Bluetooth_switch = 1;
+	}
+	else
+	{
+		GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
+		Bluetooth_switch = 0;
 	}
 	UI_state = UI_STATE_SETTING_FONT;
 	return state;

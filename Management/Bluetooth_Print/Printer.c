@@ -39,18 +39,17 @@ static void Printer_GPIO_Init(void)
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-
-	   /* config tft rst gpio */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
 
-//	GPIO_InitStructure.GPIO_Pin =  PRINTER_MATCH_STATUS_PIN;
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-//	GPIO_Init(PRINTER_MATCH_STATUS_PORT, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin =  PRINTER_MATCH_STATUS_PIN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+	GPIO_Init(PRINTER_MATCH_STATUS_PORT, &GPIO_InitStructure);
+
+	GPIO_ResetBits(GPIOE, GPIO_Pin_4);
 //
 //	GPIO_EXTILineConfig(GPIO_PortSourceGPIOC, GPIO_PinSource9);
-//
 //	EXTI_ClearITPendingBit(EXTI_Line9);
 //	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
 //	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
@@ -174,12 +173,8 @@ void Set_BLE_Exit_STATE(FunctionalState STATE)
 /******************************************************************************/
 uint8 Printer_isConnected(void)
 {
-#if BLE_4_0_ENABLED
-	return  BLEConnectStaus;
-#else
 	return GPIO_ReadInputDataBit(PRINTER_MATCH_STATUS_PORT,
 				PRINTER_MATCH_STATUS_PIN);
-#endif
 }
 
 /******************************************************************************/

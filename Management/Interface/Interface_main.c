@@ -19,7 +19,6 @@ extern uint8 page_tatol;
 uint16 adcx = 0;
 float temp = 0.0;
 uint8 Bluetooth_Connect = 0;
-
 uint16 UI_WindowBlocks = 0;
 uint8 UI_state = UI_STATE_MAIN_WINDOW;
 
@@ -672,7 +671,7 @@ void UI_Draw_Status_Bar(void)					/* UI Draw Status Bar and Battery */
 		sprintf((char*)tbuf,"%02d:%02d",SystemManage_CurrentTime.hour,
 				SystemManage_CurrentTime.min);
 		Display_Time = 0;
-		DisplayDriver_Text16_B(12,2,White,BACKCOLOR_CONTENT_BAR,tbuf);
+		DisplayDriver_Text16_B(6,2,White,BACKCOLOR_CONTENT_BAR,tbuf);
 		Display_Time = 1;
 	}
 }
@@ -842,10 +841,7 @@ void Bluetooth_Connection (void)
 	}
 	else
 	{
-		if (Bluetooth_Connect)
-		{
-			Lcd_ColorBox(85,4,9,14,BACKCOLOR_CONTENT_BAR);
-			Bluetooth_Connect = 0;
-		}
+		Lcd_ColorBox(85,4,9,14,BACKCOLOR_CONTENT_BAR);
+		Bluetooth_Connect = 0;
 	}
 }

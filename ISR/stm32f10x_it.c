@@ -12,6 +12,8 @@ extern uint8 Power_Open;
 extern uint8 Display_Time;
 uint8 time_second = 60;
 extern uint8 Open_time;
+uint16 Power_Second = 0;
+uint16 Power_Minute = 0;
 
 /******************************************************************************/
 void Delay_ms_SW(__IO uint32 nCount)
@@ -197,6 +199,33 @@ void TIM4_IRQHandler(void)
 	{
 		time_second = 60;
 	}
+
+	if(!key_state)
+	{
+		Power_Second++;
+		if(Power_Second > 59)
+		{
+			Power_Second = 0;
+			Power_Minute++;
+			if(Power_Minute > 2)
+			{
+				Power_Minute = 0;
+//				SystemManage_Sleep_Process();
+			}
+		}
+
+	}
+	else
+	{
+		Power_Second = 0;
+		Power_Minute = 0;
+	}
+
+}
+
+/******************************************************************************/
+void TIM5_IRQHandler(void)
+{
 
 }
 
