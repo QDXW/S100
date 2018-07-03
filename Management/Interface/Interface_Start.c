@@ -335,8 +335,8 @@ block_attr_Start block_Start_12 = {
 };
 
 /******************************************************************************/
-block_attr_Start* UI_WindowBlocksAttrArray_Start[][15] = {/* Window: Start entry */
-{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_11},
+block_attr_Start* UI_WindowBlocksAttrArray_Start[][13] = {/* Window: Start entry */
+{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1},
 {&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2},
 {&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
 		&block_Start_3},
