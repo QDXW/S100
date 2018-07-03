@@ -17,6 +17,7 @@ extern uint8 Exti_lock;
 extern uint8 Key_control;
 uint16 UI_WindowBlocks_Start = 0;
 uint16 UI_WindowBlocks_Start_font = 0;
+extern const unsigned char gImage_Left_arrow[1050];
 
 /******************************************************************************/
 typedef struct {

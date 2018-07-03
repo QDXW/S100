@@ -25,7 +25,7 @@ block_attr_Start block_Start_Name = {
 	ENABLE,								/*Interface Start rect*/
 	{
 		3,   24,
-		122, 132,
+		122, 116,
 		White
 	},
 	ENABLE,								/*Display HZ16X8*/
@@ -83,30 +83,8 @@ block_attr_Start block_Start_1 = {
 
 	ENABLE,									/*Display HZ16X8*/
 	{
-		QR_Date.ch1_data.TName,
+		QR_Date_Analyze.ch_data[0].TName,
 		20,   57,
-		Black,White,
-		White
-	},
-};
-
-/******************************************************************************/
-block_attr_Start block_Start_2 = {
-	DISABLE,							/*Interface Start rect*/
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		"2:",
-		4,   73,
-		Black,White,
-		White
-	},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		QR_Date.ch2_data.TName,
-		20,   73,
 		Black,White,
 		White
 	},
@@ -120,41 +98,19 @@ block_attr_Start block_Start_3 = {
 	ENABLE,								/*Display HZ16X8*/
 	{
 		"3:",
-		4,   89,
+		4,   73,
 		Black,White,
 		White
 	},
+
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		QR_Date.ch3_data.TName,
-		20,   89,
+		QR_Date_Analyze.ch_data[2].TName,
+		20,   73,
 		Black,White,
 		White
 	},
-};
-
-/******************************************************************************/
-block_attr_Start block_Start_4 = {
-	DISABLE,							/*Interface Start rect*/
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		"4:",
-		4,   105,
-		Black,White,
-		White
-	},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		QR_Date.ch4_data.TName,
-		20,   105,
-		Black,White,
-		White
-	},
-
 };
 
 /******************************************************************************/
@@ -165,37 +121,15 @@ block_attr_Start block_Start_5 = {
 	ENABLE,								/*Display HZ16X8*/
 	{
 		"5:",
-		4,   121,
+		4,   89,
 		Black,White,
 		White
 	},
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		QR_Date.ch5_data.TName,
-		20,   121,
-		Black,White,
-		White
-	},
-};
-
-/******************************************************************************/
-block_attr_Start block_Start_6 = {
-	DISABLE,							/*Interface Standard rect*/
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		"6:",
-		4,   137,
-		Black,White,
-		White
-	},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		QR_Date.ch6_data.TName,
-		20,   137,
+		QR_Date_Analyze.ch_data[4].TName,
+		20,   89,
 		Black,White,
 		White
 	},
@@ -209,6 +143,73 @@ block_attr_Start block_Start_7 = {
 	ENABLE,								/*Display HZ16X8*/
 	{
 		"7:",
+		4,   105,
+		Black,White,
+		White
+	},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		QR_Date_Analyze.ch_data[6].TName,
+		20,   105,
+		Black,White,
+		White
+	},
+
+};
+
+/******************************************************************************/
+block_attr_Start block_Start_9 = {
+	DISABLE,							/*Interface Start rect*/
+	{0},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		"9:",
+		4,   121,
+		Black,White,
+		White
+	},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		QR_Date_Analyze.ch_data[8].TName,
+		20,   121,
+		Black,White,
+		White
+	},
+};
+
+/******************************************************************************/
+block_attr_Start block_Start_11 = {
+	DISABLE,							/*Interface Standard rect*/
+	{0},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		"11:",
+		4,   137,
+		Black,White,
+		White
+	},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		QR_Date_Analyze.ch_data[10].TName,
+		20,   137,
+		Black,White,
+		White
+	},
+};
+
+/******************************************************************************/
+block_attr_Start block_Start_2 = {
+	DISABLE,							/*Interface Start rect*/
+	{0},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		"2:",
 		68,   57,
 		Black,White,
 		White
@@ -216,8 +217,52 @@ block_attr_Start block_Start_7 = {
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		QR_Date.ch7_data.TName,
+		QR_Date_Analyze.ch_data[1].TName,
 		86,   57,
+		Black,White,
+		White
+	},
+};
+
+/******************************************************************************/
+block_attr_Start block_Start_4 = {
+	DISABLE,							/*Interface Start rect*/
+	{0},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		"4:",
+		68,   73,
+		Black,White,
+		White
+	},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		QR_Date_Analyze.ch_data[3].TName,
+		86,   73,
+		Black,White,
+		White
+	},
+};
+
+/******************************************************************************/
+block_attr_Start block_Start_6 = {
+	DISABLE,							/*Interface Start rect*/
+	{0},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		"6:",
+		68,   89,
+		Black,White,
+		White
+	},
+
+	ENABLE,								/*Display HZ16X8*/
+	{
+		QR_Date_Analyze.ch_data[5].TName,
+		86,   89,
 		Black,White,
 		White
 	},
@@ -231,37 +276,15 @@ block_attr_Start block_Start_8 = {
 	ENABLE,								/*Display HZ16X8*/
 	{
 		"8:",
-		68,   73,
+		68,   105,
 		Black,White,
 		White
 	},
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		QR_Date.ch8_data.TName,
-		86,   73,
-		Black,White,
-		White
-	},
-};
-
-/******************************************************************************/
-block_attr_Start block_Start_9 = {
-	DISABLE,							/*Interface Start rect*/
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		"9:",
-		68,   89,
-		Black,White,
-		White
-	},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		QR_Date.ch9_data.TName,
-		86,   89,
+		QR_Date_Analyze.ch_data[7].TName,
+		86,   105,
 		Black,White,
 		White
 	},
@@ -275,28 +298,6 @@ block_attr_Start block_Start_10 = {
 	ENABLE,								/*Display HZ16X8*/
 	{
 		"10:",
-		68,   105,
-		Black,White,
-		White
-	},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		QR_Date.ch10_data.TName,
-		86,   105,
-		Black,White,
-		White
-	},
-};
-
-/******************************************************************************/
-block_attr_Start block_Start_11 = {
-	DISABLE,							/*Interface Start rect*/
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		"11:",
 		68,   121,
 		Black,White,
 		White
@@ -304,7 +305,7 @@ block_attr_Start block_Start_11 = {
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		QR_Date.ch11_data.TName,
+		QR_Date_Analyze.ch_data[9].TName,
 		86,   121,
 		Black,White,
 		White
@@ -326,7 +327,7 @@ block_attr_Start block_Start_12 = {
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		QR_Date.ch12_data.TName,
+		QR_Date_Analyze.ch_data[11].TName,
 		86,   137,
 		Black,White,
 		White
@@ -335,7 +336,7 @@ block_attr_Start block_Start_12 = {
 
 /******************************************************************************/
 block_attr_Start* UI_WindowBlocksAttrArray_Start[][15] = {/* Window: Start entry */
-{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1},
+{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_11},
 {&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2},
 {&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
 		&block_Start_3},
@@ -356,17 +357,18 @@ block_attr_Start* UI_WindowBlocksAttrArray_Start[][15] = {/* Window: Start entry
 {&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
 		&block_Start_3,&block_Start_4,&block_Start_5,&block_Start_6,&block_Start_7,
 		&block_Start_8,&block_Start_9,&block_Start_10},
-{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
-		&block_Start_3,&block_Start_4,&block_Start_5,&block_Start_6,&block_Start_7,
-		&block_Start_8,&block_Start_9,&block_Start_10,&block_Start_11},
-{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
-		&block_Start_3,&block_Start_4,&block_Start_5,&block_Start_6,&block_Start_7,
-		&block_Start_8,&block_Start_9,&block_Start_10,&block_Start_11,&block_Start_12},
+//{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
+//		&block_Start_3,&block_Start_4,&block_Start_5,&block_Start_6,&block_Start_7,
+//		&block_Start_8,&block_Start_9,&block_Start_10,&block_Start_11},
+//{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
+//		&block_Start_3,&block_Start_4,&block_Start_5,&block_Start_6,&block_Start_7,
+//		&block_Start_8,&block_Start_9,&block_Start_10,&block_Start_11,&block_Start_12},
 };
 
 /******************************************************************************/
 uint8 Interface_Start(uint16 KeyCode)
 {
+	Enter_Sleep = 0;
 	Exti_lock = DISABLE;
 	doubleClick = 0;
 	Interface_Key = 1;
@@ -375,6 +377,7 @@ uint8 Interface_Start(uint16 KeyCode)
 	{
 		UI_WindowBlocks_Start = sizeof(UI_WindowBlocksAttrArray_Start[Cup_Count-1]) >> 2;
 		UI_Draw_Window_Start(UI_WindowBlocks_Start);
+		DisplayDriver_DrawPic(5, 142,35,15,gImage_Left_arrow);
 		Exti_lock = ENABLE;
 		UI_state = UI_STATE_KEY_STATE;
 	}

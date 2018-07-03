@@ -65,10 +65,11 @@ typedef struct {
 /******************************************************************************/
 typedef struct {
     uint8 TName[8];
-    float threshold1;
-    float threshold2;
-    float threshold3;
-    uint8 Result[6];
+   uint8 Switch_Bool;
+   float threshold1;
+   float threshold2;
+   float threshold3;
+   uint8 Result[6];
 } STORAGE_SINGLE_LINE;
 
 /******************************************************************************/

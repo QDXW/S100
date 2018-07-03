@@ -8,7 +8,7 @@
 
 /******************************************************************************/
 extern uint8 Power_Open;
-extern uint8 LED = 0;
+extern uint8 LED = 0,HSEStartUpStatusPwr = 0;
 extern uint8 key_fall_flag,short_key_flag,doubleClick,long_key_flag;
 
 /*******************************************************************************
@@ -38,7 +38,7 @@ void HumanInput_Init(void)
 
 	//初始化 WK_UP-->GPIOA.0	  下拉输入
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_4;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 		//PA0设置成输入，默认下拉
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD; 		//PA4设置成输入，默认下拉
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);				//初始化GPIOB.0
 }
@@ -434,15 +434,15 @@ void Key_Left(void)
 /******************************************************************************/
 void SystemManage_Sleep_Process(void)
 {
+	HSEStartUpStatusPwr = 0;
+
+//	EXTI_Key_Left_Disable();
+//
+//	EXTI_Key_Right_Disable();
+
 	SystemManage_5V_Disabled();
 
 	GPIO_ResetBits(GPIOD,GPIO_Pin_2);
-
-	EXTI_Key_Left_Disable();
-
-	EXTI_Key_Right_Disable();
-
-	EXTI_Key_Confirm_Enable();
 
 	SystemManage_EnterExitStop();
 }
@@ -465,15 +465,43 @@ void SystemManage_EnterExitStop(void)
 /******************************************************************************/
 void SYSCLKConfig_STOP(void)
 {
+	/* Enable HSE */
+	RCC_HSEConfig(RCC_HSE_ON);
+
+	/* Wait till HSE is ready */
+	HSEStartUpStatusPwr = RCC_WaitForHSEStartUp();
+
+	if(HSEStartUpStatusPwr == SUCCESS)
+	{
+		/* Enable PLL */
+		RCC_PLLCmd(ENABLE);
+
+		/* Wait till PLL is ready */
+		while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+		{
+		}
+
+		/* Select PLL as system clock source */
+		RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+
+		/* Wait till PLL is used as system clock source */
+		while(RCC_GetSYSCLKSource() != 0x08)
+		{
+		}
+	}
+
 	if(MotorDriver_Ctr)
 	{
 		SystemManage_5V_Enabled();
 	}
 
 	EXTI_Key_Left_Enable();
+
 	EXTI_Key_Right_Enable();
-	EXTI_Key_Confirm_Enable();
+
 	GPIO_SetBits(GPIOD,GPIO_Pin_2);
+	Delay_ms_SW(150);
+	key_state = DISABLE;
 }
 
 /******************************************************************************/

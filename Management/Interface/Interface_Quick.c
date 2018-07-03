@@ -118,6 +118,7 @@ void UI_Draw_Block_Quick(block_attr_Quick* block);
 uint8 Interface_Quick(uint16 KeyCode)
 {
 	uint8 state = 0;
+	QRCode_Trigger_Disabled();
 	Exti_lock = DISABLE;
 	Key_control = 2;
 	Interface_Key = 3;

@@ -12,14 +12,12 @@
 
 /******************************************************************************/
 static u32 TimingDelay;					/* Timer Delay Count */
-uint8 Power_Open = 0;
-uint8 Display_Time = 1;
-uint8 Open_time = 0;
-uint8 MBuffer[20] = {0};
-uint8 asd = 1;
+uint8 Display_Time = 1,Open_time = 0,Power_Open = 0,Key_State_Update = 0;
+uint8 Power_Switch = 0,Bluetooth_switch = 0,Enter_Sleep = 0;
+uint8 MBuffer[20] = {0},asd = 1;
 uint16 insk[4] = {0,0,0,255};
-uint8 Power_Switch = 0;
-uint8 Bluetooth_switch = 0;
+uint16 adcx = 0;
+float temp = 0.0;
 
 /******************************************************************************/
 void main(void)
@@ -171,5 +169,6 @@ void Status_Init(void)
 	RotationMotor_SelfCheck_StepDrive();
 	SystemManage_5V_Disabled();
 	Power_Open = 1;
+	Enter_Sleep = 1;
 	Display_Time = 1;
 }

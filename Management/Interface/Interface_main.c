@@ -16,8 +16,6 @@ uint8 Key_record = 1;
 extern uint8 page_Num;
 extern uint8 Page_Flag;
 extern uint8 page_tatol;
-uint16 adcx = 0;
-float temp = 0.0;
 uint8 Bluetooth_Connect = 0;
 uint16 UI_WindowBlocks = 0;
 uint8 UI_state = UI_STATE_MAIN_WINDOW;
@@ -234,6 +232,8 @@ uint8 Interface_Main(uint16 KeyCode)
 	Exti_lock = DISABLE;
 	Interface_Key = DISABLE;
 	key_state = 1;
+	Enter_Sleep = 1;
+	Key_State_Update = 1;
 	key_state_confirm = 0;
 	QRCode_Trigger_Disabled();
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Main) >> 2;
@@ -713,12 +713,11 @@ void Battery_Display (void)
 {
 	int i = 0;
 
-
 	adcx = Get_Adc_Average(ADC_Channel_11,10);
 	temp = (float)adcx*(5.185/4096.0);
 
 	Lcd_ColorBox(103,7,15,8,BACKCOLOR_CONTENT_BAR);
-	if((!Power_Open) || (UI_state == UI_STATE_TESTING))
+	if(!Power_Open)
 	{
 		temp += 0.36;
 	}
@@ -823,7 +822,14 @@ void Battery_Display (void)
 		}
 		else
 		{
-//				SystemManage_CheckPowerOff();
+			if((UI_state == UI_STATE_TESTING) || (UI_state == UI_STATE_RESULT))
+			{
+
+			}
+			else
+			{
+				SystemManage_CheckPowerOff();
+			}
 		}
 	}
 }

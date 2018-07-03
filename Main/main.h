@@ -11,9 +11,9 @@
 #include "Version_selection.h"
 
 /******************************************************************************/
-extern uint8 Power_Open;
-extern uint8 Power_Switch;
-extern uint8 Bluetooth_switch;
+extern uint8 Power_Open,Power_Switch,Bluetooth_switch,Enter_Sleep,Key_State_Update;
+extern uint16 adcx;
+extern float temp;
 
 /******************************************************************************/
 #define One_Minute		59999

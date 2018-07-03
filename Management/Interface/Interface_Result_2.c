@@ -20,7 +20,7 @@ block_attr_Result block_Result_WCG = {
 
 	ENABLE,								/* Display HZ16X8 */
 	{
-		QR_Date.ch7_data.TName,
+		QR_Date_Analyze.ch_data[6].TName,
 		12,   43,
 		Black,White,
 		White
@@ -44,7 +44,7 @@ block_attr_Result block_Result_EDG = {
 
 	ENABLE,								/* Display HZ16X8 */
 	{
-		QR_Date.ch8_data.TName,
+		QR_Date_Analyze.ch_data[7].TName,
 		12,   59,
 		Black,White,
 		White
@@ -68,7 +68,7 @@ block_attr_Result block_Result_UZI = {
 
 	ENABLE,								/* Display HZ16X8 */
 	{
-		QR_Date.ch9_data.TName,
+		QR_Date_Analyze.ch_data[8].TName,
 		12,   75,
 		Black,White,
 		White
@@ -92,7 +92,7 @@ block_attr_Result block_Result_XZG = {
 
 	ENABLE,								/* Display HZ16X8 */
 	{
-		QR_Date.ch10_data.TName,
+		QR_Date_Analyze.ch_data[9].TName,
 		12,   91,
 		Black,White,
 		White
@@ -116,7 +116,7 @@ block_attr_Result block_Result_PCY = {
 
 	ENABLE,								/* Display HZ16X8 */
 	{
-		QR_Date.ch11_data.TName,
+		QR_Date_Analyze.ch_data[10].TName,
 		12,   107,
 		Black,White,
 		White
@@ -140,7 +140,7 @@ block_attr_Result block_Result_AKD = {
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		QR_Date.ch12_data.TName,
+		QR_Date_Analyze.ch_data[11].TName,
 		12,   123,
 		Black,White,
 		White
@@ -207,10 +207,10 @@ block_attr_Result* UI_WindowBlocksAttrArray_Result_2[][8] = {/* Window: Result e
 		&block_Result_UZI},
 {&block_Result_BACK,&block_Result_Left_arrow,&block_Result_WCG,&block_Result_EDG,
 		&block_Result_UZI,&block_Result_XZG},
-{&block_Result_BACK,&block_Result_Left_arrow,&block_Result_WCG,&block_Result_EDG,
-		&block_Result_UZI,&block_Result_XZG,&block_Result_PCY},
-{&block_Result_BACK,&block_Result_Left_arrow,&block_Result_WCG,&block_Result_EDG,
-		&block_Result_UZI,&block_Result_XZG,&block_Result_PCY,&block_Result_AKD}
+//{&block_Result_BACK,&block_Result_Left_arrow,&block_Result_WCG,&block_Result_EDG,
+//		&block_Result_UZI,&block_Result_XZG,&block_Result_PCY},
+//{&block_Result_BACK,&block_Result_Left_arrow,&block_Result_WCG,&block_Result_EDG,
+//		&block_Result_UZI,&block_Result_XZG,&block_Result_PCY,&block_Result_AKD}
 };
 
 /******************************************************************************/

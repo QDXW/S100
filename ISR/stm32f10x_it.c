@@ -10,7 +10,7 @@
 extern uint8 SignalSample_moveThenSample;
 extern uint8 Power_Open;
 extern uint8 Display_Time;
-uint8 time_second = 60;
+uint8 time_second = 60,Battery_Second = 0;
 extern uint8 Open_time;
 uint16 Power_Second = 0;
 uint16 Power_Minute = 0;
@@ -88,6 +88,36 @@ void SysTick_Handler(void)
 {
 	TimingDelay_Decrement();								/* Decrease TimingDelay */
 
+	if(Enter_Sleep)
+	{
+		if(!Key_State_Update)
+		{
+			Power_Second++;
+			if(Power_Second > 999)
+			{
+				Power_Second = 0;
+				Power_Minute++;
+				if(Power_Minute > 30)
+				{
+					Power_Minute = 0;
+					SystemManage_Sleep_Process();
+				}
+			}
+		}
+		else
+		{
+			Key_State_Update = 0;
+			Power_Second = 0;
+			Power_Minute = 0;
+		}
+	}
+	else
+	{
+		Power_Second = 0;
+		Power_Minute = 0;
+	}
+
+
 	 if(key_fall_flag == 1)									//发生按键按下事件
 	 {
 		 if(!GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4))		//按键持续按下
@@ -162,7 +192,7 @@ void TIM4_IRQHandler(void)
 {
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  	//检查TIM4更新中断发生与否
 	{
-		TIM_ClearITPendingBit(TIM4, TIM_IT_Update  );  		//清除TIMx更新中断标志
+		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);  		//清除TIMx更新中断标志
 		if(Display_Time)
 		{
 			Display_Time = 0;
@@ -172,9 +202,12 @@ void TIM4_IRQHandler(void)
 
 		if((!MotorDriver_Ctr) && Display_Time)
 		{
-			Display_Time = 0;
-			Battery_Display();
-			Display_Time = 1;
+			if((UI_state == UI_STATE_TESTING) && (UI_state == UI_STATE_RESULT) && (UI_state == UI_STATE_RESULT_2))
+			{
+				Display_Time = 0;
+				Battery_Display();
+				Display_Time = 1;
+			}
 			UI_Draw_Status_Bar();
 		}
 	}
@@ -199,28 +232,6 @@ void TIM4_IRQHandler(void)
 	{
 		time_second = 60;
 	}
-
-	if(!key_state)
-	{
-		Power_Second++;
-		if(Power_Second > 59)
-		{
-			Power_Second = 0;
-			Power_Minute++;
-			if(Power_Minute > 2)
-			{
-				Power_Minute = 0;
-//				SystemManage_Sleep_Process();
-			}
-		}
-
-	}
-	else
-	{
-		Power_Second = 0;
-		Power_Minute = 0;
-	}
-
 }
 
 /******************************************************************************/
@@ -268,6 +279,7 @@ void EXTI4_IRQHandler(void)
 	{
 		if(EXTI_GetITStatus(EXTI_Line4))	 				//确认按键
 		{
+			Key_State_Update = 1;
 			key_fall_flag = 1;								//确认按键
 			EXTI_ClearITPendingBit(EXTI_Line4);				//清除LINE4上的中断标志位
 			EXTI_Key_Confirm_Disable();
@@ -296,12 +308,14 @@ void EXTI9_5_IRQHandler(void)
 #else
 		if(EXTI_GetITStatus(EXTI_Line6))	 				//向右按键
 		{
+			Key_State_Update = 1;
 			Delay_ms_SW(160);
 			Key_Right();
 		}
 
 		if(EXTI_GetITStatus(EXTI_Line7))	 				//向左按键
 		{
+			Key_State_Update = 1;
 			Delay_ms_SW(190);
 			Key_Left();
 		}

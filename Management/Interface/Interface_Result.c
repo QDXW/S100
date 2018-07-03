@@ -63,7 +63,7 @@ block_attr_Result block_Result_AMP = {
 
 	ENABLE,									/*Display HZ16X8*/
 	{
-		QR_Date.ch1_data.TName,
+		QR_Date_Analyze.ch_data[0].TName,
 		12,   43,
 		Black,White,
 		White
@@ -87,7 +87,7 @@ block_attr_Result block_Result_COC = {
 
 	ENABLE,									/*Display HZ16X8*/
 	{
-		QR_Date.ch2_data.TName,
+		QR_Date_Analyze.ch_data[1].TName,
 		12,   59,
 		Black,White,
 		White
@@ -111,7 +111,7 @@ block_attr_Result block_Result_THC = {
 
 	ENABLE,									/*Display HZ16X8*/
 	{
-		QR_Date.ch3_data.TName,
+		QR_Date_Analyze.ch_data[2].TName,
 		12,   75,
 		Black,White,
 		White
@@ -135,7 +135,7 @@ block_attr_Result block_Result_MET = {
 
 	ENABLE,									/*Display HZ16X8*/
 	{
-		QR_Date.ch4_data.TName,
+		QR_Date_Analyze.ch_data[3].TName,
 		12,   91,
 		Black,White,
 		White
@@ -159,7 +159,7 @@ block_attr_Result block_Result_OPI = {
 
 	ENABLE,									/*Display HZ16X8*/
 	{
-		QR_Date.ch5_data.TName,
+		QR_Date_Analyze.ch_data[4].TName,
 		12,   107,
 		Black,White,
 		White
@@ -183,7 +183,7 @@ block_attr_Result block_Result_PHD = {
 
 	ENABLE,								/*Display HZ16X8*/
 	{
-		QR_Date.ch6_data.TName,
+		QR_Date_Analyze.ch_data[5].TName,
 		12,   123,
 		Black,White,
 		White
@@ -248,6 +248,8 @@ block_attr_Result* UI_WindowBlocksAttrArray_Result[][9] = {/* Window: Result ent
 uint8 Interface_Result(uint16 KeyCode)
 {
 	uint8 state = 0;
+	Key_State_Update = 1;
+	Enter_Sleep = 1;
 	Exti_lock = DISABLE;
 	Page_Flag = 0;
 	Interface_Key = 2;

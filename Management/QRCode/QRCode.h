@@ -40,8 +40,6 @@
 #define QRCODE_USART_IRQN          	 (USART3_IRQn)
 #endif
 
-
-
 /******************************************************************************/
 extern uint16 QRCode_count;
 extern uint8 Action_time;
@@ -74,9 +72,11 @@ typedef struct {
     uint16 C_MIN;
     uint16 reserved;
 } QRCODE_HEAD_STRUCT;
+
 /******************************************************************************/
 typedef struct {
     uint8 TName[QRCODE_TEST_NAME_MAX];
+    uint8 Switch_Bool;
     float threshold1;
     float threshold2;
     float threshold3;
@@ -85,22 +85,12 @@ typedef struct {
 /******************************************************************************/
 typedef struct {
     QRCODE_HEAD_STRUCT head;
-    QRCODE_SINGLE_LINE ch1_data;
-    QRCODE_SINGLE_LINE ch2_data;
-    QRCODE_SINGLE_LINE ch3_data;
-    QRCODE_SINGLE_LINE ch4_data;
-    QRCODE_SINGLE_LINE ch5_data;
-    QRCODE_SINGLE_LINE ch6_data;
-    QRCODE_SINGLE_LINE ch7_data;
-    QRCODE_SINGLE_LINE ch8_data;
-    QRCODE_SINGLE_LINE ch9_data;
-    QRCODE_SINGLE_LINE ch10_data;
-    QRCODE_SINGLE_LINE ch11_data;
-    QRCODE_SINGLE_LINE ch12_data;
+    QRCODE_SINGLE_LINE ch_data[12];
 } QRCODE_STRUCT;
 
 /******************************************************************************/
 extern QRCODE_STRUCT QR_Date;
+extern QRCODE_STRUCT QR_Date_Analyze;
 
 /******************************************************************************/
 extern void Clear_Data(void);

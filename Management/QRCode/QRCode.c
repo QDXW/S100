@@ -10,6 +10,7 @@
 #include "DisplayDriver.h"
 
 QRCODE_STRUCT QR_Date;
+QRCODE_STRUCT QR_Date_Analyze;
 uint8 QRCode_received = 0;
 uint8 QRCode_existed = 0;
 uint8 Action_time = 0;
@@ -186,11 +187,8 @@ void QRCode_Received(void)
 /******************************************************************************/
 uint8 QRCode_Identify(void)
 {
-	uint8 status = 0;
-	uint16 crcCalc = 0;
-	uint16 crcRec = 0;
-	uint8 singleLineSize = 0;
-	uint8 headLineSize = 0;
+	uint8 status = 0, headLineSize = 0, singleLineSize = 0,QR_Date_Analyze_Conut = 0,QR_Date_Conut = 0;
+	uint16 crcCalc = 0, crcRec = 0;
 
 	/* Calculate CRC */
 	crcCalc = Common_CalculateCRC(&QRCode_Buffer[2], QRCode_count - 2, 0xFFFF, 0x0000);
@@ -200,60 +198,71 @@ uint8 QRCode_Identify(void)
 
 	if (crcRec == crcCalc)
 	{
+		/* 清空结构体    1、QR接收结构体   2、处理后QR结构体    3、存储结构体 */
 		memset(&QR_Date, 0, sizeof(QRCODE_STRUCT));
+		memset(&QR_Date_Analyze, 0, sizeof(QRCODE_STRUCT));
 		memset(&Storage_Data, 0, sizeof(STORAGE_SINGLE_DATA_STRUCT));
+
+		/* 产品头信息复制  */
 		memcpy(&QR_Date.head.name[0], &QRCode_Buffer[2], sizeof(QRCODE_HEAD_STRUCT) - 2);
+		memcpy(&QR_Date_Analyze.head.name[0], &QRCode_Buffer[2], sizeof(QRCODE_HEAD_STRUCT) - 2);
+
+		/* 结构体长度计算  */
 		singleLineSize = sizeof(QRCODE_SINGLE_LINE);
 		headLineSize = sizeof(QRCODE_HEAD_STRUCT);
+
+		/* 存储结构体产品头信息复制  */
 		memcpy(&Storage_Data.Product_name[0], &QR_Date.head.name[0], sizeof(QR_Date.head.name));
 		memcpy(&Storage_Data.Product_SN[0], &QR_Date.head.SN[0], sizeof(QR_Date.head.SN));
-		if(QR_Date.head.stripNum > 8)
-			QR_Date.head.stripNum = 8;
+
+		/* 头信息计算提取  */
 		Cup_Count = QR_Date.head.stripNum;
 		Action_time = QR_Date.head.time;
 		Storage_Data.StripNum = QR_Date.head.stripNum;
 
-		switch (QR_Date.head.stripNum)
+		switch (12)
 		{
 			case 12:
-				memcpy(&QR_Date.ch12_data, &QRCode_Buffer[headLineSize + 11 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[11], &QRCode_Buffer[headLineSize + 11 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[11], &QRCode_Buffer[headLineSize + 11 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 11:
-				memcpy(&QR_Date.ch11_data, &QRCode_Buffer[headLineSize + 10 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[10], &QRCode_Buffer[headLineSize + 10 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[10], &QRCode_Buffer[headLineSize + 10 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 10:
-				memcpy(&QR_Date.ch10_data, &QRCode_Buffer[headLineSize + 9 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[9], &QRCode_Buffer[headLineSize + 9 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[9], &QRCode_Buffer[headLineSize + 9 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 9:
-				memcpy(&QR_Date.ch9_data, &QRCode_Buffer[headLineSize + 8 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[8], &QRCode_Buffer[headLineSize + 8 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[8], &QRCode_Buffer[headLineSize + 8 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 8:
-				memcpy(&QR_Date.ch8_data, &QRCode_Buffer[headLineSize + 7 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[7], &QRCode_Buffer[headLineSize + 7 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[7], &QRCode_Buffer[headLineSize + 7 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 7:
-				memcpy(&QR_Date.ch7_data, &QRCode_Buffer[headLineSize + 6 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[6], &QRCode_Buffer[headLineSize + 6 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[6], &QRCode_Buffer[headLineSize + 6 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 6:
-				memcpy(&QR_Date.ch6_data, &QRCode_Buffer[headLineSize + 5 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[5], &QRCode_Buffer[headLineSize + 5 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[5], &QRCode_Buffer[headLineSize + 5 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 5:
-				memcpy(&QR_Date.ch5_data, &QRCode_Buffer[headLineSize + 4 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[4], &QRCode_Buffer[headLineSize + 4 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[4], &QRCode_Buffer[headLineSize + 4 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 4:
-				memcpy(&QR_Date.ch4_data, &QRCode_Buffer[headLineSize + 3 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[3], &QRCode_Buffer[headLineSize + 3 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[3], &QRCode_Buffer[headLineSize + 3 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 3:
-				memcpy(&QR_Date.ch3_data, &QRCode_Buffer[headLineSize + 2 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[2], &QRCode_Buffer[headLineSize + 2 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[2], &QRCode_Buffer[headLineSize + 2 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 2:
-				memcpy(&QR_Date.ch2_data, &QRCode_Buffer[headLineSize + singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[1], &QRCode_Buffer[headLineSize + singleLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[1], &QRCode_Buffer[headLineSize + singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 1:
-				memcpy(&QR_Date.ch1_data, &QRCode_Buffer[headLineSize], sizeof(QRCODE_SINGLE_LINE));
-				memcpy(&Storage_Data.CH_data[0], &QRCode_Buffer[headLineSize], sizeof(QRCODE_SINGLE_LINE));
+				memcpy(&QR_Date.ch_data[0], &QRCode_Buffer[headLineSize], sizeof(QRCODE_SINGLE_LINE));
 				break;
 			default:
 				break;
+		}
+
+		for(QR_Date_Conut = 0; QR_Date_Conut < 12; QR_Date_Conut++)
+		{
+			if(QR_Date.ch_data[QR_Date_Conut].Switch_Bool)
+			{
+				memcpy(&QR_Date_Analyze.ch_data[QR_Date_Analyze_Conut], &QR_Date.ch_data[QR_Date_Conut], sizeof(QRCODE_SINGLE_LINE));
+				QR_Date_Analyze_Conut += 1;
+			}
+		}
+
+		for(QR_Date_Conut = 0; QR_Date_Conut < 12; QR_Date_Conut++)
+		{
+			memcpy(&Storage_Data.CH_data[QR_Date_Conut], &QR_Date_Analyze.ch_data[QR_Date_Conut], sizeof(QRCODE_SINGLE_LINE));
 		}
 		status = 1;
 	}

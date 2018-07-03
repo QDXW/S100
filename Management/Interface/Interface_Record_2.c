@@ -205,10 +205,10 @@ block_attr_Record* UI_WindowBlocksAttrArray_Record_2[][9] = {/* Window: Standard
 		&block_Record_CH9},
 {&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
 		&block_Record_CH9,&block_Record_CH10},
-{&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
-		&block_Record_CH9,&block_Record_CH10,&block_Record_CH11},
-{&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
-		&block_Record_CH9,&block_Record_CH10,&block_Record_CH11,&block_Record_CH12},
+//{&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
+//		&block_Record_CH9,&block_Record_CH10,&block_Record_CH11},
+//{&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
+//		&block_Record_CH9,&block_Record_CH10,&block_Record_CH11,&block_Record_CH12},
 };
 
 /******************************************************************************/

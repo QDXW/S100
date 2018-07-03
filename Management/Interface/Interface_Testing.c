@@ -10,7 +10,7 @@
 
 /******************************************************************************/
 uint16 max = 0;
-uint8 NowCup_Count = 0;
+uint8 NowCup_Count = 0,Storage_Data_Conut = 0;
 uint8 Zero_Count = 0;
 uint8 Forever_Value = 2;
 extern uint8  Cup_Count;
@@ -18,7 +18,7 @@ uint16 BOUNDARY_VALUE = 2500;
 extern uint16 SignalSample_count;
 extern uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT];
 
-uint8 SignalBuffer[500] = {0};
+//uint8 SignalBuffer[500] = {0};
 
 /******************************************************************************/
 block_attr_Testing block_Testing_1 = {
@@ -36,8 +36,8 @@ block_attr_Testing block_Testing_1 = {
 block_attr_Testing block_Testing_2 = {
 	ENABLE,								/* Interface Testing rect */
 	{
-		8,   63,
-		112, 15,
+		14,   63,
+		100, 15,
 		White
 	},
 
@@ -138,10 +138,9 @@ void UI_Draw_block_Testing(block_attr_Testing* block)
 /******************************************************************************/
 void Acquisition_Signal(void)
 {
-	uint8 j = 0,Step_Count = 22,Step_Start = 8;
-
-	uint8 i = 0;
+	uint8 j = 0,Step_Count = 24,Step_Start = 14,i = 0;
 	NowCup_Count = 0;
+	Storage_Data_Conut = 0;
 	Storage_Time();
 	for(i = 0;i < 12;i++)
 	{
@@ -152,23 +151,29 @@ void Acquisition_Signal(void)
 	/* 二维码 */
 	QR_Date_SignalProcess_Alg_data();
 
-	for(NowCup_Count = 0;NowCup_Count< 8;NowCup_Count++)
+	/* 采样与结果存储*/
+	for(NowCup_Count = 0;NowCup_Count< 10;NowCup_Count++)
 	{
-		/* 采样 */
-		SignalSample_SampleStrip();
-		memset(SignalBuffer,0,500);
-		/* 运行算法 */
-		memcpy(&SignalProcess_Alg_data.sampleBuffer[0], SignalProcess_sampleBuffer, SignalSample_count << 1);
-		SignalProcess_Alg_data.sampleNumber = SignalSample_count;
-		SignalProcess_Run();
+		if(QR_Date.ch_data[NowCup_Count].Switch_Bool)
+		{
+			/* 采样 */
+			SignalSample_SampleStrip();
 
-		/* 判定结果 */
-		Result_Judge();
+			/* 运行算法 */
+			memcpy(&SignalProcess_Alg_data.sampleBuffer[0], SignalProcess_sampleBuffer, SignalSample_count << 1);
+			SignalProcess_Alg_data.sampleNumber = SignalSample_count;
+			SignalProcess_Run();
+
+			/* 判定结果 */
+			Result_Judge();
+			Storage_Data_Conut += 1;
+		}
 
 		/* 调试输出 */
+//		memset(SignalBuffer,0,500);
 //		memcpy(SignalBuffer, &SignalProcess_Alg_data.processBuffer[0], SignalProcess_Alg_data.processNumder << 1);
 //		HostComm_Cmd_Send_RawData(SignalProcess_Alg_data.processNumder << 1, SignalBuffer);
-		HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
+//		HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
 
 		/* 转动电机转动30° */
 		if(NowCup_Count%3 == 1)
@@ -189,7 +194,7 @@ void Acquisition_Signal(void)
 			Display_Time = 1;
 		}
 		Step_Start = Step_Count;					/* 重置进度条开始位置 */
-		Step_Count += 14;
+		Step_Count += 10;
 	}
 }
 
@@ -219,7 +224,6 @@ uint16 Get_Start_Postion(void)
 	/* 第三步:数据处理得到杯子检测的起始位置*/
 	/* 1.对数据进行移动平均 */
 	SignalSample_Moving_Average_Data(SignalProcess_sampleBuffer,SIGNALSAMPLE_MAX_COUNT,15);
-//	SignalSample_OutputSamples(512,SignalProcess_sampleBuffer);
 	Get_sampleBuffer_Boundary_Value();
 	Get_sampleBuffer_Max_Value();
 	/* 2.有无杯子判断 */
@@ -365,38 +369,36 @@ void Result_Judge(void)
 {
 	if (SignalProcess_Alg_data.calcInfo.validity == ALG_RESULT_ABNORMAL_C)
 	{
-		memcpy(Storage_Data.CH_data[NowCup_Count].Result, "INV",5);
+		memcpy(Storage_Data.CH_data[Storage_Data_Conut].Result, "INV",5);
 		return;
 	}
 	else if (SignalProcess_Alg_data.calcInfo.validity == ALG_RESULT_LOW_AREA_C)
 	{
-		memcpy(Storage_Data.CH_data[NowCup_Count].Result, "INV",5);
+		memcpy(Storage_Data.CH_data[Storage_Data_Conut].Result, "INV",5);
 		return;
 	}
 	else if (SignalProcess_Alg_data.calcInfo.validity == ALG_RESULT_NO_T)
 	{
-		memcpy(Storage_Data.CH_data[NowCup_Count].Result, "Pos++",5);
+		memcpy(Storage_Data.CH_data[Storage_Data_Conut].Result, "Pos++",5);
 		return;
 	}
 	else
 	{
-		if(SignalProcess_Alg_data.calcInfo.ratioC_T > Storage_Data.CH_data[NowCup_Count].threshold1)
+		if(SignalProcess_Alg_data.calcInfo.ratioC_T > Storage_Data.CH_data[Storage_Data_Conut].threshold1)
 		{
-			memcpy(Storage_Data.CH_data[NowCup_Count].Result, "Pos++",5);
+			memcpy(Storage_Data.CH_data[Storage_Data_Conut].Result, "Pos++",5);
 		}
-		else if (SignalProcess_Alg_data.calcInfo.ratioC_T > Storage_Data.CH_data[NowCup_Count].threshold2)
+		else if (SignalProcess_Alg_data.calcInfo.ratioC_T > Storage_Data.CH_data[Storage_Data_Conut].threshold2)
 		{
-			memcpy(Storage_Data.CH_data[NowCup_Count].Result, "Pos+",5);
+			memcpy(Storage_Data.CH_data[Storage_Data_Conut].Result, "Pos+",5);
 		}
-		else if (SignalProcess_Alg_data.calcInfo.ratioC_T > Storage_Data.CH_data[NowCup_Count].threshold3)
+		else if (SignalProcess_Alg_data.calcInfo.ratioC_T > Storage_Data.CH_data[Storage_Data_Conut].threshold3)
 		{
-			memcpy(Storage_Data.CH_data[NowCup_Count].Result, "Neg-",5);
+			memcpy(Storage_Data.CH_data[Storage_Data_Conut].Result, "Neg-",5);
 		}
 		else
 		{
-			memcpy(Storage_Data.CH_data[NowCup_Count].Result, "Neg--",5);
+			memcpy(Storage_Data.CH_data[Storage_Data_Conut].Result, "Neg--",5);
 		}
 	}
 }
-
-
