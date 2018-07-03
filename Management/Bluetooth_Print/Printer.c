@@ -243,7 +243,7 @@ void Printer_BLE_Print(STORAGE_SINGLE_DATA_STRUCT *content)
 	Printer_BLE_PrintOneLine("   Item        Result\r\n");
 	Printer_BLE_PrintOneLine("--------------------------------\r\n");
 
-	for (index = 0; index < QR_Date.head.stripNum; index++)
+	for (index = 0; index < Storage_Data.StripNum; index++)
 	{
 		buffer[0] = '\0';
 		strcat(buffer, "   ");
