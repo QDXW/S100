@@ -125,7 +125,7 @@ block_attr_Setting_font Setting_block_font = {
 
 	DISABLE,								/*Display HZ16X8*/
 	{
-		"NO",
+		"ON",
 		24,  141,
 		White,Magenta,
 		White

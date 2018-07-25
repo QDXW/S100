@@ -32,6 +32,7 @@ extern void EXTI_Key_Left_Disable(void);
 extern void EXTI_Key_Right_Disable(void);
 extern void EXTI_Key_Confirm_Enable(void);
 extern void EXTI_Key_Confirm_Disable(void);
+extern void SystemManage_Sleep_Process(void);
 extern void SystemManage_CheckPowerOff(void);
 extern void SystemManage_EnterExitStop(void);
 

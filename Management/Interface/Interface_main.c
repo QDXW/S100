@@ -229,12 +229,10 @@ uint8 Interface_Process(uint16* KeyCode)
 uint8 Interface_Main(uint16 KeyCode)
 {
 	uint8 state = 0;
-	Exti_lock = DISABLE;
-	Interface_Key = DISABLE;
-	key_state = 1;
-	Enter_Sleep = 1;
-	Key_State_Update = 1;
-	key_state_confirm = 0;
+	Display_Battery = 1;
+	Exti_lock = DISABLE,key_state_confirm = 0;
+	Interface_Key = DISABLE,Key_State_Update = 1;
+	key_state = 1,Enter_Sleep = 1,Read_first = 1;
 	QRCode_Trigger_Disabled();
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Main) >> 2;
 	UI_Draw_Window(UI_WindowBlocks);
@@ -713,8 +711,17 @@ void Battery_Display (void)
 {
 	int i = 0;
 
-	adcx = Get_Adc_Average(ADC_Channel_11,10);
-	temp = (float)adcx*(5.185/4096.0);
+	if(!Display_Battery)
+	{
+		adcx = Get_Adc_Average(ADC_Channel_11,10);
+		temp = (float)adcx*(5.185/4096.0);
+		return;
+	}
+	else
+	{
+		adcx = Get_Adc_Average(ADC_Channel_11,10);
+		temp = (float)adcx*(5.185/4096.0);
+	}
 
 	Lcd_ColorBox(103,7,15,8,BACKCOLOR_CONTENT_BAR);
 	if(!Power_Open)
@@ -820,7 +827,7 @@ void Battery_Display (void)
 				Lcd_ColorBox(103,7,1,8,Red);
 			}
 		}
-		else
+		else if(temp > 3.65)
 		{
 			if((UI_state == UI_STATE_TESTING) || (UI_state == UI_STATE_RESULT))
 			{

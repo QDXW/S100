@@ -331,7 +331,6 @@ void Display_Time_Start (void)
 	DisplayDriver_Text16_B(57,97,Black,White,Minute);
 	sprintf(Sec,"%02d",start_data.sec);
 	DisplayDriver_Text16_B(82,97,Black,White,Sec);
-//	key_state = DISABLE;
 	Display_Time = 1;
 }
 

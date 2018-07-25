@@ -26,7 +26,7 @@ uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint16 SignalProcess_sampleBuffer_BK[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint8 SignalProcess_outputBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 
-uint8 SignalSample_resistorValue = 10;   		//MAX = 14
+uint8 SignalSample_resistorValue = 4;   		//MAX = 14
 uint8 SignalSample_resistorValueStored = 0;
 
 uint8 SignalProcess_output = 0;
@@ -464,8 +464,8 @@ void SignalSample_Sample_Timer_Init(void)
 	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
 
 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 

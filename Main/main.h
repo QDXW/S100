@@ -12,6 +12,7 @@
 
 /******************************************************************************/
 extern uint8 Power_Open,Power_Switch,Bluetooth_switch,Enter_Sleep,Key_State_Update;
+extern uint8 Display_Battery;
 extern uint16 adcx;
 extern float temp;
 

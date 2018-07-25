@@ -137,7 +137,6 @@ extern uint16 HostComm_RecBufSize;
 /******************************************************************************/
 extern uint16 HostComm_Cmd_Respond(void);
 extern void HostComm_Init(void);
-extern void HostComm_Process(void);
 extern void HostComm_Send_LIS(uint8 *data);
 extern void HostComm_Send_Char(uint8 data);
 extern void HostComm_Send_String(uint8 *strPtr);
@@ -146,9 +145,6 @@ char *itoa(int32 value, char *string, int radix);
 uint16 HostComm_CalculateCRC(uint8 * message,uint32 length,
 uint16 remainder, uint16 xorMask);
 extern void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[]);
-extern void HostComm_SendThrUSB(uint16 len, uint8 *srcPtr);
-extern void HostComm_Report_ReadRecords_LastOne(void);
-extern void HostComm_Report_ReadRecords(HOSTCOMM_REPORT_ATTR data);
 extern void HostComm_Cmd_Send_C_T(uint16 CValue, uint16 TValue);
 
 #endif /* __MANAGEMENT_HOSTCOMM_HOSTCOMM_H_ */

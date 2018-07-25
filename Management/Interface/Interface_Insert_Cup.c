@@ -9,6 +9,7 @@
 
 /******************************************************************************/
 extern uint8 Open_time;
+extern const unsigned char gImage_Left_arrow[1050];
 
 /******************************************************************************/
 block_attr_Insert_Cup block_Insert_Cup_Back = {
@@ -133,7 +134,7 @@ void Display_Down_Time_Bar (void)
 	Display_Time = 0;
 	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
 	Lcd_ColorBox(36,75,56,30,Light_Gray);
-//	Lcd_ColorBox(36,75,56,30,White);
+	DisplayDriver_DrawPic(5, 142,35,15,gImage_Left_arrow);
 	sprintf((char*)tbuf,"%02d:%02d",(Action_time-1),59);
 	DisplayDriver_Text16_B(44,82,Black,Light_Gray,tbuf);
 	Display_Time = 1;

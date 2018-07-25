@@ -202,12 +202,9 @@ void TIM4_IRQHandler(void)
 
 		if((!MotorDriver_Ctr) && Display_Time)
 		{
-			if((UI_state == UI_STATE_TESTING) && (UI_state == UI_STATE_RESULT) && (UI_state == UI_STATE_RESULT_2))
-			{
-				Display_Time = 0;
-				Battery_Display();
-				Display_Time = 1;
-			}
+			Display_Time = 0;
+			Battery_Display();
+			Display_Time = 1;
 			UI_Draw_Status_Bar();
 		}
 	}
@@ -340,7 +337,6 @@ void EXTI15_10_IRQHandler(void)
 void PVD_IRQHandler(void)
 {
 }
-
 
 /******************************************************************************/
 void Display_Down_Time_second (void)

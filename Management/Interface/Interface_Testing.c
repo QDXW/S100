@@ -11,14 +11,13 @@
 /******************************************************************************/
 uint16 max = 0;
 uint8 NowCup_Count = 0,Storage_Data_Conut = 0;
-uint8 Zero_Count = 0;
-uint8 Forever_Value = 2;
+uint8 Zero_Count = 0,Forever_Value = 2;
 extern uint8  Cup_Count;
 uint16 BOUNDARY_VALUE = 2500;
 extern uint16 SignalSample_count;
 extern uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT];
 
-//uint8 SignalBuffer[500] = {0};
+uint8 SignalProcess[1024] = {0};
 
 /******************************************************************************/
 block_attr_Testing block_Testing_1 = {
@@ -84,8 +83,9 @@ uint8 Interface_Testing(uint16 KeyCode)
 
 	UI_WindowBlocks_Testing = sizeof(UI_WindowBlocksAttrArray_Testing) >> 2;
 	UI_Draw_Window_Testing(UI_WindowBlocks_Testing);
+	Display_Battery = 0;
 	SystemManage_5V_Enabled();
-	RotationMotor_Input_StepDrive(Foreward_Rotation,Get_Start_Postion() + 22);
+	RotationMotor_Input_StepDrive(Foreward_Rotation,Get_Start_Postion() + 10);
 	if(Confirm_CUP)
 	{
 		Acquisition_Signal();
@@ -167,13 +167,12 @@ void Acquisition_Signal(void)
 			/* 判定结果 */
 			Result_Judge();
 			Storage_Data_Conut += 1;
+			HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
+			/* 调试输出 */
+//			memset(SignalProcess,0,500);
+//			memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], SignalSample_count<< 1);
+//			HostComm_Cmd_Send_RawData(SignalSample_count << 1, SignalProcess);
 		}
-
-		/* 调试输出 */
-//		memset(SignalBuffer,0,500);
-//		memcpy(SignalBuffer, &SignalProcess_Alg_data.processBuffer[0], SignalProcess_Alg_data.processNumder << 1);
-//		HostComm_Cmd_Send_RawData(SignalProcess_Alg_data.processNumder << 1, SignalBuffer);
-//		HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
 
 		/* 转动电机转动30° */
 		if(NowCup_Count%3 == 1)
@@ -203,6 +202,7 @@ uint16 Get_Start_Postion(void)
 {
 	uint16 i = 0;
 	uint16 Start_Postion=0;
+	uint16 Pre_Count = 0,Next_Count = 0;
 	SignalSample_count = 0;
 	Zero_Count = 0;
 	Forever_Value = 2;
@@ -218,6 +218,11 @@ uint16 Get_Start_Postion(void)
 		SignalProcess_sampleBuffer[SignalSample_count++]
 									= SignalProcess_Collecting_Data();
 	}
+
+	memset(SignalProcess,0,1024);
+	memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], 1024);
+	HostComm_Cmd_Send_RawData(1024, SignalProcess);
+
 	SignalSample_Sample_ExitCriticalArea();
 	ScanMotorDriver_Goto_BasePosition();
 	ScanMotorDriver_Goto_DetectionPosition();
@@ -227,7 +232,7 @@ uint16 Get_Start_Postion(void)
 	Get_sampleBuffer_Boundary_Value();
 	Get_sampleBuffer_Max_Value();
 	/* 2.有无杯子判断 */
-	if((max < 1000) || (BOUNDARY_VALUE > 900))
+	if((max < 1000) || (BOUNDARY_VALUE > 800))
 	{
 		Confirm_CUP = NO_CUP;
 		return Confirm_CUP;
@@ -237,63 +242,39 @@ uint16 Get_Start_Postion(void)
 		Confirm_CUP = 1;
 	}
 
-	/* 3.减去临界值，获得易处理的数据 */
-	for(i = 0;i < SIGNALSAMPLE_MAX_COUNT;i++)
+	/* 3.找到上升沿的位置 */
+	for(i = 0;i < 511;i++)
 	{
-		if(SignalProcess_sampleBuffer[i]  == 0)
+		if((SignalProcess_sampleBuffer[i] < 800) && (SignalProcess_sampleBuffer[i+1] >= 800))
 		{
-			Zero_Count++;
-		}
-
-		if((SignalProcess_sampleBuffer[i] == SignalProcess_sampleBuffer[i-1]) && (SignalProcess_sampleBuffer[i-1] == SignalProcess_sampleBuffer[i-2]))
-		{
-			Forever_Value++;
+			Start_Postion = i;
 		}
 	}
 
-	/* 3.减去临界值，获得易处理的数据 */
-	for(i = 0;i < SIGNALSAMPLE_MAX_COUNT;i++)
-	{
-		if(SignalProcess_sampleBuffer[i] < BOUNDARY_VALUE)
+	/* 判断上升沿是否在最后  */
+		if((511-Start_Postion) < 13)
 		{
-			SignalProcess_sampleBuffer[i] = 0;
+			/* 求取上升沿在最后最大值  */
+			for(i = Start_Postion;i < 511;i++)
+			{
+				if(SignalProcess_sampleBuffer[i] < SignalProcess_sampleBuffer[i+1])
+				{
+					Pre_Count = SignalProcess_sampleBuffer[i+1];
+					Start_Postion = i+1;
+				}
+			}
+
+			/* 上升沿在最后不为峰值的情况  */
+			if(Pre_Count < SignalProcess_sampleBuffer[0])
+			{
+				Start_Postion = Calculate_Start_Postion(&SignalProcess_sampleBuffer[0],0);
+			}
 		}
 		else
 		{
-				SignalProcess_sampleBuffer[i] = SignalProcess_sampleBuffer[i] - BOUNDARY_VALUE;
+			Start_Postion = Calculate_Start_Postion(&SignalProcess_sampleBuffer[0],Start_Postion);
 		}
-	}
-
-	/* 4.得到杯子的起始位置 */
-	for(i = 0;i < SIGNALSAMPLE_MAX_COUNT;i++)
-	{
-		if((SignalProcess_sampleBuffer[i] == 0) && (SignalProcess_sampleBuffer[i+1] > 0) )
-		{
-			Start_Postion = i;
-			break;
-		}
-	}
-
-	if(Zero_Count)
-	{
-		Start_Postion += ((187 - Forever_Value)/2);
-	}
-	else
-	{
-		Start_Postion = (Start_Postion + 93) - (Forever_Value+3)/2;
-	}
-
-	if(Start_Postion >= 511 )
-	{
-		Start_Postion = 511;
-	}
-
-	if(Start_Postion <= 4 )
-	{
-		Start_Postion = 2;
-	}
-
-	return Start_Postion;
+		return Start_Postion;
 }
 
 /******************************************************************************/
@@ -341,6 +322,21 @@ void SignalSample_Moving_Average_Data(uint16 *Data,uint16 Length,uint16 Period)
 		Data[i] = Num/Period;
 		Num=0;
 	}
+}
+
+/******************************************************************************/
+uint16 Calculate_Start_Postion(uint16* Signal,uint16 Postion)
+{
+	uint16 Start_Postion = 0,i = 0;
+	Start_Postion = Postion;
+	for(i = Postion;i < (Postion + 14);i++)
+	{
+		if(Signal[i] < Signal[i+1])
+		{
+			Start_Postion = i+1;
+		}
+	}
+	return Start_Postion;
 }
 
 /******************************************************************************/

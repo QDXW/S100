@@ -31,6 +31,4 @@
 #include "ScanMotorDriver_PositionSensor.h"
 #include "RotationMotorDriver_PositionSensor.h"
 
-
-
 #endif /* MAIN_VERSION_SELECTION_H_ */

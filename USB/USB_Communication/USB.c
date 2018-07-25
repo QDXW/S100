@@ -56,12 +56,12 @@ void USB_BasicInit(void)
 /******************************************************************************/
 void USB_VirtualCOM_Process(void)
 {
-	ErrorStatus Rxstatus;
-	DataTypedef RxData;
-	Rxstatus=Comm_FIFO_RxDataGet(&RxDataFIFO, &RxData);
-	if(Rxstatus)
-	{
-		HostComm_RecBufAvailable = 1;
-		memcpy(cmdBuffer, RxData.Data, RxData.len);
-	}
+//	ErrorStatus Rxstatus;
+//	DataTypedef RxData;
+//	Rxstatus=Comm_FIFO_RxDataGet(&RxDataFIFO, &RxData);
+//	if(Rxstatus)
+//	{
+//		HostComm_RecBufAvailable = 1;
+//		memcpy(cmdBuffer, RxData.Data, RxData.len);
+//	}
 }

@@ -11,13 +11,7 @@
 bool BLEConnectStaus = FALSE;
 
 /******************************************************************************/
-#if RL_A3000
-PRINT_CONTENT_RL_A3000 Printer_Result;
-#elif YINBO_CUSTOMIZATION_ENABLED
-PRINT_CONTENT_YINBO Printer_Result;
-#else
 PRINT_CONTENT Printer_Result;
-#endif
 
 /******************************************************************************/
 static void Printer_GPIO_Init(void)
@@ -48,20 +42,6 @@ static void Printer_GPIO_Init(void)
 	GPIO_Init(PRINTER_MATCH_STATUS_PORT, &GPIO_InitStructure);
 
 	GPIO_ResetBits(GPIOE, GPIO_Pin_4);
-//
-//	GPIO_EXTILineConfig(GPIO_PortSourceGPIOC, GPIO_PinSource9);
-//	EXTI_ClearITPendingBit(EXTI_Line9);
-//	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
-//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
-//	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x05;
-//	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-//	NVIC_Init(&NVIC_InitStructure);
-//
-//	EXTI_InitStructure.EXTI_Line = EXTI_Line9;
-//	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-//	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
-//	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-//	EXTI_Init(&EXTI_InitStructure);
 }
 
 /******************************************************************************/
@@ -117,16 +97,11 @@ void BLE_Timer_Init(uint16 period)
 void Printer_BLE_Init(void)
 {
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);
-//	GPIO_PinRemapConfig(GPIO_FullRemap_USART3, ENABLE);
 
 	/*Initialize GPIOs*/
 	Printer_GPIO_Init();
 	/*Configure parameters*/
 	Printer_Config();
-	/*Initialize TIM7*/
-#if BLE_4_0_ENABLED
-	BLE_Timer_Init(3000);
-#endif
 }
 
 /******************************************************************************/

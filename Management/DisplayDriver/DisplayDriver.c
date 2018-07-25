@@ -279,11 +279,7 @@ void DisplayDriver_Init(void)
 	WriteData(0x9F);
 
 	WriteComm(0x36); //Set Scanning Direction
-#if	 LCD_OLD
 	WriteData(0xC0);
-#else
-	WriteData(0xC8);
-#endif
 
 	WriteComm(0xB7); //Set Source Output Direction
 	WriteData(0x00);

@@ -381,8 +381,12 @@ uint8 Read_Record(void)
 		Read_first = 0;
 	}
 
-	if(reagent_Strip[0] == 0)
+	if((reagent_Strip[1] > 100) || (reagent_Strip[0] == 0))
+	{
+		reagent_Strip[0] = 0;
+		reagent_Strip[1] = 0;
 		return 0;
+	}
 	Storage_Read(Storage_writeBuffer,(reagent_Strip[0] *4096),sizeof(STORAGE_SINGLE_DATA_STRUCT));
 	memcpy(&Storage_Data,Storage_writeBuffer,sizeof(STORAGE_SINGLE_DATA_STRUCT));
 }

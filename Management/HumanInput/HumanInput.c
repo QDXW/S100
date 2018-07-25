@@ -436,9 +436,9 @@ void SystemManage_Sleep_Process(void)
 {
 	HSEStartUpStatusPwr = 0;
 
-//	EXTI_Key_Left_Disable();
-//
-//	EXTI_Key_Right_Disable();
+	EXTI_Key_Left_Disable();
+
+	EXTI_Key_Right_Disable();
 
 	SystemManage_5V_Disabled();
 
@@ -502,6 +502,8 @@ void SYSCLKConfig_STOP(void)
 	GPIO_SetBits(GPIOD,GPIO_Pin_2);
 	Delay_ms_SW(150);
 	key_state = DISABLE;
+	Key_control = 1;
+	key_state_confirm = 0;
 }
 
 /******************************************************************************/
