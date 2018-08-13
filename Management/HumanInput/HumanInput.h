@@ -17,7 +17,7 @@ uint8 key_state = 1;
 uint8 Key_control = 1;
 uint8 Interface_Key = 0;
 uint8 key_state_confirm = 0;
-extern const unsigned char gImage_LED_Switch[570];
+extern const unsigned char gImage_LED_Switch[450];
 
 /******************************************************************************/
 extern void Key_Left(void);

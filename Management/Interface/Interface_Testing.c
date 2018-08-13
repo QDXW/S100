@@ -85,7 +85,7 @@ uint8 Interface_Testing(uint16 KeyCode)
 	UI_Draw_Window_Testing(UI_WindowBlocks_Testing);
 	Display_Battery = 0;
 	SystemManage_5V_Enabled();
-	RotationMotor_Input_StepDrive(Foreward_Rotation,Get_Start_Postion() + 10);
+	RotationMotor_Input_StepDrive(Foreward_Rotation,(Get_Start_Postion()));
 	if(Confirm_CUP)
 	{
 		Acquisition_Signal();
@@ -167,11 +167,11 @@ void Acquisition_Signal(void)
 			/* 判定结果 */
 			Result_Judge();
 			Storage_Data_Conut += 1;
-			HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
+//			HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
 			/* 调试输出 */
-//			memset(SignalProcess,0,500);
-//			memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], SignalSample_count<< 1);
-//			HostComm_Cmd_Send_RawData(SignalSample_count << 1, SignalProcess);
+			memset(SignalProcess,0,500);
+			memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], SignalSample_count<< 1);
+			HostComm_Cmd_Send_RawData(SignalSample_count << 1, SignalProcess);
 		}
 
 		/* 转动电机转动30° */
@@ -252,29 +252,29 @@ uint16 Get_Start_Postion(void)
 	}
 
 	/* 判断上升沿是否在最后  */
-		if((511-Start_Postion) < 13)
+	if((511-Start_Postion) < 23)
+	{
+		/* 求取上升沿在最后最大值  */
+		for(i = Start_Postion;i < 511;i++)
 		{
-			/* 求取上升沿在最后最大值  */
-			for(i = Start_Postion;i < 511;i++)
+			if(SignalProcess_sampleBuffer[i] < SignalProcess_sampleBuffer[i+1])
 			{
-				if(SignalProcess_sampleBuffer[i] < SignalProcess_sampleBuffer[i+1])
-				{
-					Pre_Count = SignalProcess_sampleBuffer[i+1];
-					Start_Postion = i+1;
-				}
+				Pre_Count = SignalProcess_sampleBuffer[i+1];
+				Start_Postion = i+1;
 			}
+		}
 
-			/* 上升沿在最后不为峰值的情况  */
-			if(Pre_Count < SignalProcess_sampleBuffer[0])
-			{
-				Start_Postion = Calculate_Start_Postion(&SignalProcess_sampleBuffer[0],0);
-			}
-		}
-		else
+		/* 上升沿在最后不为峰值的情况  */
+		if(Pre_Count < SignalProcess_sampleBuffer[0])
 		{
-			Start_Postion = Calculate_Start_Postion(&SignalProcess_sampleBuffer[0],Start_Postion);
+			Start_Postion = Calculate_Start_Postion(&SignalProcess_sampleBuffer[0],0);
 		}
-		return Start_Postion;
+	}
+	else
+	{
+		Start_Postion = Calculate_Start_Postion(&SignalProcess_sampleBuffer[0],Start_Postion);
+	}
+	return Start_Postion;
 }
 
 /******************************************************************************/
@@ -329,14 +329,14 @@ uint16 Calculate_Start_Postion(uint16* Signal,uint16 Postion)
 {
 	uint16 Start_Postion = 0,i = 0;
 	Start_Postion = Postion;
-	for(i = Postion;i < (Postion + 14);i++)
+	for(i = Postion;i < (Postion + 24);i++)
 	{
 		if(Signal[i] < Signal[i+1])
 		{
 			Start_Postion = i+1;
 		}
 	}
-	return Start_Postion;
+	return (Start_Postion);
 }
 
 /******************************************************************************/

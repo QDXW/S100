@@ -12,9 +12,9 @@
 
 /******************************************************************************/
 static u32 TimingDelay;					/* Timer Delay Count */
-uint8 Display_Time = 1,Open_time = 0,Power_Open = 0,Key_State_Update = 0;
+uint8 Display_Time = 1,Open_time = 0,Power_Open = 0,Key_State_Update = 0,Check_Time = 0;
 uint8 Power_Switch = 0,Bluetooth_switch = 0,Enter_Sleep = 0,Display_Battery = 1;
-uint8 MBuffer[20] = {0},asd = 1;
+uint8 MBuffer[20] = {0},asd = 1,Check_Lock = 0;
 uint16 insk[4] = {0,0,0,255};
 uint16 adcx = 0;
 float temp = 0.0;
@@ -56,11 +56,6 @@ void main(void)
 
 	while(1)
 	{
-//		USB_VirtualCOM_Process();
-//
-//		HostComm_Process();
-
-
 //		if(asd)
 //		{
 //			memcpy(MBuffer,insk,4);
@@ -108,6 +103,8 @@ void main(void)
 //		Display_Time = 1;
 //		SignalSample_SampleStrip();
 
+		HostComm_Process();
+
 		Interface_Process(0);			/* User Interface */
 	}
 }
@@ -154,9 +151,12 @@ void Status_Init(void)
 	Display_Time = 0;
 	Battery_Empty_ICO();
 	SystemManage_5V_Enabled();
+	Check_Lock = 1;
 	ScanMotorDriver_SelfCheck_StepDrive();
 	RotationMotor_SelfCheck_StepDrive();
+	Check_Lock = 0;
 	SystemManage_5V_Disabled();
+	ReadResistor_Valid();
 	Power_Open = 1;
 	Enter_Sleep = 1;
 	Display_Time = 1;

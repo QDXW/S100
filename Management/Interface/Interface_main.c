@@ -19,6 +19,7 @@ extern uint8 page_tatol;
 uint8 Bluetooth_Connect = 0;
 uint16 UI_WindowBlocks = 0;
 uint8 UI_state = UI_STATE_MAIN_WINDOW;
+extern const unsigned char gImage_statusbar_charging[374];
 
 /******************************************************************************/
 block_attr block_standard = {
@@ -428,7 +429,7 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 							break;
 
 							case 2:
-								if(reagent_Strip[0] <= reagent_Strip[1])
+								if(1 == (reagent_Strip[2]))
 								{
 									if (page_Num == 1 && reagent_Strip[0] > 99 && page_tatol == 1)
 									{
@@ -440,8 +441,8 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 										if (page_Num == 1 && page_tatol == 1)
 										{
 											reagent_Strip[0]++;
-											if (reagent_Strip[0] > reagent_Strip[1])
-												reagent_Strip[0] = 1;
+											if (reagent_Strip[0] > 100)
+												reagent_Strip[0] = 100;
 											UI_state = UI_STATE_RECORD;
 										}
 
@@ -453,12 +454,47 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 										if (page_Num == 2 && page_tatol == 2)
 										{
 											reagent_Strip[0]++;
-											if (reagent_Strip[0] > reagent_Strip[1])
-												reagent_Strip[0] = reagent_Strip[1];
+											if (reagent_Strip[0] > 100)
+												reagent_Strip[0] = 100;
 											UI_state = UI_STATE_RECORD;
 										}
 									}
 								}
+								else
+								{
+									if(reagent_Strip[0] <= reagent_Strip[1])
+									{
+										if (page_Num == 1 && reagent_Strip[0] > 99 && page_tatol == 1)
+										{
+											reagent_Strip[0] = 100;
+											UI_state = UI_STATE_RECORD;
+										}
+										else
+										{
+											if (page_Num == 1 && page_tatol == 1)
+											{
+												reagent_Strip[0]++;
+												if (reagent_Strip[0] > reagent_Strip[1])
+													reagent_Strip[0] = reagent_Strip[1];
+												UI_state = UI_STATE_RECORD;
+											}
+
+											if (page_Num == 1 && page_tatol == 2)
+											{
+												UI_state = UI_STATE_RECORD2;
+											}
+
+											if (page_Num == 2 && page_tatol == 2)
+											{
+												reagent_Strip[0]++;
+												if (reagent_Strip[0] > reagent_Strip[1])
+													reagent_Strip[0] = reagent_Strip[1];
+												UI_state = UI_STATE_RECORD;
+											}
+										}
+									}
+								}
+
 							break;
 
 							default:
@@ -714,20 +750,24 @@ void Battery_Display (void)
 	if(!Display_Battery)
 	{
 		adcx = Get_Adc_Average(ADC_Channel_11,10);
-		temp = (float)adcx*(5.185/4096.0);
+		temp = (float)adcx*(5.085/4096.0);
 		return;
 	}
 	else
 	{
+		if(!Power_Open)
+		{
+			for(i = 0;i < 2;i++)
+			{
+				adcx = Get_Adc_Average(ADC_Channel_11,10);
+				temp = (float)adcx*(5.085/4096.0);
+			}
+		}
 		adcx = Get_Adc_Average(ADC_Channel_11,10);
-		temp = (float)adcx*(5.185/4096.0);
+		temp = (float)adcx*(5.085/4096.0);
 	}
 
 	Lcd_ColorBox(103,7,15,8,BACKCOLOR_CONTENT_BAR);
-	if(!Power_Open)
-	{
-		temp += 0.36;
-	}
 
 	if((GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12)) && (temp < 3.6))
 	{
@@ -735,99 +775,60 @@ void Battery_Display (void)
 	}
 	else
 	{
+		if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
+		{
+			DisplayDriver_DrawPic(88,2,11,17,gImage_statusbar_charging);
+		}
+		else
+		{
+			Lcd_ColorBox(88,1,13,19,BACKCOLOR_CONTENT_BAR);
+		}
+
 		if(temp > 4.1)
 		{
 			for(i= 104;i<118;)
 			{
-				if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
-				{
-					Lcd_ColorBox(i,8,2,6,Green);
-					i += 3;
-				}
-				else
-				{
-					Lcd_ColorBox(i,8,2,6,White);
-					i += 3;
-				}
+				Lcd_ColorBox(i,8,2,6,White);
+				i += 3;
 			}
 		}
 		else if(temp > 4.0)
 		{
 			for(i= 104;i<116;)
 			{
-				if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
-				{
-					Lcd_ColorBox(i,8,2,6,Green);
-					i += 3;
-				}
-				else
-				{
-					Lcd_ColorBox(i,8,2,6,White);
-					i += 3;
-				}
+				Lcd_ColorBox(i,8,2,6,White);
+				i += 3;
 			}
 		}
 		else if(temp > 3.9)
 		{
 			for(i= 104;i<112;)
 			{
-				if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
-				{
-					Lcd_ColorBox(i,8,2,6,Green);
-					i += 3;
-				}
-				else
-				{
-					Lcd_ColorBox(i,8,2,6,White);
-					i += 3;
-				}
+				Lcd_ColorBox(i,8,2,6,White);
+				i += 3;
 			}
 		}
 		else if(temp > 3.8)
 		{
 			for(i= 104;i<108;)
 			{
-				if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
-				{
-					Lcd_ColorBox(i,8,2,6,Green);
-					i += 3;
-				}
-				else
-				{
-					Lcd_ColorBox(i,8,2,6,White);
-					i += 3;
-				}
+				Lcd_ColorBox(i,8,2,6,White);
+				i += 3;
 			}
 		}
 		else if(temp > 3.7)
 		{
 			for(i= 104;i<106;)
 			{
-				if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
-				{
-					Lcd_ColorBox(i,8,2,6,Green);
-					i += 3;
-				}
-				else
-				{
-					Lcd_ColorBox(i,8,2,6,White);
-					i += 3;
-				}
+				Lcd_ColorBox(i,8,2,6,White);
+				i += 3;
 			}
 		}
 		else if(temp > 3.65)
 		{
-			if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
-			{
-				Lcd_ColorBox(i,8,2,6,Green);
-				i += 3;
-			}
-			else
-			{
-				Lcd_ColorBox(103,7,1,8,Red);
-			}
+			Lcd_ColorBox(103,7,1,8,Red);
 		}
-		else if(temp > 3.65)
+		else
 		{
 			if((UI_state == UI_STATE_TESTING) || (UI_state == UI_STATE_RESULT))
 			{
@@ -848,13 +849,13 @@ void Bluetooth_Connection (void)
 	{
 		if (!Bluetooth_Connect)
 		{
-			DisplayDriver_DrawPic(85,4,9,14,gImage_Blutooth);
+			DisplayDriver_DrawPic(77,4,9,14,gImage_Blutooth);
 			Bluetooth_Connect = 1;
 		}
 	}
 	else
 	{
-		Lcd_ColorBox(85,4,9,14,BACKCOLOR_CONTENT_BAR);
+		Lcd_ColorBox(77,4,9,14,BACKCOLOR_CONTENT_BAR);
 		Bluetooth_Connect = 0;
 	}
 }

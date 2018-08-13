@@ -324,6 +324,7 @@ void DisplayDriver_Init(void)
 	WriteComm(0x29); // Display On
 
 	Lcd_Light_ON;
+	Lcd_ColorBox(0,0,128,160,Black);
 
 }
 

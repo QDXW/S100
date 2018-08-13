@@ -16,22 +16,23 @@
 
 /******************************************************************************/
 uint8 HostComm_RecBufAvailable = 0;
-uint16 HostComm_RecBufSize;
-
-uint16 cmdLength;
-uint8 cmdType;
-uint8 cmdCode;
-
+uint16 HostComm_RecBufSize,cmdLength;
+uint8 cmdType,cmdCode;
 uint8 recBuffer[SIZE_REC_BUFFER];
 uint8 cmdBuffer[SIZE_CMD_BUFFER];
-uint8 respBuffer[SIZE_RESP_BUFFER];
+uint8 respBuffer[SIZE_RESP_BUFFER],UI_MFG[4] = {0};
+uint16 recCount = 0,respLength = 0,UI_Language = 0,UI_MFG_SN = 0;
+uint16 UI_MFG_FW1 = 0,UI_MFG_FW2 = 0,UI_MFG_FW3 = 0;
+uint8 contReceive = 0,keyMatched = 0;
 
-uint8 contReceive = 0;
-uint16 recCount = 0;
-
-uint16 respLength = 0;
-
-uint8 keyMatched = 0;
+/******************************************************************************/
+uint8 HostComm_Cmd_Process(void);
+static uint16 HostComm_Cmd_Respond_APP_SetTime(void);
+static uint16 HostComm_Cmd_Respond_Status(void);
+uint16 HostComm_Cmd_Respond_APP_Error(uint8 cmdCode);
+static uint16 HostComm_Cmd_Respond_APP_WriteResistor(void);
+static uint16 HostComm_Cmd_Respond_APP_ReadResistor(void);
+static uint16 HostComm_Cmd_Respond_APP_SysInfo(void);
 
 /******************************************************************************/
 void HostComm_SendResp(uint8 *Data, uint16 length);
@@ -46,8 +47,8 @@ static void HostComm_NVIC_Configuration()
 
 	/*Enable interrupt*/
 	NVIC_InitStructure.NVIC_IRQChannel = HOSTCOMM_USART_IRQN;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 }
@@ -84,7 +85,7 @@ static void HostComm_Config()
 	/* Configure */
 	USART_Init(HOSTCOMM_USART, &USART_InitStructure);
 	/* Enable Receive and Transmit interrupts */
-//	USART_ITConfig(HOSTCOMM_USART, USART_IT_RXNE, ENABLE);
+	USART_ITConfig(HOSTCOMM_USART, USART_IT_RXNE, ENABLE);
 //	USART_ITConfig(HOSTCOMM_USART, USART_IT_TXE, ENABLE);
 	/* Enable */
 	USART_Cmd(HOSTCOMM_USART, ENABLE);
@@ -123,6 +124,16 @@ static uint8 HiByte(uint16 value)
 static uint8 LoByte(uint16 value)
 {
 	return (uint8)(value & 0x00FF);
+}
+
+/******************************************************************************/
+void HostComm_Process(void)
+{
+	if(HostComm_RecBufAvailable)
+	{
+		HostComm_RecBufAvailable = 0;
+		HostComm_Cmd_Process();
+	}
 }
 
 /******************************************************************************/
@@ -177,6 +188,7 @@ void HostComm_Cmd_Send_C_T(uint16 CValue, uint16 TValue)
 /******************************************************************************/
 void HostComm_SendResp(uint8 *Data, uint16 length)
 {
+	USART1->SR;
 	while(length-- != 0) {
 		USART_SendData(HOSTCOMM_USART, *Data++);
 		while(USART_GetFlagStatus(HOSTCOMM_USART, USART_FLAG_TC)==RESET);
@@ -202,6 +214,263 @@ void HostComm_Send_String(u8 *strPtr)
 		HostComm_Send_Char(*strPtr);
 		strPtr++;
 	}
+}
+
+/******************************************************************************/
+uint8 HostComm_Cmd_Process(void)
+{
+	uint16 responseLength = 0;
+	uint8 rc = 0;
+
+	/* Command type */
+	cmdType = cmdBuffer[OFFSET_CMD_TYPE_RX];
+	/* Command code */
+	cmdCode = cmdBuffer[OFFSET_CMD_CODE_RX];
+
+	if (cmdType == CMD_TYPE_APP)
+	{
+		switch (cmdCode)
+		{
+		case CMD_CODE_APP_SYSINFO:
+			responseLength = HostComm_Cmd_Respond_APP_SysInfo();
+			break;
+		case CMD_CODE_APP_SET_TIME:
+			responseLength = HostComm_Cmd_Respond_APP_SetTime();
+			break;
+		case CMD_CODE_APP_SET_MODE:
+//			responseLength = HostComm_Cmd_Respond_APP_SetMode();
+			break;
+		case CMD_CODE_APP_SET_MFG:
+//			responseLength = HostComm_Cmd_Respond_APP_SetMFG();
+			break;
+		case CMD_CODE_APP_SET_LANGUAGE:
+//			responseLength = HostComm_Cmd_Respond_APP_SetLanguage();
+			break;
+		case CMD_CODE_APP_SET_OUT_FAB:
+//			responseLength = HostComm_Cmd_Respond_APP_SetOutFab();
+			break;
+		case CMD_CODE_APP_READ_RESISTOR:
+			responseLength = HostComm_Cmd_Respond_APP_ReadResistor();
+			break;
+		case CMD_CODE_APP_WRITE_RESISTOR:
+			responseLength = HostComm_Cmd_Respond_APP_WriteResistor();
+			break;
+		default:
+			responseLength = HostComm_Cmd_Respond_APP_Error(cmdCode);
+			break;
+		}
+	}
+	else if (cmdType == CMD_TYPE_NONE)
+	{
+		/* Get status information */
+		responseLength = HostComm_Cmd_Respond_Status();
+	}
+	else
+	{
+		/* None BL command: respond error */
+		responseLength = HostComm_Cmd_Respond_APP_Error(cmdCode);
+	}
+
+	/* Send data */
+	HostComm_SendResp(&respBuffer[0], responseLength);
+
+	return rc;
+}
+
+/******************************************************************************/
+static uint16 HostComm_Cmd_Respond_Status(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+
+	/* Status:
+	 * 0: BL
+	 * 1: APP
+	 *  */
+	respBuffer[OFFSET_CMD_DATA] = 1;
+
+	cmdDataLength = 1;
+
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_NONE, CMD_CODE_STATUS);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+uint16 HostComm_Cmd_Respond_APP_Error(uint8 cmdCode)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, cmdCode | CMD_ERROR_MASK);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+static uint16 HostComm_Cmd_Respond_APP_SetMode(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+
+//	/*  */
+//	if (cmdBuffer[OFFSET_CMD_DATA_RX] == 1)
+//	{
+//		UI_runMode = UI_MODE_DEBUG;
+//	}
+//	else
+//	{
+//		UI_runMode = UI_MODE_NORMAL;
+//	}
+//	STMFlash_Write(FLASH_SET_MODE_ADDR, &UI_runMode, 1);
+//
+//	/*  */
+//	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+//			CMD_TYPE_APP, CMD_CODE_APP_SET_MODE);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+static uint16 HostComm_Cmd_Respond_APP_SetMFG(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+
+	/* SN: 20161031001 */
+	memcpy(UI_MFG, &cmdBuffer[OFFSET_CMD_DATA_RX], 8);
+
+	STMFlash_Write(FLASH_SET_MFG_ADDR, UI_MFG, 4);
+
+	UI_MFG_SN = (UI_MFG[1] << 16) + UI_MFG[0];
+	UI_MFG_FW1 = 0x00FF & UI_MFG[2];
+	UI_MFG_FW2 = (0xFF00 & UI_MFG[2]) >> 8;
+	UI_MFG_FW3 = UI_MFG[3];
+
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, CMD_CODE_APP_SET_MFG);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+static uint16 HostComm_Cmd_Respond_APP_SetLanguage(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+
+	/*  */
+	memcpy(&UI_Language, &cmdBuffer[OFFSET_CMD_DATA_RX], 2);
+
+	STMFlash_Write(FLASH_SET_LANGUAGE_ADDR, &UI_Language, 1);
+
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, CMD_CODE_APP_SET_LANGUAGE);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+static uint16 HostComm_Cmd_Respond_APP_SysInfo(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+
+	/* Product ID */
+	respBuffer[OFFSET_CMD_DATA] = 1;
+	respBuffer[OFFSET_CMD_DATA + 1] = 0;
+
+	/* Version information */
+	respBuffer[OFFSET_CMD_DATA + 2] = LoByte(APP_REVISION);
+	respBuffer[OFFSET_CMD_DATA + 3] = HiByte(APP_REVISION);
+	respBuffer[OFFSET_CMD_DATA + 4] = APP_VERSION_MINOR;
+	respBuffer[OFFSET_CMD_DATA + 5] = APP_VERSION_MAJOR;
+
+	cmdDataLength = 6;
+
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, CMD_CODE_APP_SYSINFO);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+static uint16 HostComm_Cmd_Respond_APP_SetTime(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+	uint16 dataBuf[10] = {0};
+
+	memcpy(&SystemManage_SetTime, &cmdBuffer[OFFSET_CMD_DATA_RX],
+			sizeof(RTC_DATA));
+
+	/* Set time */
+	SystemManage_RTC_Set(SystemManage_SetTime.year,
+			SystemManage_SetTime.month, SystemManage_SetTime.day,
+			SystemManage_SetTime.hour, SystemManage_SetTime.min,
+			SystemManage_SetTime.sec);
+
+	/* Update time */
+	UI_Draw_Status_Bar();
+
+	/* Respond to host */
+	respBuffer[OFFSET_CMD_DATA] = 1;
+
+	cmdDataLength = 1;
+
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, CMD_CODE_APP_SET_TIME);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+static uint16 HostComm_Cmd_Respond_APP_ReadResistor(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; 	/* Include head and tail */
+	uint16 cmdDataLength = 0;
+	uint16 value = 0;
+
+	/* Read from flash */
+	STMFlash_Read(FLASH_CALI_RESULT_ADDR, &value, 2);
+	SignalSample_resistorValue = value;
+	SignalSample_resistorValueStored = value;
+
+	respBuffer[OFFSET_CMD_DATA] = (uint8)value;
+	cmdDataLength = 1;
+
+	/*  */
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, CMD_CODE_APP_READ_RESISTOR);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+static uint16 HostComm_Cmd_Respond_APP_WriteResistor(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+	uint16 value = 0;
+
+	/*  */
+	if (cmdBuffer[OFFSET_CMD_DATA_RX] <= 0xFF)
+	{
+		value = cmdBuffer[OFFSET_CMD_DATA_RX];
+		STMFlash_Write(FLASH_CALI_RESULT_ADDR, &value, 1);
+		SignalSample_resistorValue = value;
+		SignalSample_resistorValueStored = value;
+		/* Use it immediately */
+		SignalSample_Sample_SetResistor();
+	}
+
+	/*  */
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, CMD_CODE_APP_WRITE_RESISTOR);
+
+	return totalPackageLength;
 }
 
 /******************************************************************************/
@@ -309,6 +578,55 @@ char *itoa(int32 value, char *string, int radix)
 
 } /* NCL_Itoa */
 
+/******************************************************************************
+!!! ISR: Host communication interrupt service routine
+******************************************************************************/
+void USART1_IRQHandler(void)
+{
+	u8 RX_dat;
+	if(USART_GetITStatus(USART1,USART_IT_RXNE)==SET)//USART_IT_RXNE£º½ÓÊÕÖÐ¶Ï
+	{
+		RX_dat=USART_ReceiveData(USART1);
+
+		if ((RX_dat == '$') && (contReceive == 0))
+		{
+			contReceive = 1;
+			recCount = 0;
+			recBuffer[recCount++] = RX_dat;
+		}
+		else
+		{
+			recBuffer[recCount++] = RX_dat;
+		}
+
+		/* Get the package length: header + data + tail */
+		if (recCount >= SIZE_HEAD_LEN)
+		{
+			respLength =
+					(recBuffer[OFFSET_LEN_LO] | (recBuffer[OFFSET_LEN_HI] << 8))
+					+ SIZE_HEAD_TAIL;
+		}
+		else
+		{
+			respLength = 0;
+		}
+
+		/* Receive all: start processing response data */
+		if ((respLength > 0) && (recCount >= respLength))
+		{
+			HostComm_RecBufAvailable = 1;
+			HostComm_RecBufSize = recCount;
+
+			memcpy(cmdBuffer, recBuffer, recCount);
+			memset(recBuffer, 0, recCount);
+			contReceive = 0;
+			respLength = 0;
+			recCount = 0;
+		}
+	}
+	USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+}
+
 /******************************************************************************/
 void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[])
 {
@@ -322,4 +640,13 @@ void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[])
 			CMD_TYPE_APP, CMD_CODE_APP_SEND_C_T);
 
 	HostComm_SendResp(&respBuffer[0], totalPackageLength);
+}
+
+/******************************************************************************/
+void ReadResistor_Valid (void)
+{
+	uint16 value = 0;
+	/* Read from flash */
+	STMFlash_Read(FLASH_CALI_RESULT_ADDR, &value, 1);
+	SignalSample_resistorValue = value;
 }

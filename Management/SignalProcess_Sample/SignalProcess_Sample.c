@@ -26,7 +26,7 @@ uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint16 SignalProcess_sampleBuffer_BK[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint8 SignalProcess_outputBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 
-uint8 SignalSample_resistorValue = 4;   		//MAX = 14
+uint8 SignalSample_resistorValue = 12;   		//MAX = 14
 uint8 SignalSample_resistorValueStored = 0;
 
 uint8 SignalProcess_output = 0;
@@ -519,7 +519,7 @@ void SignalSample_SampleStrip(void)
 
 	if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1))
 	{
-		SignalSample_count = 191;
+		SignalSample_count = 180;
 		/* 2.2 Move motor per interval, then sample */
 		for (;;)
 		{
@@ -530,20 +530,20 @@ void SignalSample_SampleStrip(void)
 				/* Move one step */
 				ScanMotorDriver_Move(ScanMotorDriver_DIR_OUT,1);
 				/* Sample one time */
-				SignalProcess_sampleBuffer[SignalSample_count--]
-										   = SignalProcess_Collecting_Data();
+//				SignalProcess_sampleBuffer[SignalSample_count--]
+//										   = SignalProcess_Collecting_Data();
 				/* Determine exit condition */
 				if (!(moveSteps--))
 					break;
 			}
 		}
-		SignalSample_count = 191;
+		SignalSample_count = 180;
 	}
 	else
 	{
 		SignalSample_count = 0;
 		/* Move until slider reaches base position */
-		while (!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1))
+		for (SignalSample_count = 0;SignalSample_count < 160;)
 		{
 			/* Timer notifies */
 			ScanMotorDriver_MoveOneStep(ScanMotorDriver_DIR_IN);
@@ -551,11 +551,19 @@ void SignalSample_SampleStrip(void)
 			SignalProcess_sampleBuffer[SignalSample_count++]
 											= SignalProcess_Collecting_Data();
 		}
+
+		/* Move until slider reaches base position */
+		while (!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1))
+		{
+			/* Timer notifies */
+			ScanMotorDriver_MoveOneStep(ScanMotorDriver_DIR_IN);
+		}
 	}
 
 	/* 3rd stage: Post process */
 	/* 3.1 Disable timer */
 	SignalSample_Sample_Timer_Disabled();
+	SignalSample_Moving_Average_Data(SignalProcess_sampleBuffer,SignalSample_count,10);
 
 	/* 3.2 Exit critical area */
 	SignalSample_Sample_ExitCriticalArea();

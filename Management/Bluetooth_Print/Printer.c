@@ -42,6 +42,7 @@ static void Printer_GPIO_Init(void)
 	GPIO_Init(PRINTER_MATCH_STATUS_PORT, &GPIO_InitStructure);
 
 	GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+	GPIO_ResetBits(PRINTER_MATCH_STATUS_PORT, PRINTER_MATCH_STATUS_PIN);
 }
 
 /******************************************************************************/

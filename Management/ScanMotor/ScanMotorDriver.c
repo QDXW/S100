@@ -78,7 +78,7 @@ void ScanMotorDriver_Control(uint8 enabled) {
 /******************************************************************************/
 void ScanMotorDriver_MoveOneStep(uint8 dir) {
 #define MOTOR_QUICK_DELAY	 0X2000
-#define MOTOR_SLOW_DELAY 	 0X2000
+#define MOTOR_SLOW_DELAY 	 0X3000
 
 	uint8 index = 0;
 	ScanMotorDriver_Control(MOTOR_ENABLED);
@@ -248,6 +248,8 @@ void ScanMotorDriver_StartDetection(void) {
 /******************************************************************************/
 void ScanMotorDriver_SelfCheck_StepDrive(void)
 {
+	ScanMotorDriver_Goto_BasePosition();
+	ScanMotorDriver_Goto_DetectionPosition();
 	ScanMotorDriver_Goto_BasePosition();
 	ScanMotorDriver_Goto_DetectionPosition();
 }

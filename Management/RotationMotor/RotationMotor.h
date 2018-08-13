@@ -38,6 +38,7 @@
 /******************************************************************************/
 void RotationMotor_Init(void);
 void RotaMotorDriver_GPIO_Init(void);
+extern void Abnormal_motor_allstop (void);
 void RotaMotorDriver_Control(uint8 enabled);
 void RotationMotor_SelfCheck_StepDrive(void);
 void RotationMotor_StepDrive_Min(uint8 Rotation_Direction);

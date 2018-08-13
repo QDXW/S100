@@ -257,7 +257,7 @@ void Key_Confirm(void)
 					doubleClick = 0;
 					GPIO_SetBits(GPIOE, GPIO_Pin_5);   //改动关掉
 					Display_Time = 0;
-					DisplayDriver_DrawPic(60,3,19,15,gImage_LED_Switch);
+					DisplayDriver_DrawPic(60,3,15,15,gImage_LED_Switch);
 					Display_Time = 1;
 					EXTI_Key_Confirm_Enable();
 					LED = 1;
@@ -268,7 +268,7 @@ void Key_Confirm(void)
 					doubleClick = 0;
 					GPIO_ResetBits(GPIOE, GPIO_Pin_5);
 					Display_Time = 0;
-					Lcd_ColorBox(60,3,19,15,BACKCOLOR_CONTENT_BAR);
+					Lcd_ColorBox(60,3,15,15,BACKCOLOR_CONTENT_BAR);
 					Display_Time = 1;
 					EXTI_Key_Confirm_Enable();
 					LED = 0;
@@ -292,7 +292,6 @@ void Key_Confirm(void)
 				{
 					UI_Process_BLE_Print();
 				}
-
 				EXTI_Key_Confirm_Enable();
 			}
 			else
@@ -436,13 +435,23 @@ void SystemManage_Sleep_Process(void)
 {
 	HSEStartUpStatusPwr = 0;
 
+	/* 左键中断关闭  */
 	EXTI_Key_Left_Disable();
 
+	/* 右键中断关闭  */
 	EXTI_Key_Right_Disable();
 
+	/* 关闭5V电源  */
 	SystemManage_5V_Disabled();
 
+	/* 关闭背光  */
 	GPIO_ResetBits(GPIOD,GPIO_Pin_2);
+
+	/* 蓝牙关闭  */
+	GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+
+	/* 蓝牙连接状态清除  */
+	GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 
 	SystemManage_EnterExitStop();
 }
@@ -490,15 +499,11 @@ void SYSCLKConfig_STOP(void)
 		}
 	}
 
-	if(MotorDriver_Ctr)
-	{
-		SystemManage_5V_Enabled();
-	}
-
 	EXTI_Key_Left_Enable();
 
 	EXTI_Key_Right_Enable();
 
+	/* 打开背光  */
 	GPIO_SetBits(GPIOD,GPIO_Pin_2);
 	Delay_ms_SW(150);
 	key_state = DISABLE;

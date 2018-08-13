@@ -23,8 +23,6 @@
 #define UI_DATA_TRANSFER_ON 		(1)
 #define UI_DATA_TRANSFER_OFF 		(0)
 
-#define DEVICE_AREA_SIZE           	(50)
-#define FLASH_CALI_STATUS_ADDR     	((0X08000000 + 0x80000) - DEVICE_AREA_SIZE)
 
 /******************************************************************************/
 /* Size information */
@@ -48,6 +46,20 @@
 #define CRC_ERROR_MASK               (0x40)
 
 /******************************************************************************/
+#define DEVICE_AREA_SIZE                   (300)
+#define FLASH_CALI_STATUS_ADDR             ((0X08000000 + 0x80000) - DEVICE_AREA_SIZE)
+#define FLASH_CALI_RESULT_ADDR             (FLASH_CALI_STATUS_ADDR + 2)
+#define FLASH_CALI_STD_RATIOCT_ADDR        (FLASH_CALI_RESULT_ADDR + 2)
+#define FLASH_CALI_COEF_RATIOCT_ADDR       (FLASH_CALI_STD_RATIOCT_ADDR + 4)
+#define FLASH_SET_TIME_ADDR                (FLASH_CALI_COEF_RATIOCT_ADDR + 4)
+#define FLASH_SET_MODE_ADDR                (FLASH_SET_TIME_ADDR + 10)
+#define FLASH_SET_MFG_ADDR                 (FLASH_SET_MODE_ADDR + 2)
+#define FLASH_SET_LANGUAGE_ADDR            (FLASH_SET_MFG_ADDR + 8)
+#define FLASH_SET_PRINTER_ADDR             (FLASH_SET_LANGUAGE_ADDR + 2)
+#define FLASH_SET_OUT_FAB                  (FLASH_SET_PRINTER_ADDR + 2) /* 2 */
+#define FLASH_SET_SAMPLEMODE               (FLASH_SET_OUT_FAB + 2)
+
+/******************************************************************************/
 /* Offset in command and response array */
 enum offset {
 	OFFSET_HEADER = 0,
@@ -59,9 +71,9 @@ enum offset {
 };
 
 enum offsetRX {
-	OFFSET_CMD_TYPE_RX = 0,
-	OFFSET_CMD_CODE_RX = 1,
-	OFFSET_CMD_DATA_RX = 2,
+	OFFSET_CMD_TYPE_RX = 3,
+	OFFSET_CMD_CODE_RX = 4,
+	OFFSET_CMD_DATA_RX = 5,
 };
 
 
@@ -135,16 +147,19 @@ extern uint8 HostComm_RecBufAvailable;
 extern uint16 HostComm_RecBufSize;
 
 /******************************************************************************/
-extern uint16 HostComm_Cmd_Respond(void);
 extern void HostComm_Init(void);
+extern void HostComm_Process(void);
+extern void ReadResistor_Valid (void);
+extern uint16 HostComm_Cmd_Respond(void);
 extern void HostComm_Send_LIS(uint8 *data);
 extern void HostComm_Send_Char(uint8 data);
 extern void HostComm_Send_String(uint8 *strPtr);
-extern void HostComm_Send(USART_TypeDef* USARTx, uint8 *Data,...);
+
 char *itoa(int32 value, char *string, int radix);
 uint16 HostComm_CalculateCRC(uint8 * message,uint32 length,
 uint16 remainder, uint16 xorMask);
-extern void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[]);
 extern void HostComm_Cmd_Send_C_T(uint16 CValue, uint16 TValue);
+extern void HostComm_Send(USART_TypeDef* USARTx, uint8 *Data,...);
+extern void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[]);
 
 #endif /* __MANAGEMENT_HOSTCOMM_HOSTCOMM_H_ */

@@ -229,6 +229,33 @@ void TIM4_IRQHandler(void)
 	{
 		time_second = 60;
 	}
+
+	if(Check_Lock)
+	{
+		Check_Time++;
+		if(Check_Time > 16)
+		{
+			EXTI_Key_Left_Disable();
+			EXTI_Key_Right_Disable();
+			ScanMotorDriver_Control(MOTOR_DISABLED);
+			RotaMotorDriver_Control(MOTOR_DISABLED);
+			Abnormal_motor_allstop();
+			SystemManage_5V_Disabled();
+			Interface_Key = 100;
+			Power_Open = 1;
+			Exti_lock = ENABLE;
+			Display_Time = 0;
+			Lcd_ColorBox(0,20,128, 140,White);
+			DisplayDriver_Text16(7, 72, Red,"Abnormal motor");
+			DisplayDriver_Text16(20, 92, Red,"operation!");
+			Display_Time = 1;
+		}
+	}
+	else
+	{
+		Check_Time = 0;
+	}
+
 }
 
 /******************************************************************************/

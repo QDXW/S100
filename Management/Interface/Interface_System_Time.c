@@ -139,6 +139,10 @@ uint8 Interface_Time_Process(uint16 KeyCode)
 							if(Key_control == 2)
 							{
 								start_data.month--;
+								if(start_data.month < 1)
+								{
+									start_data.month = 1;
+								}
 							}
 
 							if(Key_control == 1)
@@ -158,6 +162,10 @@ uint8 Interface_Time_Process(uint16 KeyCode)
 							if(Key_control == 2)
 							{
 								start_data.day--;
+								if(start_data.day < 1)
+								{
+									start_data.day = 1;
+								}
 							}
 
 							if(Key_control == 1)
@@ -177,6 +185,11 @@ uint8 Interface_Time_Process(uint16 KeyCode)
 							if(Key_control == 2)
 							{
 								start_data.hour--;
+								if(start_data.hour > 24)
+								{
+									start_data.hour = 0;
+								}
+
 							}
 
 							if(Key_control == 1)
@@ -196,6 +209,10 @@ uint8 Interface_Time_Process(uint16 KeyCode)
 							if(Key_control == 2)
 							{
 								start_data.min--;
+								if(start_data.min > 59)
+								{
+									start_data.min = 0;
+								}
 							}
 
 							if(Key_control == 1)
@@ -215,6 +232,10 @@ uint8 Interface_Time_Process(uint16 KeyCode)
 							if(Key_control == 2)
 							{
 								start_data.sec--;
+								if(start_data.sec > 59)
+								{
+									start_data.sec = 0;
+								}
 							}
 
 							if(Key_control == 1)
