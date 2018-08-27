@@ -238,10 +238,12 @@ uint8 Interface_Record(uint16 KeyCode)
 		UI_WindowBlocks_Record = sizeof(UI_WindowBlocksAttrArray_Record[Storage_Data.StripNum-1]) >> 2;
 	}
 	UI_Draw_Window_Record(UI_WindowBlocks_Record);
+	Display_Time = 0;
 	DisplayDriver_DrawLine(6,42,120,42,BACKCOLOR_CONTENT_BACK);
 	DisplayDriver_DrawLine(6,58,120,58,BACKCOLOR_CONTENT_BACK);
 	DisplayDriver_DrawLine(6,90,120,90,BACKCOLOR_CONTENT_BACK);
 	DisplayDriver_DrawLine(39,24,39,154,BACKCOLOR_CONTENT_BACK);
+	Display_Time = 1;
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;

@@ -32,16 +32,19 @@ typedef struct {
 } block_attr_Testing;
 
 /******************************************************************************/
-extern uint16 Get_Start_Postion(void);
-
+void Result_Judge(void);
+void Acquisition_StartSignal(void);
 extern void Acquisition_Signal(void);
+extern uint16 Get_Start_Postion(void);
 uint16 Get_sampleBuffer_Max_Value(void);
 void Get_sampleBuffer_Start_Position(void);
+void QR_Date_SignalProcess_Alg_data (void);
 uint16 Get_sampleBuffer_Boundary_Value(void);
 extern void UI_Draw_Window_Testing(uint16 blockNum);
-void QR_Date_SignalProcess_Alg_data (void);
-void Result_Judge(void);
-uint16 Calculate_Start_Postion(uint16* Signal,uint16 Postion);
+uint16 Check_Trend(uint16 *Signal,uint16 Postion,uint8 Flag);
+uint16 Calculate_Postion_Up(uint16* Signal,uint16 Postion);
+uint16 Calculate_Postion_Down(uint16* Signal,uint16 Postion);
+
 void SignalSample_Moving_Average_Data(uint16 *Data,uint16 Length,uint16 Period);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_TESTING_H_ */

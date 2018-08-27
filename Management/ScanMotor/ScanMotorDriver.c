@@ -248,9 +248,32 @@ void ScanMotorDriver_StartDetection(void) {
 /******************************************************************************/
 void ScanMotorDriver_SelfCheck_StepDrive(void)
 {
-	ScanMotorDriver_Goto_BasePosition();
+	uint16 MoveStep_Num = 0;
+	/* Move until slider reaches base position */
+	while (!CAN_POSSEN_INT_STATE())
+	{
+		ScanMotorDriver_MoveOneStep(ScanMotorDriver_DIR_IN);
+		MoveStep_Num++;
+		if(MoveStep_Num > 195)
+		{
+			Check_motor = 1;
+			Check_Lock = 1;
+			return ;
+		}
+	}
 	ScanMotorDriver_Goto_DetectionPosition();
-	ScanMotorDriver_Goto_BasePosition();
+	MoveStep_Num = 0;
+	while (!CAN_POSSEN_INT_STATE())
+	{
+		ScanMotorDriver_MoveOneStep(ScanMotorDriver_DIR_IN);
+		MoveStep_Num++;
+		if(MoveStep_Num > 186)
+		{
+			Check_motor = 1;
+			Check_Lock = 1;
+			return ;
+		}
+	}
 	ScanMotorDriver_Goto_DetectionPosition();
 }
 

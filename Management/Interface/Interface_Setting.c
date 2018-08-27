@@ -184,7 +184,9 @@ uint8 Interface_Setting(uint16 KeyCode)
 	uint8 state = 0;
 	Exti_lock = DISABLE;
 	Interface_Key = 5;
+	Display_Time = 0;
 	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
+	Display_Time = 1;
 	UI_WindowBlocks_Setting = sizeof(UI_WindowBlocksAttrArray_Setting) >> 2;
 	UI_Draw_Window_Setting(UI_WindowBlocks_Setting);
 	UI_state = UI_STATE_SETTING_FONT;

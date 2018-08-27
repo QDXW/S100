@@ -376,8 +376,8 @@ uint8 Read_Record(void)
 	memset(&Storage_Data, 0, sizeof(STORAGE_SINGLE_DATA_STRUCT));
 	if(Read_first)
 	{
-		Storage_Read(Information,0x00,4);
-		memcpy(&reagent_Strip[0],Information,4);
+		Storage_Read(Information,0x00,8);
+		memcpy(&reagent_Strip[0],Information,8);
 		Read_first = 0;
 	}
 
@@ -397,9 +397,9 @@ void Get_reagent_TestNum(void)
 	uint8 Information[12] = 0;
 	reagent_Strip[3] = 0x55;
 	memset(Information,0,sizeof(Information));
-	Storage_Read(Information,0x00,4);
-	memcpy(reagent_Strip,Information,4);
-	reagent_Strip[0] += 1;
+	Storage_Read(Information,0x00,8);
+	memcpy(reagent_Strip,Information,8);
+	reagent_Strip[0]++;
 	if(reagent_Strip[0] > 100)
 	{
 		reagent_Strip[0] = 1;
@@ -411,8 +411,8 @@ void Get_reagent_TestNum(void)
 	{
 		reagent_Strip[1] = reagent_Strip[0];
 	}
-	memcpy(Information,&reagent_Strip[0],4);
-	Storage_Write(Information, 0x00, 4);
+	memcpy(Information,&reagent_Strip[0],8);
+	Storage_Write(Information, 0x00, 8);
 }
 
 /******************************************************************************/

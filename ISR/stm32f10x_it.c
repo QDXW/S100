@@ -10,10 +10,10 @@
 extern uint8 SignalSample_moveThenSample;
 extern uint8 Power_Open;
 extern uint8 Display_Time;
-uint8 time_second = 60,Battery_Second = 0;
+uint8 time_second = 60,Battery_Second = 0,Check_flag = 0;
 extern uint8 Open_time;
 uint16 Power_Second = 0;
-uint16 Power_Minute = 0;
+uint16 Power_Minute = 0,Stop_Mode_Second = 0;
 
 /******************************************************************************/
 void Delay_ms_SW(__IO uint32 nCount)
@@ -230,30 +230,53 @@ void TIM4_IRQHandler(void)
 		time_second = 60;
 	}
 
-	if(Check_Lock)
+	if(Check_motor)
 	{
-		Check_Time++;
-		if(Check_Time > 16)
+		EXTI_Key_Left_Disable();
+		EXTI_Key_Right_Disable();
+		Interface_Key = 100;
+		Display_Time = 0;
+		if(1 == Check_Lock)
 		{
-			EXTI_Key_Left_Disable();
-			EXTI_Key_Right_Disable();
-			ScanMotorDriver_Control(MOTOR_DISABLED);
-			RotaMotorDriver_Control(MOTOR_DISABLED);
-			Abnormal_motor_allstop();
-			SystemManage_5V_Disabled();
-			Interface_Key = 100;
-			Power_Open = 1;
-			Exti_lock = ENABLE;
-			Display_Time = 0;
 			Lcd_ColorBox(0,20,128, 140,White);
-			DisplayDriver_Text16(7, 72, Red,"Abnormal motor");
-			DisplayDriver_Text16(20, 92, Red,"operation!");
-			Display_Time = 1;
+			DisplayDriver_Text16(8, 52, Red,"Error: 001");
+			DisplayDriver_Text16(8, 70, Red,"Screw motor");
+			Check_flag = 1;
+		}
+
+		if(2 == Check_Lock)
+		{
+			if(!Check_flag)
+			{
+				Lcd_ColorBox(0,20,128, 140,White);
+			}
+			DisplayDriver_Text16(8, 90, Red,"Error: 002");
+			DisplayDriver_Text16(8, 108, Red,"Rotating motor");
+		}
+
+		Display_Time = 1;
+		Check_motor = 0;
+	}
+	else
+	{
+		Check_motor = 0;
+		if(0 == Check_Lock)
+		{
+			Check_flag = 0;
+		}
+	}
+
+	if(Stop_Mode)
+	{
+		Stop_Mode_Second++;
+		if(Stop_Mode_Second > 299)
+		{
+			GPIO_ResetBits(GPIOB, GPIO_Pin_3);
 		}
 	}
 	else
 	{
-		Check_Time = 0;
+		Stop_Mode_Second = 0;
 	}
 
 }

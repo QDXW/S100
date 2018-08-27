@@ -217,7 +217,6 @@ uint8 QRCode_Identify(void)
 		memcpy(&Storage_Data.Product_SN[0], &QR_Date.head.SN[0], sizeof(QR_Date.head.SN));
 
 		/* 头信息计算提取  */
-//		Cup_Count = QR_Date.head.stripNum;
 		Action_time = QR_Date.head.time;
 		Storage_Data.StripNum = QR_Date.head.stripNum;
 
@@ -268,6 +267,7 @@ uint8 QRCode_Identify(void)
 		Cup_Count = QR_Date_Analyze_Conut;
 		Storage_Data.StripNum = Cup_Count;
 		status = 1;
+		Existed_Data = 1;
 	}
 	else
 	{
@@ -281,6 +281,7 @@ uint8 QRCode_Identify(void)
 void Clear_Data(void)
 {
 	Cup_Count = 0;
+	Existed_Data = 0;
 	memset(&QR_Date, 0, sizeof(QRCODE_STRUCT));
 	memset(&QRCode_Buffer, 0, sizeof(QRCode_Buffer));
 	memset(&Storage_Data, 0, sizeof(STORAGE_SINGLE_DATA_STRUCT));

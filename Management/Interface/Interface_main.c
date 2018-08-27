@@ -422,7 +422,7 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 								{
 									reagent_Strip[0]--;
 									if (reagent_Strip[0] < 1)
-										reagent_Strip[0]  = reagent_Strip[1];
+										reagent_Strip[0]  = 1;
 								}
 								UI_state = UI_STATE_RECORD;
 
@@ -745,7 +745,7 @@ void Battery_Empty_ICO(void)
 /******************************************************************************/
 void Battery_Display (void)
 {
-	int i = 0;
+	uint8 i = 0;
 
 	if(!Display_Battery)
 	{
@@ -778,6 +778,12 @@ void Battery_Display (void)
 		if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
 		{
 			DisplayDriver_DrawPic(88,2,11,17,gImage_statusbar_charging);
+
+			for(i= 104;i<117;i++)
+			{
+				Lcd_ColorBox(i,8,2,6,0x18FF);
+			}
+			return;
 		}
 		else
 		{

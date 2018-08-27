@@ -22,6 +22,8 @@
 #define TESTNAME_MAX_LENGTH 		(30)
 #define UI_DATA_TRANSFER_ON 		(1)
 #define UI_DATA_TRANSFER_OFF 		(0)
+#define UI_MODE_DEBUG 				(1)
+#define UI_MODE_NORMAL 				(0)
 
 
 /******************************************************************************/
@@ -44,6 +46,10 @@
 /* Error response mask */
 #define CMD_ERROR_MASK               (0x80)
 #define CRC_ERROR_MASK               (0x40)
+
+/******************************************************************************/
+#define FLASH_CALI_ADDR             (0x12C000 )
+#define FLASH_OFFSET_ADDR           (0x1000 )
 
 /******************************************************************************/
 #define DEVICE_AREA_SIZE                   (300)
@@ -117,6 +123,7 @@ enum cmdCode {
 
 	CMD_CODE_APP_SEND_C_T = 0x70,
 	CMD_CODE_APP_SEND_RAWDATA = 0x71,
+	CMD_CODE_APP_SEND_QRCODE_DATA = 0x72,
 };
 
 /* Bin file attribute */

@@ -23,6 +23,7 @@
 #define GPIOB_ODR_Addr    (GPIOB_BASE + 12) 						//0x40010C0C
 #define PBout(n)   BIT_ADDR(GPIOB_ODR_Addr,n)
 
+/******************************************************************************/
 #define	W25QXX_CS 		        PBout(12)
 #define W25X_WriteEnable		0x06
 #define W25X_WriteDisable		0x04

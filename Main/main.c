@@ -12,10 +12,10 @@
 
 /******************************************************************************/
 static u32 TimingDelay;					/* Timer Delay Count */
-uint8 Display_Time = 1,Open_time = 0,Power_Open = 0,Key_State_Update = 0,Check_Time = 0;
+uint8 Display_Time = 1,Open_time = 0,Power_Open = 0,Key_State_Update = 0,Check_motor = 0;
 uint8 Power_Switch = 0,Bluetooth_switch = 0,Enter_Sleep = 0,Display_Battery = 1;
-uint8 MBuffer[20] = {0},asd = 1,Check_Lock = 0;
-uint16 insk[4] = {0,0,0,255};
+uint8 MBuffer[10] = {0},asd = 1,Check_Lock = 0,Existed_Data = 0,Stop_Mode = 0;
+uint16 insk[4] = {100,100,1,255};
 uint16 adcx = 0;
 float temp = 0.0;
 
@@ -50,57 +50,17 @@ void main(void)
 
 	TIM4_Int_Init(9999,7199);			/* 10Khz的计数频率，计数到10000为1s */
 
-	Status_Init();						/* Status Initialize */
-
 	Storage_Flash_Init();				/* Storage Flash Initialize */
+
+	Status_Init();						/* Status Initialize */
 
 	while(1)
 	{
 //		if(asd)
 //		{
-//			memcpy(MBuffer,insk,4);
-//
-//			Storage_Write(MBuffer, 0x00, 4);
-//
-//			Storage_Read(MBuffer,0x00,4);
-//			memcpy(insk,MBuffer,4);
-//			sprintf(MBuffer,"%d %d %d %d",insk[0],insk[1],insk[2],insk[3]);
-//			Display_Time = 0;
-//			DisplayDriver_Text16(4, 90, Black,MBuffer);
-//			Display_Time = 1;
-//
-//			SystemManage_5V_Enabled();
-//
-//			SignalSample_Sample_EnterCriticalArea();
-//
-//			QRCode_Trigger_Enabled();
-//
-//			SignalSample_Sample_EnterCriticalArea();
-//
-//			GPIO_SetBits(GPIOE, GPIO_Pin_5);
-//
-//			ScanMotorDriver_SelfCheck_StepDrive();
-//
-//			RotationMotor_SelfCheck_StepDrive();
-//
-//			SystemManage_5V_Disabled();
+//			Debug_Function();
 //			asd = 0;
-//			Delay_ms(1000);
-//
-//			ScanMotorDriver_SelfCheck_StepDrive();
-//			Exti_lock = ENABLE;
-//
-//			ScanMotorDriver_Goto_BasePosition();
-//			ScanMotorDriver_Goto_CentrePosition();
-//			Read_Record();
-//	}
-//
-//		Storage_Read(MBuffer,0x00,4);
-//		memcpy(insk,MBuffer,4);
-//		sprintf(MBuffer,"%d %d %d %d",insk[0],insk[1],insk[2],insk[3]);
-//		Display_Time = 0;
-//		DisplayDriver_Text16(4, 90, Black,MBuffer);
-//		Display_Time = 1;
+//		}
 //		SignalSample_SampleStrip();
 
 		HostComm_Process();
@@ -151,13 +111,86 @@ void Status_Init(void)
 	Display_Time = 0;
 	Battery_Empty_ICO();
 	SystemManage_5V_Enabled();
-	Check_Lock = 1;
 	ScanMotorDriver_SelfCheck_StepDrive();
 	RotationMotor_SelfCheck_StepDrive();
-	Check_Lock = 0;
 	SystemManage_5V_Disabled();
 	ReadResistor_Valid();
 	Power_Open = 1;
 	Enter_Sleep = 1;
 	Display_Time = 1;
+	if(Check_Lock)
+	{
+		Exti_lock = ENABLE;
+		while(1);
+	}
+}
+
+/******************************************************************************/
+void Debug_Function(void)
+{
+	uint8 value = 0,resistorValue_1 = 0;
+	uint16 resistorValue = 0,value_1 = 8;
+
+	memcpy(&resistorValue_1,&value_1,1);
+
+	sprintf(MBuffer,"%d",value_1);
+
+	Display_Time = 0;
+	DisplayDriver_Text16(4, 70, Black,MBuffer);
+	Display_Time = 1;
+
+	Storage_Write(&resistorValue_1, 0x12C000,1);
+
+	Storage_Read(&value,0x12C000,1);
+
+	sprintf(MBuffer,"%d",value);
+
+	Display_Time = 0;
+	DisplayDriver_Text16(4, 90, Black,MBuffer);
+	Display_Time = 1;
+
+	memcpy(&resistorValue,&value,1);
+
+	sprintf(MBuffer,"%d",resistorValue);
+
+	Display_Time = 0;
+	DisplayDriver_Text16(4, 110, Black,MBuffer);
+	Display_Time = 1;
+
+	/*
+	memcpy(MBuffer,insk,4);
+
+	Storage_Write(MBuffer, 0x00, 4);
+
+	Storage_Read(MBuffer,0x00,4);
+	memcpy(insk,MBuffer,4);
+	sprintf(MBuffer,"%d %d %d %d",insk[0],insk[1],insk[2],insk[3]);
+	Display_Time = 0;
+	DisplayDriver_Text16(4, 90, Black,MBuffer);
+	Display_Time = 1;
+
+	SystemManage_5V_Enabled();
+	Get_Start_Postion();
+
+	SignalSample_Sample_EnterCriticalArea();
+
+	QRCode_Trigger_Enabled();
+
+	SignalSample_Sample_EnterCriticalArea();
+
+	GPIO_SetBits(GPIOE, GPIO_Pin_5);
+
+	ScanMotorDriver_SelfCheck_StepDrive();
+
+	RotationMotor_SelfCheck_StepDrive();
+
+	SystemManage_5V_Disabled();
+
+	Delay_ms(1000);
+	ScanMotorDriver_SelfCheck_StepDrive();
+	Exti_lock = ENABLE;
+	ScanMotorDriver_Goto_BasePosition();
+	ScanMotorDriver_Goto_CentrePosition();
+	Read_Record();
+	*/
 }

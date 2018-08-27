@@ -33,7 +33,6 @@ void Delay_us_SW(__IO uint32 nCount)
 		for(; subCount != 0; subCount--);
 	}
 }
-
 /******************************************************************************/
 void IIC_Start(void)
 {

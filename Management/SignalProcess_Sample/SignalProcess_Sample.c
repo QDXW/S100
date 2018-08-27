@@ -26,7 +26,7 @@ uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint16 SignalProcess_sampleBuffer_BK[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint8 SignalProcess_outputBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 
-uint8 SignalSample_resistorValue = 12;   		//MAX = 14
+uint8 SignalSample_resistorValue = 0;   		//MAX = 14
 uint8 SignalSample_resistorValueStored = 0;
 
 uint8 SignalProcess_output = 0;

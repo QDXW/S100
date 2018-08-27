@@ -181,11 +181,9 @@ void EXTI_Key_Right_Disable(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line6;					//向右按钮
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
-	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+	EXTI_InitStructure.EXTI_LineCmd = DISABLE;
 	EXTI_Init(&EXTI_InitStructure);
-
 }
-
 
 /******************************************************************************/
 void EXTI_Key_Left_Enable(void)
@@ -276,7 +274,16 @@ void Key_Confirm(void)
 			}
 			else
 			{
-				key_state_confirm = ENABLE;
+				if(Stop_Mode)
+				{
+					SYSCLKConfig_STOP();
+					Stop_Mode = 0;
+				}
+				else
+				{
+					key_state_confirm = ENABLE;
+
+				}
 				EXTI_Key_Confirm_Enable();
 			}
 			key_state = ENABLE;
@@ -433,7 +440,9 @@ void Key_Left(void)
 /******************************************************************************/
 void SystemManage_Sleep_Process(void)
 {
-	HSEStartUpStatusPwr = 0;
+	Stop_Mode = 1;
+
+	Exti_lock = DISABLE;
 
 	/* 左键中断关闭  */
 	EXTI_Key_Left_Disable();
@@ -453,7 +462,9 @@ void SystemManage_Sleep_Process(void)
 	/* 蓝牙连接状态清除  */
 	GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 
-	SystemManage_EnterExitStop();
+	Exti_lock = ENABLE;
+
+//	SystemManage_EnterExitStop();
 }
 
 /******************************************************************************/
@@ -474,31 +485,7 @@ void SystemManage_EnterExitStop(void)
 /******************************************************************************/
 void SYSCLKConfig_STOP(void)
 {
-	/* Enable HSE */
-	RCC_HSEConfig(RCC_HSE_ON);
-
-	/* Wait till HSE is ready */
-	HSEStartUpStatusPwr = RCC_WaitForHSEStartUp();
-
-	if(HSEStartUpStatusPwr == SUCCESS)
-	{
-		/* Enable PLL */
-		RCC_PLLCmd(ENABLE);
-
-		/* Wait till PLL is ready */
-		while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
-		{
-		}
-
-		/* Select PLL as system clock source */
-		RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-
-		/* Wait till PLL is used as system clock source */
-		while(RCC_GetSYSCLKSource() != 0x08)
-		{
-		}
-	}
-
+	Exti_lock = DISABLE;
 	EXTI_Key_Left_Enable();
 
 	EXTI_Key_Right_Enable();
@@ -506,8 +493,8 @@ void SYSCLKConfig_STOP(void)
 	/* 打开背光  */
 	GPIO_SetBits(GPIOD,GPIO_Pin_2);
 	Delay_ms_SW(150);
+	Exti_lock = ENABLE;
 	key_state = DISABLE;
-	Key_control = 1;
 	key_state_confirm = 0;
 }
 

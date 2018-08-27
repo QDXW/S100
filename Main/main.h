@@ -12,7 +12,7 @@
 
 /******************************************************************************/
 extern uint8 Power_Open,Power_Switch,Bluetooth_switch,Enter_Sleep,Key_State_Update;
-extern uint8 Display_Battery,Check_Time,Check_Lock;
+extern uint8 Display_Battery,Check_motor,Check_Lock,Existed_Data,Stop_Mode;
 extern uint16 adcx;
 extern float temp;
 
@@ -21,6 +21,7 @@ extern float temp;
 
 /******************************************************************************/
 extern void Status_Init(void);
+void Debug_Function(void);
 extern void SysTick_Init(u32 ticks);
 extern void Delay_ms(__IO uint32 nTime);
 extern void TimingDelay_Decrement(void);

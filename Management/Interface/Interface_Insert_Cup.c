@@ -53,6 +53,7 @@ uint8 Interface_Insert_Cup(uint16 KeyCode)
 {
 	uint8 state = 0;
 	QRCode_Trigger_Disabled();
+	SystemManage_5V_Disabled();
 	Interface_Key = 8;
 	Exti_lock = DISABLE;
 	UI_WindowBlocks_Insert_Cup = sizeof(UI_WindowBlocksAttrArray_Insert_Cup) >> 2;

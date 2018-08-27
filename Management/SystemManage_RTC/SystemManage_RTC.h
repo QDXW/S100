@@ -9,8 +9,7 @@
 #define MANAGEMENT_SYSTEMMANAGE_RTC_SYSTEMMANAGE_RTC_H_
 
 /******************************************************************************/
-#include "comDef.h"
-#include "stm32f10x.h"
+#include "Version_selection.h"
 
 /******************************************************************************/
 #define SECONDS_PER_DAY (86400) 			//24*60*60
