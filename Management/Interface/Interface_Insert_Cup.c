@@ -52,6 +52,7 @@ block_attr_Insert_Cup* UI_WindowBlocksAttrArray_Insert_Cup[] = {/* Window: Inser
 uint8 Interface_Insert_Cup(uint16 KeyCode)
 {
 	uint8 state = 0;
+	Send_QRCode();
 	QRCode_Trigger_Disabled();
 	SystemManage_5V_Disabled();
 	Interface_Key = 8;

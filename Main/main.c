@@ -12,11 +12,12 @@
 
 /******************************************************************************/
 static u32 TimingDelay;					/* Timer Delay Count */
+uint8 UI_runMode = 0;
 uint8 Display_Time = 1,Open_time = 0,Power_Open = 0,Key_State_Update = 0,Check_motor = 0;
 uint8 Power_Switch = 0,Bluetooth_switch = 0,Enter_Sleep = 0,Display_Battery = 1;
 uint8 MBuffer[10] = {0},asd = 1,Check_Lock = 0,Existed_Data = 0,Stop_Mode = 0;
 uint16 insk[4] = {100,100,1,255};
-uint16 adcx = 0;
+uint16 adcx = 0,Data_Boundary = 800;
 float temp = 0.0;
 
 /******************************************************************************/

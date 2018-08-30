@@ -13,7 +13,8 @@
 /******************************************************************************/
 extern uint8 Power_Open,Power_Switch,Bluetooth_switch,Enter_Sleep,Key_State_Update;
 extern uint8 Display_Battery,Check_motor,Check_Lock,Existed_Data,Stop_Mode;
-extern uint16 adcx;
+extern uint8 UI_runMode;
+extern uint16 adcx,Data_Boundary;
 extern float temp;
 
 /******************************************************************************/

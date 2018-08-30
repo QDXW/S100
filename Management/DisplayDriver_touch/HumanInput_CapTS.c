@@ -500,8 +500,8 @@ void HumanInput_CapTS_Process(void)
  		/* Increase touch number */
  		TouchCount++;
 
-// 		if (UI_MODE_DEBUG == UI_runMode)
-// 			DisplayDriver_DrawPoint(TPR_Structure.x[0], TPR_Structure.y[0], RED);
+ 		if (UI_MODE_DEBUG == UI_runMode)
+ 			DisplayDriver_DrawPoint(TPR_Structure.x[0], TPR_Structure.y[0], RED);
  	}
 }
 

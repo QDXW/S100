@@ -180,11 +180,14 @@ void Acquisition_Signal(void)
 			Storage_Data_Conut += 1;
 
 			/* 调试输出 */
-			memset(SignalProcess,0,500);
-			memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], SignalSample_count<< 1);
-			HostComm_Cmd_Send_RawData(SignalSample_count << 1, SignalProcess);
-			Delay_ms_SW(50);
-			HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
+			if(UI_runMode)
+			{
+				memset(SignalProcess,0,500);
+				memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], SignalSample_count<< 1);
+				HostComm_Cmd_Send_RawData(SignalSample_count << 1, SignalProcess);
+				Delay_ms_SW(50);
+				HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
+			}
 		}
 
 		/* 转动电机转动30° */
@@ -315,9 +318,12 @@ void Acquisition_StartSignal(void)
 									= SignalProcess_Collecting_Data();
 	}
 
-	memset(SignalProcess,0,1024);
-	memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], 1024);
-	HostComm_Cmd_Send_RawData(1024, SignalProcess);
+	if(UI_runMode)
+	{
+		memset(SignalProcess,0,1024);
+		memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], 1024);
+		HostComm_Cmd_Send_RawData(1024, SignalProcess);
+	}
 
 	SignalSample_Sample_ExitCriticalArea();
 	ScanMotorDriver_Goto_BasePosition();

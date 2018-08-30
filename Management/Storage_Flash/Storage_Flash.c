@@ -13,7 +13,7 @@ u16 W25QXX_TYPE = W25Q128;
 #define BUFFER_SIZE (sizeof(STORAGE_SINGLE_DATA_STRUCT))
 uint8 Storage_writeBuffer[BUFFER_SIZE];
 uint8 Storage_readBuffer[BUFFER_SIZE];
-uint16 reagent_Strip[4] = {0};
+uint16 reagent_Strip[8] = {0};
 
 #define DEFAULT_VALUE (0XFF)
 /* Head */
@@ -377,7 +377,7 @@ uint8 Read_Record(void)
 	if(Read_first)
 	{
 		Storage_Read(Information,0x00,8);
-		memcpy(&reagent_Strip[0],Information,8);
+		memcpy(reagent_Strip,Information,8);
 		Read_first = 0;
 	}
 
@@ -395,7 +395,6 @@ uint8 Read_Record(void)
 void Get_reagent_TestNum(void)
 {
 	uint8 Information[12] = 0;
-	reagent_Strip[3] = 0x55;
 	memset(Information,0,sizeof(Information));
 	Storage_Read(Information,0x00,8);
 	memcpy(reagent_Strip,Information,8);

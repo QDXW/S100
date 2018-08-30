@@ -44,7 +44,7 @@
 #define ITEM_MAX_ONEPAGE_EXTENSION1 10
 
 /******************************************************************************/
-extern uint16 reagent_Strip[4];
+extern uint16 reagent_Strip[8];
 
 /******************************************************************************/
 typedef struct {

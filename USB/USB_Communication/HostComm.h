@@ -124,6 +124,8 @@ enum cmdCode {
 	CMD_CODE_APP_SEND_C_T = 0x70,
 	CMD_CODE_APP_SEND_RAWDATA = 0x71,
 	CMD_CODE_APP_SEND_QRCODE_DATA = 0x72,
+	CMD_CODE_APP_READ_BOUNDARY = 0x73,
+	CMD_CODE_APP_WRITE_BOUNDARY = 0x74,
 };
 
 /* Bin file attribute */
@@ -154,6 +156,7 @@ extern uint8 HostComm_RecBufAvailable;
 extern uint16 HostComm_RecBufSize;
 
 /******************************************************************************/
+extern void Send_QRCode (void);
 extern void HostComm_Init(void);
 extern void HostComm_Process(void);
 extern void ReadResistor_Valid (void);
