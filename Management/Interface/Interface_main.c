@@ -7,19 +7,9 @@
 
 /******************************************************************************/
 #include "Interface_main.h"
-#include "PIC_Interface.h"
 
 /******************************************************************************/
-uint8 Cup_Count = 0;
-uint8 Read_first = 1;
-uint8 Key_record = 1;
-extern uint8 page_Num;
-extern uint8 Page_Flag;
-extern uint8 page_tatol;
 uint8 Bluetooth_Connect = 0;
-uint16 UI_WindowBlocks = 0;
-uint8 UI_state = UI_STATE_MAIN_WINDOW;
-extern const unsigned char gImage_statusbar_charging[374];
 
 /******************************************************************************/
 block_attr block_standard = {
@@ -212,6 +202,8 @@ uint8 Interface_Process(uint16* KeyCode)
 			Interface_Time_Process,			/* Interface Setting font Display */
 			Interface_Down_Time_Process,	/* Interface Setting font Display */
 			Interface_Bluet_switch_Process,	/* Interface Setting font Display */
+			Interface_In_Calibration_Process,	/* Interface In Calibration Display */
+			Interface_Calibration_key_Process,	/* Interface Calibration key Display */
 	};
 	uint8 state;
 	do										/* Polling each state */
@@ -306,24 +298,26 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 					case 1:
 						switch(Key_control)
 						{
-							Key_record = 2;
 							case 1:
+								Key_record = 1;
 								UI_state = UI_STATE_START;
 							break;
 							case 2:
+								Key_record = 2;
 								UI_state = UI_STATE_START;
 							break;
 							case 3:
+								Key_record = 3;
 								UI_state = UI_STATE_RECORD;
 							break;
 							case 4:
+								Key_record = 4;
 								UI_state = UI_STATE_SETTING;
 							break;
 
 							default:
 							break;
 						}
-						Key_record = Key_control;
 						key_state_confirm = DISABLE;
 						Key_control = 1;
 					break;
@@ -441,7 +435,7 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 										if (page_Num == 1 && page_tatol == 1)
 										{
 											reagent_Strip[0]++;
-											if (reagent_Strip[0] > 100)
+											if (reagent_Strip[0] > 99)
 												reagent_Strip[0] = 100;
 											UI_state = UI_STATE_RECORD;
 										}
@@ -454,7 +448,7 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 										if (page_Num == 2 && page_tatol == 2)
 										{
 											reagent_Strip[0]++;
-											if (reagent_Strip[0] > 100)
+											if (reagent_Strip[0] > 99)
 												reagent_Strip[0] = 100;
 											UI_state = UI_STATE_RECORD;
 										}
@@ -533,18 +527,24 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 							case 1:
 								UI_state = UI_STATE_ABOUT_MACHINE;
 								key_state_confirm = DISABLE;
-								Key_control = 2;
+								Key_control = 1;
 							break;
 							case 2:
 								UI_state = UI_STATE_SYSTEM_TIME;
 								key_state_confirm = DISABLE;
-								Key_control = 2;
+								Key_control = 1;
 							break;
 
 							case 3:
 								UI_state = UI_STATE_BLUET_SWITCH_PROCESS;
 								key_state_confirm = DISABLE;
 								Key_control = 3;
+							break;
+
+							case 4:
+								UI_state = UI_STATE_IN_CALIBRATION_PROCESS;
+								key_state_confirm = DISABLE;
+								Key_control = 1;
 							break;
 
 							default:

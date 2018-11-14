@@ -23,8 +23,6 @@
 #define Lcd_Light_ON   GPIOA->BSRR = GPIO_Pin_1;
 #define Lcd_Light_OFF  GPIOA->BRR  = GPIO_Pin_1;
 
-extern uint8 Display_Time;
-
 /******************************************************************************/
 extern void DisplayDriver_Init(void);
 

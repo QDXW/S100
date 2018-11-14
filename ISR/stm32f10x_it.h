@@ -11,11 +11,8 @@
 #include "Version_selection.h"
 
 /******************************************************************************/
-uint8 Exti_lock = DISABLE;
 extern uint8 ScanMotorDriver_InBasePosition;
 uint16 se_count = 0,keyupCnt = 0,key_holdon_ms = 0;
-uint8 key_fall_flag = 0,short_key_flag = 0,doubleClick = 0,
-		keyUpFlag = 0,long_key_flag = 0,short_key_down = 0;
 
 /******************************************************************************/
 void SVC_Handler(void);

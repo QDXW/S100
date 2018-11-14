@@ -11,8 +11,6 @@
 #include "stm32f10x.h"
 #include "comDef.h"
 
-extern uint8 Display_Time;
-
 /******************************************************************************/
 void DisplayDriver_Text16(unsigned int x, unsigned int y, unsigned int Color,
 		 u8 *s);

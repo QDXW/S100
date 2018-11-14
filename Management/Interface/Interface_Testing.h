@@ -16,12 +16,6 @@
 
 /******************************************************************************/
 uint8 Confirm_CUP = 0;
-extern uint8 Exti_lock;
-extern uint8 key_state;
-extern uint8 Key_control;
-extern uint8 NowCup_Count;
-extern uint16 BOUNDARY_VALUE;
-uint16 UI_WindowBlocks_Testing = 0;
 
 /******************************************************************************/
 typedef struct {
@@ -32,7 +26,7 @@ typedef struct {
 } block_attr_Testing;
 
 /******************************************************************************/
-void Result_Judge(void);
+void Result_Display(void);
 void Acquisition_StartSignal(void);
 extern void Acquisition_Signal(void);
 extern uint16 Get_Start_Postion(void);

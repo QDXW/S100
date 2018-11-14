@@ -118,12 +118,10 @@ typedef enum {
 
 /******************************************************************************/
 /* Sample count */
-extern uint16 SignalSample_count;
 extern uint16 SignalSample_ProcessCount;
 /* Motor movement flag */
 extern uint8 SignalSample_moveThenSample;
 /* Sample buffer */
-extern uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT];
 /* Digital resistor */
 extern uint8 SignalSample_resistorValue;
 extern uint8 SignalSample_resistorValueStored;

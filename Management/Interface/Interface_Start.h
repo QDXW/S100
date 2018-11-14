@@ -12,14 +12,6 @@
 #include "Version_selection.h"
 
 /******************************************************************************/
-extern uint8 key_state;
-extern uint8 Exti_lock;
-extern uint8 Key_control;
-uint16 UI_WindowBlocks_Start = 0;
-uint16 UI_WindowBlocks_Start_font = 0;
-extern const unsigned char gImage_Left_arrow[1050];
-
-/******************************************************************************/
 typedef struct {
 	uint8 rect_enabled; 				/* Support rectangular or not */
 	rect_attr rect_attr;				/* Rectangular attribute */

@@ -8,12 +8,9 @@
 
 /******************************************************************************/
 extern uint8 SignalSample_moveThenSample;
-extern uint8 Power_Open;
-extern uint8 Display_Time;
 uint8 time_second = 60,Battery_Second = 0,Check_flag = 0;
-extern uint8 Open_time;
-uint16 Power_Second = 0;
-uint16 Power_Minute = 0,Stop_Mode_Second = 0;
+uint16 Stop_Mode_Second = 0;
+uint8 keyUpFlag = 0,short_key_down = 0;
 
 /******************************************************************************/
 void Delay_ms_SW(__IO uint32 nCount)
@@ -193,7 +190,22 @@ void TIM4_IRQHandler(void)
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  	//检查TIM4更新中断发生与否
 	{
 		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);  		//清除TIMx更新中断标志
-		if(Display_Time)
+
+		/* Quick界面扫描倒计时  */
+		if(Quick_Down_time)
+		{
+			Quick_Second++;
+			if(Quick_Second > 240)
+			{
+				Quick_Second = 0;
+			}
+		}
+		else
+		{
+			Quick_Second = 0;
+		}
+
+		if(Display_Time && Power_Open)
 		{
 			Display_Time = 0;
 			Bluetooth_Connection();
@@ -220,6 +232,7 @@ void TIM4_IRQHandler(void)
 			Display_Down_Time_Msec();
 			if(Action_time < 1)
 			{
+				Action_time = 0;
 				Open_time = 0;
 				time_second = 60;
 			}

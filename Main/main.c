@@ -12,13 +12,8 @@
 
 /******************************************************************************/
 static u32 TimingDelay;					/* Timer Delay Count */
-uint8 UI_runMode = 0;
-uint8 Display_Time = 1,Open_time = 0,Power_Open = 0,Key_State_Update = 0,Check_motor = 0;
-uint8 Power_Switch = 0,Bluetooth_switch = 0,Enter_Sleep = 0,Display_Battery = 1;
-uint8 MBuffer[10] = {0},asd = 1,Check_Lock = 0,Existed_Data = 0,Stop_Mode = 0;
-uint16 insk[4] = {100,100,1,255};
-uint16 adcx = 0,Data_Boundary = 800;
-float temp = 0.0;
+uint8 MBuffer[10] = {0},asd = 1;
+uint16 insk[4] = {65535,65535,65535,65535};
 
 /******************************************************************************/
 void main(void)
@@ -57,16 +52,18 @@ void main(void)
 
 	while(1)
 	{
-//		if(asd)
-//		{
-//			Debug_Function();
-//			asd = 0;
-//		}
+
 //		SignalSample_SampleStrip();
 
 		HostComm_Process();
 
 		Interface_Process(0);			/* User Interface */
+
+//		if(asd)
+//		{
+//			Debug_Function();
+//			asd = 0;
+//		}
 	}
 }
 
@@ -103,19 +100,14 @@ void Status_Init(void)
 {
    	GPIO_SetBits(GPIOD,GPIO_Pin_2);
    	Display_Time = 0;
-   	Lcd_ColorBox(0,20,128,140,White);
-	DisplayDriver_DrawPic(0,50,128,40,gImage_Power_on);
-	DisplayDriver_DrawPic(0,117,128,18,gImage_Power_on2);
-	Lcd_ColorBox(0,0,128,20,Dark_Blue);
+   	Lcd_ColorBox(0,0,128,160,White);
+	DisplayDriver_DrawPic(14,39,100,82,gImage_START);
 	Display_Time = 1;
-	UI_Draw_Status_Bar();
-	Display_Time = 0;
-	Battery_Empty_ICO();
 	SystemManage_5V_Enabled();
 	ScanMotorDriver_SelfCheck_StepDrive();
 	RotationMotor_SelfCheck_StepDrive();
 	SystemManage_5V_Disabled();
-	ReadResistor_Valid();
+	Set_Fixed_Parameter();
 	Power_Open = 1;
 	Enter_Sleep = 1;
 	Display_Time = 1;
@@ -124,41 +116,48 @@ void Status_Init(void)
 		Exti_lock = ENABLE;
 		while(1);
 	}
+
+ 	Display_Time = 0;
+	Lcd_ColorBox(0,0,128,20,Dark_Blue);
+	Display_Time = 1;
+	UI_Draw_Status_Bar();
+	Display_Time = 0;
+	Battery_Empty_ICO();
 }
 
 /******************************************************************************/
 void Debug_Function(void)
 {
-	uint8 value = 0,resistorValue_1 = 0;
-	uint16 resistorValue = 0,value_1 = 8;
+//	uint8 value = 0,resistorValue_1 = 0;
+//	uint16 resistorValue = 0,value_1 = 8;
+//
+//	memcpy(&resistorValue_1,&value_1,1);
+//
+//	sprintf(MBuffer,"%d",value_1);
+//
+//	Display_Time = 0;
+//	DisplayDriver_Text16(4, 70, Black,MBuffer);
+//	Display_Time = 1;
+//
+//	Storage_Write(&resistorValue_1, 0x12C000,1);
+//
+//	Storage_Read(&value,0x12C000,1);
+//
+//	sprintf(MBuffer,"%d",value);
+//
+//	Display_Time = 0;
+//	DisplayDriver_Text16(4, 90, Black,MBuffer);
+//	Display_Time = 1;
+//
+//	memcpy(&resistorValue,&value,1);
+//
+//	sprintf(MBuffer,"%d",resistorValue);
+//
+//	Display_Time = 0;
+//	DisplayDriver_Text16(4, 110, Black,MBuffer);
+//	Display_Time = 1;
 
-	memcpy(&resistorValue_1,&value_1,1);
 
-	sprintf(MBuffer,"%d",value_1);
-
-	Display_Time = 0;
-	DisplayDriver_Text16(4, 70, Black,MBuffer);
-	Display_Time = 1;
-
-	Storage_Write(&resistorValue_1, 0x12C000,1);
-
-	Storage_Read(&value,0x12C000,1);
-
-	sprintf(MBuffer,"%d",value);
-
-	Display_Time = 0;
-	DisplayDriver_Text16(4, 90, Black,MBuffer);
-	Display_Time = 1;
-
-	memcpy(&resistorValue,&value,1);
-
-	sprintf(MBuffer,"%d",resistorValue);
-
-	Display_Time = 0;
-	DisplayDriver_Text16(4, 110, Black,MBuffer);
-	Display_Time = 1;
-
-	/*
 	memcpy(MBuffer,insk,4);
 
 	Storage_Write(MBuffer, 0x00, 4);
@@ -170,6 +169,7 @@ void Debug_Function(void)
 	DisplayDriver_Text16(4, 90, Black,MBuffer);
 	Display_Time = 1;
 
+	/*
 	SystemManage_5V_Enabled();
 	Get_Start_Postion();
 

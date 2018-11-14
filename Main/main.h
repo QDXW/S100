@@ -11,13 +11,6 @@
 #include "Version_selection.h"
 
 /******************************************************************************/
-extern uint8 Power_Open,Power_Switch,Bluetooth_switch,Enter_Sleep,Key_State_Update;
-extern uint8 Display_Battery,Check_motor,Check_Lock,Existed_Data,Stop_Mode;
-extern uint8 UI_runMode;
-extern uint16 adcx,Data_Boundary;
-extern float temp;
-
-/******************************************************************************/
 #define One_Minute		59999
 
 /******************************************************************************/
@@ -29,8 +22,6 @@ extern void TimingDelay_Decrement(void);
 extern void Delay_SW(__IO uint32 nCount);
 extern void Delay_ms_SW(__IO uint32 nCount);
 extern uint8 Interface_Process(uint16* KeyCode);
-extern const unsigned char gImage_Power_on2[4608];
-extern const unsigned char gImage_Power_on[10240];
 extern const unsigned char gImage_Blutooth[252];
 
 #endif /* MAIN_MAIN_H_ */

@@ -666,26 +666,6 @@
               <FilePath>.\Management\Interface\Interface_Record_2.c</FilePath>
             </File>
             <File>
-              <FileName>DisplayDriver_touch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Management\DisplayDriver_touch\DisplayDriver_touch.c</FilePath>
-            </File>
-            <File>
-              <FileName>fsmc_sram.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Management\DisplayDriver_touch\fsmc_sram.c</FilePath>
-            </File>
-            <File>
-              <FileName>HumanInput_CapTS.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Management\DisplayDriver_touch\HumanInput_CapTS.c</FilePath>
-            </File>
-            <File>
-              <FileName>DisplayDriver_API.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Management\DisplayDriver_touch\DisplayDriver_API.c</FilePath>
-            </File>
-            <File>
               <FileName>Printer.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Management\Bluetooth_Print\Printer.c</FilePath>
@@ -709,6 +689,21 @@
               <FileName>Interface_System_Time.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Management\Interface\Interface_System_Time.c</FilePath>
+            </File>
+            <File>
+              <FileName>Interface_In_Calibration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Management\Interface\Interface_In_Calibration.c</FilePath>
+            </File>
+            <File>
+              <FileName>PIC_Interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Management\DisplayDriver\PIC_Interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>Global_variable.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Management\Interface\Global_variable.c</FilePath>
             </File>
           </Files>
         </Group>

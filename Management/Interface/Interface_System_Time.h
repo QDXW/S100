@@ -18,7 +18,6 @@ uint8 Day[1]={0};
 uint8 Hour[1]={0};
 uint8 Minute[1]={0};
 uint8 Sec[1]={0};
-extern uint8 Confirm_Count;
 
 /******************************************************************************/
 typedef struct {
@@ -28,30 +27,19 @@ typedef struct {
 
 /******************************************************************************/
 typedef struct {
-	uint8 char1_enabled;					/* Support char or not */
+	uint8 char1_enabled;				/* Support char or not */
 	char_attr char1_attr;				/* char attribute */
-	uint8 char2_enabled;					/* Support char or not */
+	uint8 char2_enabled;				/* Support char or not */
 	char_attr char2_attr;				/* char attribute */
-	uint8 char3_enabled;					/* Support char or not */
+	uint8 char3_enabled;				/* Support char or not */
 	char_attr char3_attr;				/* char attribute */
-	uint8 char4_enabled;					/* Support char or not */
+	uint8 char4_enabled;				/* Support char or not */
 	char_attr char4_attr;				/* char attribute */
-	uint8 char5_enabled;					/* Support char or not */
+	uint8 char5_enabled;				/* Support char or not */
 	char_attr char5_attr;				/* char attribute */
-	uint8 char6_enabled;					/* Support char or not */
+	uint8 char6_enabled;				/* Support char or not */
 	char_attr char6_attr;				/* char attribute */
 } block_attr_Set_Time;
-
-/******************************************************************************/
-typedef struct
-{
-	uint16 year;
-	uint8 month;
-	uint8 day;
-	uint8 hour;
-	uint8 min;
-	uint8 sec;
-} START_DATA;
 
 /******************************************************************************/
 void Line_between(void);

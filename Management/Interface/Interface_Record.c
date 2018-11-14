@@ -7,13 +7,6 @@
 #include "Interface_Record.h"
 
 /******************************************************************************/
-uint8 cBuffer[20] = {0};
-uint8 tBuffer[10] = {0};
-uint8 page_tatol = 1;
-uint8 page_Num = 1;
-uint16 UI_WindowBlocks_Record = 0;
-
-/******************************************************************************/
 block_attr_Record block_Record_BACKCOLOR_BACK = {
 	ENABLE,								/* Interface Record rect */
 	{
@@ -230,14 +223,14 @@ uint8 Interface_Record(uint16 KeyCode)
 	{
 		page_tatol = 2;
 		page_Num = 1;
-		UI_WindowBlocks_Record = sizeof(UI_WindowBlocksAttrArray_Record[3]) >> 2;
+		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Record[3]) >> 2;
 	}
 	else
 	{
 		page_tatol = 1;
-		UI_WindowBlocks_Record = sizeof(UI_WindowBlocksAttrArray_Record[Storage_Data.StripNum-1]) >> 2;
+		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Record[Storage_Data.StripNum-1]) >> 2;
 	}
-	UI_Draw_Window_Record(UI_WindowBlocks_Record);
+	UI_Draw_Window_Record(UI_WindowBlocks);
 	Display_Time = 0;
 	DisplayDriver_DrawLine(6,42,120,42,BACKCOLOR_CONTENT_BACK);
 	DisplayDriver_DrawLine(6,58,120,58,BACKCOLOR_CONTENT_BACK);

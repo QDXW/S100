@@ -700,6 +700,16 @@
               <FileType>1</FileType>
               <FilePath>.\Management\Battery_ADC\Battery_ADC.c</FilePath>
             </File>
+            <File>
+              <FileName>Interface_About_Machine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Management\Interface\Interface_About_Machine.c</FilePath>
+            </File>
+            <File>
+              <FileName>Interface_System_Time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Management\Interface\Interface_System_Time.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

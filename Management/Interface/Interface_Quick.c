@@ -7,10 +7,6 @@
 #include "Interface_Quick.h"
 
 /******************************************************************************/
-uint8 Cup_Exist = 0;
-extern const unsigned char gImage_Left_arrow[1050];
-
-/******************************************************************************/
 block_attr_Quick block_Quick_1 = {
 	ENABLE,								/* Interface Quick rect */
 	{
@@ -121,9 +117,10 @@ uint8 Interface_Quick(uint16 KeyCode)
 	QRCode_Trigger_Disabled();
 	Exti_lock = DISABLE;
 	Key_control = 2;
+	Quick_Down_time = 1;
 	Interface_Key = 3;
-	UI_WindowBlocks_Quick = sizeof(UI_WindowBlocksAttrArray_Quick) >> 2;
-	UI_Draw_Window_Quick(UI_WindowBlocks_Quick);
+	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Quick) >> 2;
+	UI_Draw_Window_Quick(UI_WindowBlocks);
 	QRCode_Trigger_Enabled();
 	Exti_lock = ENABLE;
 	while (!QRCode_received)
@@ -133,6 +130,14 @@ uint8 Interface_Quick(uint16 KeyCode)
 			UI_state = UI_STATE_KEY_STATE;
 			key_state_confirm = 0;
 			Exti_lock = DISABLE;
+			return state;
+		}
+
+		if (Quick_Second > 20)
+		{
+			UI_state = UI_STATE_MAIN_WINDOW;
+			Quick_Down_time = 0;
+			Quick_Second = 0;
 			return state;
 		}
 	}
@@ -151,6 +156,7 @@ uint8 Interface_Quick(uint16 KeyCode)
 	QRCode_existed = 0;
 	QRCode_received = 0;
 	key_state_confirm = 0;
+	Delay_ms_SW(20);
 	return state;
 }
 

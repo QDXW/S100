@@ -4,15 +4,8 @@
  *  Created on: 2018Äê4ÔÂ20ÈÕ
  *      Author: Administrator
  */
-
-#include "Interface_Record_2.h"
-
-
 /******************************************************************************/
-extern uint8 cBuffer[20];
-extern uint8 tBuffer[10];
-extern uint8 page_tatol;
-extern uint8 page_Num;
+#include "Interface_Record_2.h"
 
 /******************************************************************************/
 block_attr_Record block_Record_BACKCOLOR_CONTENT_BACK = {
@@ -205,10 +198,6 @@ block_attr_Record* UI_WindowBlocksAttrArray_Record_2[][9] = {/* Window: Standard
 		&block_Record_CH9},
 {&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
 		&block_Record_CH9,&block_Record_CH10},
-//{&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
-//		&block_Record_CH9,&block_Record_CH10,&block_Record_CH11},
-//{&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
-//		&block_Record_CH9,&block_Record_CH10,&block_Record_CH11,&block_Record_CH12},
 };
 
 /******************************************************************************/
@@ -223,8 +212,8 @@ uint8 Interface_Record_2(uint16 KeyCode)
 	Read_Record();
 	Data_Changer();
 	page_Num = 2;
-	UI_WindowBlocks_Record_2 = sizeof(UI_WindowBlocksAttrArray_Record_2[Storage_Data.StripNum-5]) >> 2;
-	UI_Draw_Window_Record_2(UI_WindowBlocks_Record_2);
+	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Record_2[Storage_Data.StripNum-5]) >> 2;
+	UI_Draw_Window_Record_2(UI_WindowBlocks);
 	DisplayDriver_DrawLine(39,24,39,154,BACKCOLOR_CONTENT_BACK);
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;

@@ -15,21 +15,6 @@
 #define UI_STATE_RERUN (1u)
 
 /******************************************************************************/
-extern uint8 UI_state;
-extern uint8 key_state;
-extern uint8 Exti_lock;
-extern uint8 Key_control;
-extern uint8 Interface_Key;
-extern uint8 key_state_confirm;
-extern uint16 hours,minutes,seconds; 		// ±,∑÷,√Î
-extern uint8 Display_Time;
-extern uint8 Cup_Count;
-extern uint8 doubleClick;
-extern uint8 Read_first;
-extern uint8 Key_record;
-extern float temp;
-
-/******************************************************************************/
 /* Rectangular attribute */
 typedef struct {
 	uint16 startX; 			/* Start X */
@@ -110,11 +95,13 @@ typedef enum {
 	UI_STATE_START_FONT,			/* Interface Start font Display */
 	UI_STATE_RECORD2, 				/* Interface Record2 Display */
 	UI_STATE_SETTING_FONT,			/* Interface Start font Display */
-	UI_STATE_ABOUT_MACHINE,			/* Interface Start font Display */
-	UI_STATE_SYSTEM_TIME,			/* Interface Start font Display */
-	UI_STATE_TIME_PROCESS,			/* Interface Start font Display */
-	UI_STATE_DOWN_TIME_PROCESS,			/* Interface Start font Display */
-	UI_STATE_BLUET_SWITCH_PROCESS,			/* Interface Start font Display */
+	UI_STATE_ABOUT_MACHINE,			/* Interface about machine Display */
+	UI_STATE_SYSTEM_TIME,			/* Interface system time Display */
+	UI_STATE_TIME_PROCESS,			/* Interface time Display */
+	UI_STATE_DOWN_TIME_PROCESS,		/* Interface down time Display */
+	UI_STATE_BLUET_SWITCH_PROCESS,	/* Interface bluetooth switch Display */
+	UI_STATE_IN_CALIBRATION_PROCESS,/* Interface calibration Display */
+	UI_STATE_CALIBRATION_KEY_PROCESS,	/* Interface calibration key Display */
 
 	UI_STATE_MAX_STATE_NUM,
 } UI_STATE;
@@ -149,6 +136,8 @@ extern uint8 Interface_About_Machine(uint16 KeyCode);
 extern void UI_Draw_Window_Quick_font(uint16 blockNum);
 extern uint8 Interface_Down_Time_Process(uint16 blockNum);
 extern uint8 Interface_Bluet_switch_Process(uint16 blockNum);
+extern uint8 Interface_In_Calibration_Process(uint16 blockNum);
+extern uint8 Interface_Calibration_key_Process(uint16 blockNum);
 extern void SignalSample_Moving_Average_Data(uint16 *Data,uint16 Length,uint16 Period);
 
 

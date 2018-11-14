@@ -9,11 +9,6 @@
 #include "Interface_Result_2.h"
 
 /******************************************************************************/
-extern uint8 Page_Flag;
-uint16 UI_WindowBlocks_Result_2 = 0;
-extern const unsigned char gImage_Left_arrow[1050];
-
-/******************************************************************************/
 block_attr_Result block_Result_WCG = {
 	DISABLE,								/*Interface Result rect*/
 	{0},
@@ -207,10 +202,6 @@ block_attr_Result* UI_WindowBlocksAttrArray_Result_2[][8] = {/* Window: Result e
 		&block_Result_UZI},
 {&block_Result_BACK,&block_Result_Left_arrow,&block_Result_WCG,&block_Result_EDG,
 		&block_Result_UZI,&block_Result_XZG},
-//{&block_Result_BACK,&block_Result_Left_arrow,&block_Result_WCG,&block_Result_EDG,
-//		&block_Result_UZI,&block_Result_XZG,&block_Result_PCY},
-//{&block_Result_BACK,&block_Result_Left_arrow,&block_Result_WCG,&block_Result_EDG,
-//		&block_Result_UZI,&block_Result_XZG,&block_Result_PCY,&block_Result_AKD}
 };
 
 /******************************************************************************/
@@ -223,8 +214,8 @@ uint8 Interface_Result_2(uint16 KeyCode)
 	Page_Flag = 1;
 	Exti_lock = DISABLE;
 	Interface_Key = 2;
-	UI_WindowBlocks_Result_2 = sizeof(UI_WindowBlocksAttrArray_Result_2[Cup_Count-7]) >> 2;
-	UI_Draw_Window_Result_2(UI_WindowBlocks_Result_2);
+	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Result_2[Cup_Count-7]) >> 2;
+	UI_Draw_Window_Result_2(UI_WindowBlocks);
 	Exti_lock = ENABLE;
 //	while(!key_state);
 	UI_state = UI_STATE_KEY_STATE;

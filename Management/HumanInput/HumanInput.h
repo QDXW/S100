@@ -12,11 +12,6 @@
 #include "Version_selection.h"
 
 /******************************************************************************/
-uint8 key_open = 1;
-uint8 key_state = 1;
-uint8 Key_control = 1;
-uint8 Interface_Key = 0;
-uint8 key_state_confirm = 0;
 extern const unsigned char gImage_LED_Switch[450];
 
 /******************************************************************************/

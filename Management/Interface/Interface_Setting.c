@@ -8,8 +8,6 @@
 /******************************************************************************/
 #include "Interface_Setting.h"
 
-
-
 /******************************************************************************/
 block_attr_Setting block_Setting_1 = {
 	ENABLE,									/* Parting line */
@@ -107,15 +105,36 @@ block_attr_Setting block_Setting_4 = {
 };
 
 /******************************************************************************/
+block_attr_Setting block_Setting_Calibration = {
+	DISABLE,								/* Parting line */
+	{0},
+
+	DISABLE,									/*Display HZ16X8*/
+	{
+		"Correct",
+		68,  141,
+		White,BACKCOLOR_CONTENT_BAR,
+		White
+	},
+
+	ENABLE,									/*Display Picture*/
+	{
+		gImage_Calibration,
+		71,  92,
+		45,  45
+	},
+};
+
+/******************************************************************************/
 block_attr_Setting_font Setting_block_font = {
-	ENABLE,								/*Display HZ16X8*/
+	ENABLE,									/*Display HZ16X8*/
 	{
 		"About",
 		12,  71,
 		White,Magenta,
 		Baby_Blue
 	},
-	ENABLE,								/*Display HZ16X8*/
+	ENABLE,									/*Display HZ16X8*/
 	{
 		"Time",
 		80,  71,
@@ -123,25 +142,34 @@ block_attr_Setting_font Setting_block_font = {
 		Baby_Blue
 	},
 
-	DISABLE,								/*Display HZ16X8*/
+	ENABLE,									/*Display HZ16X8*/
 	{
 		"ON",
 		24,  141,
 		White,Magenta,
 		White
 	},
+
+	ENABLE,									/*Display HZ16X8*/
+	{
+		"Correct",
+		68,  141,
+		White,Magenta,
+		Baby_Blue
+	},
+
 };
 
 /******************************************************************************/
 block_attr_Setting_font Setting_block_font_2 = {
-	ENABLE,								/*Display HZ16X8*/
+	ENABLE,									/*Display HZ16X8*/
 	{
 		"About",
 		12,  71,
 		White,Magenta,
 		Baby_Blue
 	},
-	ENABLE,								/*Display HZ16X8*/
+	ENABLE,									/*Display HZ16X8*/
 	{
 		"Time",
 		80,  71,
@@ -149,10 +177,18 @@ block_attr_Setting_font Setting_block_font_2 = {
 		Baby_Blue
 	},
 
-	ENABLE,								/*Display HZ16X8*/
+	ENABLE,									/*Display HZ16X8*/
 	{
 		"OFF",
 		20,  141,
+		White,Magenta,
+		Baby_Blue
+	},
+
+	ENABLE,									/*Display HZ16X8*/
+	{
+		"Correct",
+		68,  141,
 		White,Magenta,
 		Baby_Blue
 	},
@@ -165,6 +201,7 @@ block_attr_Setting* UI_WindowBlocksAttrArray_Setting[] = {/* Window: Standard en
 		&block_Setting_2,
 		&block_Setting_3,
 		&block_Setting_4,
+		&block_Setting_Calibration,
 };
 
 block_attr_Setting_font* UI_WindowBlocksAttrArray_Setting_font[] = {
@@ -187,8 +224,8 @@ uint8 Interface_Setting(uint16 KeyCode)
 	Display_Time = 0;
 	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
 	Display_Time = 1;
-	UI_WindowBlocks_Setting = sizeof(UI_WindowBlocksAttrArray_Setting) >> 2;
-	UI_Draw_Window_Setting(UI_WindowBlocks_Setting);
+	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Setting) >> 2;
+	UI_Draw_Window_Setting(UI_WindowBlocks);
 	UI_state = UI_STATE_SETTING_FONT;
 	return state;
 }
@@ -242,15 +279,16 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 	Interface_Key = 5;
 	if(Bluetooth_switch)
 	{
-		UI_WindowBlocks_Setting = sizeof(UI_WindowBlocksAttrArray_Setting_font) >> 2;
-		UI_Draw_Window_Setting_font(UI_WindowBlocks_Setting);
+		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Setting_font) >> 2;
+		UI_Draw_Window_Setting_font(UI_WindowBlocks);
 	}
 	else
 	{
-		UI_WindowBlocks_Setting = sizeof(UI_WindowBlocksAttrArray_Setting_font_2) >> 2;
-		UI_Draw_Window_Setting_font(UI_WindowBlocks_Setting);
+		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Setting_font_2) >> 2;
+		UI_Draw_Window_Setting_font(UI_WindowBlocks);
 	}
 	Exti_lock = ENABLE;
+	Display_Battery = 1;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
 }
@@ -312,7 +350,7 @@ void UI_Draw_Block_Setting_font(block_attr_Setting_font* block)
 		}
 	}
 
-	if (block->char1_enabled)				/* 2. Draw character */
+	if (block->char2_enabled)				/* 2. Draw character */
 	{
 		if(Key_control == 3)
 		{
@@ -327,6 +365,24 @@ void UI_Draw_Block_Setting_font(block_attr_Setting_font* block)
 					block->char2_attr.offsetX,block->char2_attr.offsetY,
 					block->char2_attr.color,block->char2_attr.faceColor,
 					block->char2_attr.str);
+		}
+	}
+
+	if (block->char3_enabled)				/* 2. Draw character */
+	{
+		if(Key_control == 4)
+		{
+			DisplayDriver_Text16_B(
+					block->char3_attr.offsetX,block->char3_attr.offsetY,
+					block->char3_attr.color,block->char3_attr.backColor,
+					block->char3_attr.str);
+		}
+		else
+		{
+			DisplayDriver_Text16_B(
+					block->char3_attr.offsetX,block->char3_attr.offsetY,
+					block->char3_attr.color,block->char3_attr.faceColor,
+					block->char3_attr.str);
 		}
 	}
 	Display_Time = 1;

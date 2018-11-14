@@ -8,8 +8,7 @@
 #define __MANAGEMENT_HOSTCOMM_HOSTCOMM_H_
 
 /******************************************************************************/
-#include "main.h"
-#include "Interface_main.h"
+#include "Version_selection.h"
 
 /******************************************************************************/
 #define HOSTCOMM_USART 				(USART1)
@@ -48,8 +47,8 @@
 #define CRC_ERROR_MASK               (0x40)
 
 /******************************************************************************/
-#define FLASH_CALI_ADDR             (0x12C000 )
-#define FLASH_OFFSET_ADDR           (0x1000 )
+#define FLASH_CALI_ADDR             (0x258000)
+#define FLASH_OFFSET_ADDR           (0x1000)
 
 /******************************************************************************/
 #define DEVICE_AREA_SIZE                   (300)
@@ -122,10 +121,12 @@ enum cmdCode {
 	CMD_CODE_APP_SET_CALC_PARAMETERS = 40,
 
 	CMD_CODE_APP_SEND_C_T = 0x70,
-	CMD_CODE_APP_SEND_RAWDATA = 0x71,
-	CMD_CODE_APP_SEND_QRCODE_DATA = 0x72,
-	CMD_CODE_APP_READ_BOUNDARY = 0x73,
-	CMD_CODE_APP_WRITE_BOUNDARY = 0x74,
+	CMD_CODE_APP_RECEIVE,
+	CMD_CODE_APP_SEND_QRCODE_DATA,
+	CMD_CODE_APP_WRITE_BOUNDARY,
+	CMD_CODE_APP_READ_BOUNDARY,
+	CMD_CODE_APP_SEND_RAWDATA,
+	CMD_CODE_APP_CALIBRATION = 0x76,
 };
 
 /* Bin file attribute */
@@ -156,10 +157,13 @@ extern uint8 HostComm_RecBufAvailable;
 extern uint16 HostComm_RecBufSize;
 
 /******************************************************************************/
+extern void Read_SN (void);
 extern void Send_QRCode (void);
 extern void HostComm_Init(void);
 extern void HostComm_Process(void);
+extern void ReadBoundary_Value(void);
 extern void ReadResistor_Valid (void);
+extern void Set_Fixed_Parameter(void);
 extern uint16 HostComm_Cmd_Respond(void);
 extern void HostComm_Send_LIS(uint8 *data);
 extern void HostComm_Send_Char(uint8 data);

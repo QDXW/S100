@@ -11,9 +11,8 @@
 u16 W25QXX_TYPE = W25Q128;
 
 #define BUFFER_SIZE (sizeof(STORAGE_SINGLE_DATA_STRUCT))
-uint8 Storage_writeBuffer[BUFFER_SIZE];
+uint8 Storage_writeBuffer[BUFFER_SIZE + 10];
 uint8 Storage_readBuffer[BUFFER_SIZE];
-uint16 reagent_Strip[8] = {0};
 
 #define DEFAULT_VALUE (0XFF)
 /* Head */
@@ -371,7 +370,7 @@ uint8 Storage_Record(void)
 /******************************************************************************/
 uint8 Read_Record(void)
 {
-	uint8 Information[12] = 0;
+	uint8 Information[10] = 0;
 	memset(Information,0,sizeof(Information));
 	memset(&Storage_Data, 0, sizeof(STORAGE_SINGLE_DATA_STRUCT));
 	if(Read_first)
@@ -381,12 +380,13 @@ uint8 Read_Record(void)
 		Read_first = 0;
 	}
 
-	if((reagent_Strip[1] > 100) || (reagent_Strip[0] == 0))
+	if((reagent_Strip[0] > 100) || (reagent_Strip[0] == 0))
 	{
 		reagent_Strip[0] = 0;
 		reagent_Strip[1] = 0;
 		return 0;
 	}
+
 	Storage_Read(Storage_writeBuffer,(reagent_Strip[0] *4096),sizeof(STORAGE_SINGLE_DATA_STRUCT));
 	memcpy(&Storage_Data,Storage_writeBuffer,sizeof(STORAGE_SINGLE_DATA_STRUCT));
 }
@@ -398,6 +398,14 @@ void Get_reagent_TestNum(void)
 	memset(Information,0,sizeof(Information));
 	Storage_Read(Information,0x00,8);
 	memcpy(reagent_Strip,Information,8);
+
+	if(reagent_Strip[0] == 65535)
+	{
+		reagent_Strip[0] = 0;
+		reagent_Strip[1] = 0;
+		reagent_Strip[2] = 0;
+	}
+
 	reagent_Strip[0]++;
 	if(reagent_Strip[0] > 100)
 	{

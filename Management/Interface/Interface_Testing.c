@@ -11,11 +11,7 @@
 /******************************************************************************/
 uint16 max = 0,Max_Postion = 0;
 uint8 NowCup_Count = 0,Storage_Data_Conut = 0;
-extern uint8  Cup_Count;
 uint16 BOUNDARY_VALUE = 2500;
-extern uint16 SignalSample_count;
-extern uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT];
-
 uint8 SignalProcess[1024] = {0};
 
 /******************************************************************************/
@@ -91,8 +87,9 @@ uint8 Interface_Testing(uint16 KeyCode)
 		return state;
 	}
 
-	UI_WindowBlocks_Testing = sizeof(UI_WindowBlocksAttrArray_Testing) >> 2;
-	UI_Draw_Window_Testing(UI_WindowBlocks_Testing);
+	Key_record = 2;
+	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Testing) >> 2;
+	UI_Draw_Window_Testing(UI_WindowBlocks);
 	Display_Battery = 0;
 	SystemManage_5V_Enabled();
 	RotationMotor_Input_StepDrive(Foreward_Rotation,(Get_Start_Postion()));
@@ -176,7 +173,7 @@ void Acquisition_Signal(void)
 			SignalProcess_Run();
 
 			/* 判定结果 */
-			Result_Judge();
+			Result_Display();
 			Storage_Data_Conut += 1;
 
 			/* 调试输出 */
@@ -217,7 +214,7 @@ void Acquisition_Signal(void)
 uint16 Get_Start_Postion(void)
 {
 	uint8 Judge_Flag = 2,Trend_FLag = 0,Judge_Trend = 0;
-	uint16 Start_Postion = 0,Postion_Down = 0,i = 0,Postion_Up = 0,Forever_Value = 800;
+	uint16 Start_Postion = 0,Postion_Down = 0,i = 0,Postion_Up = 0;
 
 	while(Judge_Flag--)
 	{
@@ -231,7 +228,7 @@ uint16 Get_Start_Postion(void)
 		/* 3.找到上升沿的位置 */
 		for(i = 0;i < 511;i++)
 		{
-			if((SignalProcess_sampleBuffer[i] < Forever_Value) && (SignalProcess_sampleBuffer[i+1] >= Forever_Value))
+			if((SignalProcess_sampleBuffer[i] < Data_Boundary) && (SignalProcess_sampleBuffer[i+1] >= Data_Boundary))
 			{
 				Trend_FLag = 1;
 				if(Check_Trend(&SignalProcess_sampleBuffer[0],i,Trend_FLag))
@@ -250,7 +247,7 @@ uint16 Get_Start_Postion(void)
 		/* 3.找到下降沿的位置 */
 		for(i = 0;i < 511;i++)
 		{
-			if((SignalProcess_sampleBuffer[i] > Forever_Value) && (SignalProcess_sampleBuffer[i+1] <= Forever_Value))
+			if((SignalProcess_sampleBuffer[i] > Data_Boundary) && (SignalProcess_sampleBuffer[i+1] <= Data_Boundary))
 			{
 				Trend_FLag = 0;
 				if(Check_Trend(&SignalProcess_sampleBuffer[0],i,Trend_FLag))
@@ -600,7 +597,7 @@ void QR_Date_SignalProcess_Alg_data (void)
 }
 
 /******************************************************************************/
-void Result_Judge(void)
+void Result_Display(void)
 {
 	if (SignalProcess_Alg_data.calcInfo.validity == ALG_RESULT_ABNORMAL_C)
 	{

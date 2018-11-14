@@ -8,10 +8,6 @@
 #include "Interface_Insert_Cup.h"
 
 /******************************************************************************/
-extern uint8 Open_time;
-extern const unsigned char gImage_Left_arrow[1050];
-
-/******************************************************************************/
 block_attr_Insert_Cup block_Insert_Cup_Back = {
 	ENABLE,									/*Interface Insert_Cup rect*/
 	{
@@ -52,13 +48,12 @@ block_attr_Insert_Cup* UI_WindowBlocksAttrArray_Insert_Cup[] = {/* Window: Inser
 uint8 Interface_Insert_Cup(uint16 KeyCode)
 {
 	uint8 state = 0;
-	Send_QRCode();
 	QRCode_Trigger_Disabled();
 	SystemManage_5V_Disabled();
 	Interface_Key = 8;
 	Exti_lock = DISABLE;
-	UI_WindowBlocks_Insert_Cup = sizeof(UI_WindowBlocksAttrArray_Insert_Cup) >> 2;
-	UI_Draw_Window_Insert_Cup(UI_WindowBlocks_Insert_Cup);
+	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Insert_Cup) >> 2;
+	UI_Draw_Window_Insert_Cup(UI_WindowBlocks);
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
@@ -89,7 +84,6 @@ void UI_Draw_Block_Insert_Cup(block_attr_Insert_Cup* block)
 	}
 	if (block->char_enabled)				/* 2. Draw character */
 	{
-
 			DisplayDriver_Text16_B(
 					block->char_attr.offsetX,block->char_attr.offsetY,
 					block->char_attr.color,block->char_attr.faceColor,
@@ -104,6 +98,7 @@ uint8 Interface_Down_Time_Process(uint16 blockNum)
 {
 	uint8 state = 0;
 	Interface_Key = 8;
+	Action_time = QR_Date.head.time;
 	Exti_lock = ENABLE;
 	if(Key_record == 1)
 	{
@@ -122,7 +117,7 @@ uint8 Interface_Down_Time_Process(uint16 blockNum)
 			}
 		}
 	}
-
+	Open_time = 0;
 	Exti_lock = DISABLE;
 	UI_state = UI_STATE_TESTING;
 	Delay_ms_SW(100);

@@ -8,11 +8,6 @@
 /******************************************************************************/
 #include "Interface_System_Time.h"
 
-uint16 UI_WindowBlocks_System_Time = 0;
-uint8 Confirm_Count = 1;
-
-START_DATA start_data = {2018,6,19,17,53,25};
-
 /******************************************************************************/
 block_attr_System_Time block_System_Time_Back = {
 	ENABLE,								/*Interface Setting rect*/
@@ -59,12 +54,15 @@ uint8 Interface_System_Time(uint16 KeyCode)
 	uint8 state = 0;
 	Exti_lock = DISABLE;
 	Interface_Key = 7;
-	UI_WindowBlocks_System_Time = sizeof(UI_WindowBlocksAttrArray_System_Time) >> 2;
-	UI_Draw_Window_System_Time(UI_WindowBlocks_System_Time);
-	Line_between();
+	Time_Count = 1;
 	key_state_confirm = 0;
+	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
+	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_System_Time) >> 2;
+	UI_Draw_Window_System_Time(UI_WindowBlocks);
+	Line_between();
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_TIME_PROCESS;
+
 	return state;
 }
 
@@ -89,6 +87,7 @@ void UI_Draw_Block_System_Time(block_attr_System_Time* block)
 				block->rect_attr.color);
 	}
 	Display_Time = 1;
+	key_state = DISABLE;
 }
 
 /******************************************************************************/
@@ -106,146 +105,147 @@ void Line_between(void)
 /******************************************************************************/
 uint8 Interface_Time_Process(uint16 KeyCode)
 {
+	uint8 MBuffer[10] = {0};
 	uint8 state = 0;
 	if(key_state)
 	{
 		switch(key_state_confirm)
 		{
 			case 0:
-				switch(Confirm_Count)
+				switch(Time_Count)
 				{
 					case 1:
-						if((start_data.year < 2128) && (start_data.year > 1900))
+						if((SystemManage_RecordTime.year < 2128) && (SystemManage_RecordTime.year > 1900))
 						{
 							if(Key_control == 2)
 							{
-								start_data.year--;
+								SystemManage_RecordTime.year--;
 							}
 
 							if(Key_control == 1)
 							{
-								start_data.year++;
+								SystemManage_RecordTime.year++;
 							}
 						}
 						else
 						{
-							start_data.year = 2127;
+							SystemManage_RecordTime.year = 2127;
 						}
 						Display_Time_Set();
 					break;
 					case 2:
-						if((start_data.month < 12) && (start_data.month > 0))
+						if((SystemManage_RecordTime.month < 12) && (SystemManage_RecordTime.month > 0))
 						{
 							if(Key_control == 2)
 							{
-								start_data.month--;
-								if(start_data.month < 1)
+								SystemManage_RecordTime.month--;
+								if(SystemManage_RecordTime.month < 1)
 								{
-									start_data.month = 1;
+									SystemManage_RecordTime.month = 1;
 								}
 							}
 
 							if(Key_control == 1)
 							{
-								start_data.month++;
+								SystemManage_RecordTime.month++;
 							}
 						}
 						else
 						{
-							start_data.month = 1;
+							SystemManage_RecordTime.month = 1;
 						}
 						Display_Time_Set();
 					break;
 					case 3:
-						if((start_data.day < 31) && (start_data.day > 0))
+						if((SystemManage_RecordTime.day < 31) && (SystemManage_RecordTime.day > 0))
 						{
 							if(Key_control == 2)
 							{
-								start_data.day--;
-								if(start_data.day < 1)
+								SystemManage_RecordTime.day--;
+								if(SystemManage_RecordTime.day < 1)
 								{
-									start_data.day = 1;
+									SystemManage_RecordTime.day = 1;
 								}
 							}
 
 							if(Key_control == 1)
 							{
-								start_data.day++;
+								SystemManage_RecordTime.day++;
 							}
 						}
 						else
 						{
-							start_data.day = 1;
+							SystemManage_RecordTime.day = 1;
 						}
 						Display_Time_Set();
 					break;
 					case 4:
-						if((start_data.hour < 24) && (start_data.hour >= 0))
+						if((SystemManage_RecordTime.hour < 24) && (SystemManage_RecordTime.hour >= 0))
 						{
 							if(Key_control == 2)
 							{
-								start_data.hour--;
-								if(start_data.hour > 24)
+								SystemManage_RecordTime.hour--;
+								if(SystemManage_RecordTime.hour > 24)
 								{
-									start_data.hour = 0;
+									SystemManage_RecordTime.hour = 0;
 								}
 
 							}
 
 							if(Key_control == 1)
 							{
-								start_data.hour++;
+								SystemManage_RecordTime.hour++;
 							}
 						}
 						else
 						{
-							start_data.hour = 0;
+							SystemManage_RecordTime.hour = 0;
 						}
 						Display_Time_Set();
 					break;
 					case 5:
-						if((start_data.min < 59) && (start_data.min >= 0))
+						if((SystemManage_RecordTime.min < 59) && (SystemManage_RecordTime.min >= 0))
 						{
 							if(Key_control == 2)
 							{
-								start_data.min--;
-								if(start_data.min > 59)
+								SystemManage_RecordTime.min--;
+								if(SystemManage_RecordTime.min > 59)
 								{
-									start_data.min = 0;
+									SystemManage_RecordTime.min = 0;
 								}
 							}
 
 							if(Key_control == 1)
 							{
-								start_data.min++;
+								SystemManage_RecordTime.min++;
 							}
 						}
 						else
 						{
-							start_data.min = 0;
+							SystemManage_RecordTime.min = 0;
 						}
 						Display_Time_Set();
 					break;
 					case 6:
-						if((start_data.sec < 59) && (start_data.sec >= 0))
+						if((SystemManage_RecordTime.sec < 59) && (SystemManage_RecordTime.sec >= 0))
 						{
 							if(Key_control == 2)
 							{
-								start_data.sec--;
-								if(start_data.sec > 59)
+								SystemManage_RecordTime.sec--;
+								if(SystemManage_RecordTime.sec > 59)
 								{
-									start_data.sec = 0;
+									SystemManage_RecordTime.sec = 0;
 								}
 							}
 
 							if(Key_control == 1)
 							{
-								start_data.sec++;
+								SystemManage_RecordTime.sec++;
 							}
 						}
 						else
 						{
-							start_data.sec = 0;
+							SystemManage_RecordTime.sec = 0;
 						}
 						Display_Time_Set();
 					break;
@@ -254,7 +254,7 @@ uint8 Interface_Time_Process(uint16 KeyCode)
 				}
 			break;
 			case 1:
-				Confirm_Count++;
+				Time_Count++;
 				key_state_confirm = DISABLE;
 				Display_Time_Set();
 			break;
@@ -264,16 +264,17 @@ uint8 Interface_Time_Process(uint16 KeyCode)
 		}
 	}
 
-	if(Confirm_Count > 6)
+	if(Time_Count > 6)
 	{
 		UI_state = UI_STATE_SETTING;
-		Confirm_Count = 1;
+		Time_Count = 1;
 		key_state_confirm = DISABLE;
 		Key_control = 1;
-		SystemManage_RTC_Set(start_data.year, start_data.month,start_data.day,start_data.hour,
-				start_data.min,start_data.sec);
+		SystemManage_RTC_Set(SystemManage_RecordTime.year, SystemManage_RecordTime.month,SystemManage_RecordTime.day,SystemManage_RecordTime.hour,
+				SystemManage_RecordTime.min,SystemManage_RecordTime.sec);
 		UI_Draw_Status_Bar();
 	}
+
 	return state;
 }
 
@@ -281,52 +282,54 @@ uint8 Interface_Time_Process(uint16 KeyCode)
 void Display_Time_Set (void)
 {
 	Display_Time = 0;
-	switch(Confirm_Count)
+	switch(Time_Count)
 	{
 	case 6:
-		sprintf(Minute,"%02d",start_data.min);
+		sprintf(Minute,"%02d",SystemManage_RecordTime.min);
 		DisplayDriver_Text16_B(57,97,Black,White,Minute);
 	case 5:
-		sprintf(Hour,"%02d",start_data.hour);
+		sprintf(Hour,"%02d",SystemManage_RecordTime.hour);
 		DisplayDriver_Text16_B(32,97,Black,White,Hour);
 	case 4:
-		sprintf(Day,"%02d",start_data.day);
+		sprintf(Day,"%02d",SystemManage_RecordTime.day);
 		DisplayDriver_Text16_B(90,67,Black,White,Day);
 	case 3:
-		sprintf(Month,"%02d",start_data.month);
+		sprintf(Month,"%02d",SystemManage_RecordTime.month);
 		DisplayDriver_Text16_B(65,67,Black,White,Month);
 	case 2:
-		sprintf(Year,"%02d",start_data.year);
+		sprintf(Year,"%02d",SystemManage_RecordTime.year);
 		DisplayDriver_Text16_B(24,67,Black,White,Year);
 	case 1:
+		break;
+	default:
 		break;
 	}
 
 
-	switch(Confirm_Count)
+	switch(Time_Count)
 	{
 	case 1:
-		sprintf(Year,"%02d",start_data.year);
+		sprintf(Year,"%02d",SystemManage_RecordTime.year);
 		DisplayDriver_Text16_B(24,67,Black,Magenta,Year);
 		break;
 	case 2:
-		sprintf(Month,"%02d",start_data.month);
+		sprintf(Month,"%02d",SystemManage_RecordTime.month);
 		DisplayDriver_Text16_B(65,67,Black,Magenta,Month);
 		break;
 	case 3:
-		sprintf(Day,"%02d",start_data.day);
+		sprintf(Day,"%02d",SystemManage_RecordTime.day);
 		DisplayDriver_Text16_B(90,67,Black,Magenta,Day);
 		break;
 	case 4:
-		sprintf(Hour,"%02d",start_data.hour);
+		sprintf(Hour,"%02d",SystemManage_RecordTime.hour);
 		DisplayDriver_Text16_B(32,97,Black,Magenta,Hour);
 		break;
 	case 5:
-		sprintf(Minute,"%02d",start_data.min);
+		sprintf(Minute,"%02d",SystemManage_RecordTime.min);
 		DisplayDriver_Text16_B(57,97,Black,Magenta,Minute);
 		break;
 	case 6:
-		sprintf(Sec,"%02d",start_data.sec);
+		sprintf(Sec,"%02d",SystemManage_RecordTime.sec);
 		DisplayDriver_Text16_B(82,97,Black,Magenta,Sec);
 		break;
 	default:
@@ -340,19 +343,17 @@ void Display_Time_Set (void)
 void Display_Time_Start (void)
 {
 	Display_Time = 0;
-	sprintf(Year,"%02d",start_data.year);
+	sprintf(Year,"%02d",SystemManage_RecordTime.year);
 	DisplayDriver_Text16_B(24,67,Black,Magenta,Year);
-	sprintf(Month,"%02d",start_data.month);
+	sprintf(Month,"%02d",SystemManage_RecordTime.month);
 	DisplayDriver_Text16_B(65,67,Black,White,Month);
-	sprintf(Day,"%02d",start_data.day);
+	sprintf(Day,"%02d",SystemManage_RecordTime.day);
 	DisplayDriver_Text16_B(90,67,Black,White,Day);
-	sprintf(Hour,"%02d",start_data.hour);
+	sprintf(Hour,"%02d",SystemManage_RecordTime.hour);
 	DisplayDriver_Text16_B(32,97,Black,White,Hour);
-	sprintf(Minute,"%02d",start_data.min);
+	sprintf(Minute,"%02d",SystemManage_RecordTime.min);
 	DisplayDriver_Text16_B(57,97,Black,White,Minute);
-	sprintf(Sec,"%02d",start_data.sec);
+	sprintf(Sec,"%02d",SystemManage_RecordTime.sec);
 	DisplayDriver_Text16_B(82,97,Black,White,Sec);
 	Display_Time = 1;
 }
-
-

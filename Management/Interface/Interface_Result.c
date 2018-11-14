@@ -9,11 +9,6 @@
 #include "Interface_Result.h"
 
 /******************************************************************************/
-uint16 UI_WindowBlocks_Result = 0;
-extern uint8 QRCode_received;
-extern const unsigned char gImage_Right_arrow[1050];
-
-/******************************************************************************/
 block_attr_Result block_Result_Back = {
 	ENABLE,									/*Interface Result rect*/
 	{
@@ -255,14 +250,13 @@ uint8 Interface_Result(uint16 KeyCode)
 	Interface_Key = 2;
 	if(Cup_Count > 6)
 	{
-		UI_WindowBlocks_Result = sizeof(UI_WindowBlocksAttrArray_Result[5]) >> 2;
+		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Result[5]) >> 2;
 	}
 	else
 	{
-		UI_WindowBlocks_Result = sizeof(UI_WindowBlocksAttrArray_Result[Cup_Count-1]) >> 2;
+		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Result[Cup_Count-1]) >> 2;
 	}
-	UI_Draw_Window_Result(UI_WindowBlocks_Result);
-//	MotorDriver_Ctr = 0;
+	UI_Draw_Window_Result(UI_WindowBlocks);
 	Exti_lock = ENABLE;
 	loop:
 	if(Cup_Count < 7 && key_state_confirm != 1)

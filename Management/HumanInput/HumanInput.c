@@ -7,9 +7,7 @@
 #include "HumanInput.h"
 
 /******************************************************************************/
-extern uint8 Power_Open;
 extern uint8 LED = 0,HSEStartUpStatusPwr = 0;
-extern uint8 key_fall_flag,short_key_flag,doubleClick,long_key_flag;
 
 /*******************************************************************************
 	函数名：HumanInput_Init
@@ -346,13 +344,13 @@ void Key_Right(void)
 
 		case 5:
 			key_state_confirm = 0;
-			if(Key_control < 3)
+			if(Key_control < 4)
 			{
 				Key_control += 1;
 			}
 			else
 			{
-				Key_control = 3;
+				Key_control = 4;
 			}
 			key_state = ENABLE;
 		break;
@@ -456,12 +454,6 @@ void SystemManage_Sleep_Process(void)
 	/* 关闭背光  */
 	GPIO_ResetBits(GPIOD,GPIO_Pin_2);
 
-	/* 蓝牙关闭  */
-	GPIO_ResetBits(GPIOE, GPIO_Pin_4);
-
-	/* 蓝牙连接状态清除  */
-	GPIO_ResetBits(GPIOC, GPIO_Pin_9);
-
 	Exti_lock = ENABLE;
 
 //	SystemManage_EnterExitStop();
@@ -485,7 +477,7 @@ void SystemManage_EnterExitStop(void)
 /******************************************************************************/
 void SYSCLKConfig_STOP(void)
 {
-	Exti_lock = DISABLE;
+	Power_Second = 0,Power_Minute = 0,Exti_lock = DISABLE;
 	EXTI_Key_Left_Enable();
 
 	EXTI_Key_Right_Enable();

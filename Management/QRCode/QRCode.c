@@ -9,13 +9,9 @@
 #include "QRCode.h"
 #include "DisplayDriver.h"
 
+/******************************************************************************/
 QRCODE_STRUCT QR_Date;
 QRCODE_STRUCT QR_Date_Analyze;
-uint8 QRCode_received = 0;
-uint8 QRCode_existed = 0;
-uint8 Action_time = 0;
-uint16 QRCode_count = 0;
-extern uint16 SignalProcess_sampleBuffer[512];
 uint8 QRCode_Buffer[QRCODE_BUFFER_SIZE] = 0;
 
 /******************************************************************************/
@@ -165,10 +161,11 @@ void QRCode_Received(void)
 /* Scan interface: receive data from QR code scanner */
 	if (QRCode_received == 1)
 	{
-		if (QRCode_Identify())						/* Decode */
+		if ((QRCode_Identify()) && (1 == QR_Date.head.Model))						/* Decode */
 		{
 			QRCode_received = 1;
 			QRCode_existed = 1;
+			Send_QRCode();
 		}
 		else
 		{
@@ -180,6 +177,12 @@ void QRCode_Received(void)
 			DisplayDriver_Text16_B(27, 75, Red, White, "Invalid QR");
 			DisplayDriver_Text16_B(47, 95, Red, White, "Code");
 			Display_Time = 1;
+
+			/* 清空结构体    1、QR接收结构体   2、处理后QR结构体    3、存储结构体 */
+			Cup_Count = 0;
+			memset(&QR_Date, 0, sizeof(QRCODE_STRUCT));
+			memset(&QR_Date_Analyze, 0, sizeof(QRCODE_STRUCT));
+			memset(&Storage_Data, 0, sizeof(STORAGE_SINGLE_DATA_STRUCT));
 		}
 		QRCode_count = 0;							/* Clear size */
 	}
@@ -220,16 +223,8 @@ uint8 QRCode_Identify(void)
 		Action_time = QR_Date.head.time;
 		Storage_Data.StripNum = QR_Date.head.stripNum;
 
-		switch (10)
+		switch (8)
 		{
-			case 12:
-				memcpy(&QR_Date.ch_data[11], &QRCode_Buffer[headLineSize + 11 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-			case 11:
-				memcpy(&QR_Date.ch_data[10], &QRCode_Buffer[headLineSize + 10 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-			case 10:
-				memcpy(&QR_Date.ch_data[9], &QRCode_Buffer[headLineSize + 9 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
-			case 9:
-				memcpy(&QR_Date.ch_data[8], &QRCode_Buffer[headLineSize + 8 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 8:
 				memcpy(&QR_Date.ch_data[7], &QRCode_Buffer[headLineSize + 7 * singleLineSize], sizeof(QRCODE_SINGLE_LINE));
 			case 7:
@@ -251,7 +246,7 @@ uint8 QRCode_Identify(void)
 				break;
 		}
 
-		for(QR_Date_Conut = 0; QR_Date_Conut < 10; QR_Date_Conut++)
+		for(QR_Date_Conut = 0; QR_Date_Conut < 8; QR_Date_Conut++)
 		{
 			if(QR_Date.ch_data[QR_Date_Conut].Switch_Bool)
 			{
@@ -260,7 +255,7 @@ uint8 QRCode_Identify(void)
 			}
 		}
 
-		for(QR_Date_Conut = 0; QR_Date_Conut < 10; QR_Date_Conut++)
+		for(QR_Date_Conut = 0; QR_Date_Conut < 8; QR_Date_Conut++)
 		{
 			memcpy(&Storage_Data.CH_data[QR_Date_Conut], &QR_Date_Analyze.ch_data[QR_Date_Conut], sizeof(QRCODE_SINGLE_LINE));
 		}

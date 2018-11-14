@@ -8,8 +8,6 @@
 /******************************************************************************/
 #include "Interface_About_Machine.h"
 
-uint16 UI_WindowBlocks_About_Machine = 0;
-
 /******************************************************************************/
 block_attr_About_Machine block_About_Machine_Back = {
 	ENABLE,									/*Interface Insert_Cup rect*/
@@ -28,7 +26,7 @@ block_attr_About_Machine block_About_Machine_Deep_Blue = {
 	ENABLE,									/*Interface Insert_Cup rect*/
 	{
 		4,   50,
-		120, 75,
+		120, 95,
 		Light_Gray
 	},
 
@@ -37,7 +35,7 @@ block_attr_About_Machine block_About_Machine_Deep_Blue = {
 };
 
 /******************************************************************************/
-block_attr_About_Machine block_About_Machine_Deep_Blue_Type = {
+block_attr_About_Machine block_About_Machine_Type = {
 	DISABLE,								/*Display HZ16X8*/
 	{0},
 
@@ -51,14 +49,42 @@ block_attr_About_Machine block_About_Machine_Deep_Blue_Type = {
 };
 
 /******************************************************************************/
+block_attr_About_Machine block_About_Machine_SN = {
+	DISABLE,								/*Display HZ16X8*/
+	{0},
+
+	ENABLE,									/* Display HZ16X8 */
+	{
+		"SN:",
+		5,   76,
+		White,White,
+		White
+	},
+};
+
+/******************************************************************************/
+block_attr_About_Machine block_About_Machine_Data_SN = {
+	DISABLE,								/*Display HZ16X8*/
+	{0},
+
+	ENABLE,									/* Display HZ16X8 */
+	{
+		data_SN,
+		29,   76,
+		White,White,
+		White
+	},
+};
+
+/******************************************************************************/
 block_attr_About_Machine block_About_Machine_HW = {
 	DISABLE,								/*Display HZ16X8*/
 	{0},
 
 	ENABLE,									/* Display HZ16X8 */
 	{
-		"  HW:1.0",
-		5,   75,
+		"HW:1.0",
+		5,   96,
 		White,White,
 		White
 	},
@@ -71,8 +97,8 @@ block_attr_About_Machine block_About_Machine_FW = {
 
 	ENABLE,									/* Display HZ16X8 */
 	{
-		"  FW:1.8.0619",
-		5,   94,
+		"FW:1.8.0619",
+		5,   116,
 		White,White,
 		White
 	},
@@ -83,20 +109,21 @@ block_attr_About_Machine block_About_Machine_FW = {
 block_attr_About_Machine* UI_WindowBlocksAttrArray_About_Machine[] = {/* Window: Insert_Cup entry */
 		&block_About_Machine_Back,
 		&block_About_Machine_Deep_Blue,
-		&block_About_Machine_Deep_Blue_Type,
+		&block_About_Machine_Type,
 		&block_About_Machine_HW,
 		&block_About_Machine_FW,
+		&block_About_Machine_Data_SN,
+		&block_About_Machine_SN,
 };
 
 /******************************************************************************/
 uint8 Interface_About_Machine(uint16 KeyCode)
 {
-	uint8 state = 0;
-	Exti_lock = DISABLE;
-	Interface_Key = 6;
-	key_state_confirm = 0;
-	UI_WindowBlocks_About_Machine = sizeof(UI_WindowBlocksAttrArray_About_Machine) >> 2;
-	UI_Draw_Window_About_Machine(UI_WindowBlocks_About_Machine);
+	uint8 state = 0,Exti_lock = DISABLE;
+	Interface_Key = 6,key_state_confirm = 0;
+	Read_SN();
+	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_About_Machine) >> 2;
+	UI_Draw_Window_About_Machine(UI_WindowBlocks);
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;

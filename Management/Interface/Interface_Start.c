@@ -357,12 +357,6 @@ block_attr_Start* UI_WindowBlocksAttrArray_Start[][13] = {/* Window: Start entry
 {&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
 		&block_Start_3,&block_Start_4,&block_Start_5,&block_Start_6,&block_Start_7,
 		&block_Start_8,&block_Start_9,&block_Start_10},
-//{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
-//		&block_Start_3,&block_Start_4,&block_Start_5,&block_Start_6,&block_Start_7,
-//		&block_Start_8,&block_Start_9,&block_Start_10,&block_Start_11},
-//{&block_Start_Back,&block_Start_Name,&block_Start_Number,&block_Start_1,&block_Start_2,
-//		&block_Start_3,&block_Start_4,&block_Start_5,&block_Start_6,&block_Start_7,
-//		&block_Start_8,&block_Start_9,&block_Start_10,&block_Start_11,&block_Start_12},
 };
 
 /******************************************************************************/
@@ -375,9 +369,11 @@ uint8 Interface_Start(uint16 KeyCode)
 	QRCode_Trigger_Disabled();
 	if(Cup_Count != 0)
 	{
-		UI_WindowBlocks_Start = sizeof(UI_WindowBlocksAttrArray_Start[Cup_Count-1]) >> 2;
-		UI_Draw_Window_Start(UI_WindowBlocks_Start);
+		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Start[Cup_Count-1]) >> 2;
+		UI_Draw_Window_Start(UI_WindowBlocks);
+		Display_Time = 0;
 		DisplayDriver_DrawPic(5, 142,35,15,gImage_Left_arrow);
+		Display_Time = 1;
 		Exti_lock = ENABLE;
 		UI_state = UI_STATE_KEY_STATE;
 	}

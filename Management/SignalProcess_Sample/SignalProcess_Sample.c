@@ -16,13 +16,10 @@ uint8 SignalSample_moveThenSample = 0;
 uint8 SignalSample_endDetection = 0;
 
 /* Number of samples */
-uint16 SignalSample_count = 0;
-extern uint8 NowCup_Count;
 uint16 SignalSample_ProcessCount = 0;
 uint8 SignalSample_startSampling = 0;	 		//always sample
 
 /* Original data */
-uint16 SignalProcess_sampleBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint16 SignalProcess_sampleBuffer_BK[SIGNALSAMPLE_MAX_COUNT] = {0};
 uint8 SignalProcess_outputBuffer[SIGNALSAMPLE_MAX_COUNT] = {0};
 

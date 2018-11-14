@@ -12,9 +12,6 @@
 #include "Version_selection.h"
 
 /******************************************************************************/
-uint16 UI_WindowBlocks_Insert_Cup = 0;
-
-/******************************************************************************/
 typedef struct {
 	uint8 rect_enabled; 				/* Support rectangular or not */
 	rect_attr rect_attr;				/* Rectangular attribute */

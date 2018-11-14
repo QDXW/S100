@@ -12,15 +12,6 @@
 #include "Version_selection.h"
 
 /******************************************************************************/
-extern uint8 Cup_Exist;
-extern uint8 Exti_lock;
-extern uint8 key_state;
-extern uint8 Key_control;
-extern uint8 Interface_Key;
-uint16 UI_WindowBlocks_Quick = 0;
-uint16 UI_WindowBlocks_Quick_font = 0;
-
-/******************************************************************************/
 typedef struct {
 	uint8 rect_enabled; 				/* Support rectangular or not */
 	rect_attr rect_attr;				/* Rectangular attribute */
