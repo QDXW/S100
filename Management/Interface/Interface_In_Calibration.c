@@ -30,14 +30,38 @@ uint8 Interface_In_Calibration_Process(uint16 blockNum)
 	{
 		Display_Time = 0;
 		Lcd_ColorBox(10,52,108,78,White);
-		DisplayDriver_Text16(20,82,BACKCOLOR_CONTENT_BACK,"Successful!");
+		switch(Font_Switch)
+		{
+		case DISPLAY_FONT_ENGLISH:
+			DisplayDriver_Text16(20,82,BACKCOLOR_CONTENT_BACK,"Successful!");
+			break;
+
+		case DISPLAY_FONT_CHINESE:
+			DisplayDriver_Text16(28,82,BACKCOLOR_CONTENT_BACK,"校准成功!");
+			break;
+
+		default:
+			break;
+		}
 		Display_Time = 1;
 	}
 	else
 	{
 		Display_Time = 0;
 		Lcd_ColorBox(10,52,108,78,White);
-		DisplayDriver_Text16(32,82,BACKCOLOR_CONTENT_BACK,"Failure!");
+		switch(Font_Switch)
+		{
+		case DISPLAY_FONT_ENGLISH:
+			DisplayDriver_Text16(28,82,BACKCOLOR_CONTENT_BACK,"Failure!");
+			break;
+
+		case DISPLAY_FONT_CHINESE:
+			DisplayDriver_Text16(28,82,BACKCOLOR_CONTENT_BACK,"校准失败!");
+			break;
+
+		default:
+			break;
+		}
 		Display_Time = 1;
 	}
 
@@ -54,7 +78,19 @@ void UI_Background_Plate_In_Calibration(void)
 	Display_Time = 0;
 	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
 	DisplayDriver_DrawPic(9,84,110,12,gImage_Empty_Step);
-	DisplayDriver_Text16(16,100,White,"Calibrating.");
+	switch(Font_Switch)
+	{
+	case DISPLAY_FONT_ENGLISH:
+		DisplayDriver_Text16(16,100,White,"Calibrating");
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		DisplayDriver_Text16(20,100,White,"正在校准...");
+		break;
+
+	default:
+		break;
+	}
 	Display_Time = 1;
 }
 

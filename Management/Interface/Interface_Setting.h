@@ -15,8 +15,6 @@
 typedef struct {
 	uint8 line_enabled; 				/* Support Parting line or not */
 	line_attr Parting_line_attr;		/* Parting line attribute */
-	uint8 char_enabled;					/* Support char or not */
-	char_attr char_attr;				/* char attribute */
 	uint8 pic_enabled;     				/* Support picture or not */
 	pic_attr pic_attr;     				/* Picture attribute */
 } block_attr_Setting;

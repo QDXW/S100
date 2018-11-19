@@ -15,12 +15,11 @@
 typedef struct {
 	uint8 rect_enabled; 				/* Support rectangular or not */
 	rect_attr rect_attr;				/* Rectangular attribute */
-	uint8 char_enabled;					/* Support char or not */
-	char_attr char_attr;				/* char attribute */
 } block_attr_Insert_Cup;
 
 /******************************************************************************/
 extern void UI_Draw_Window_Insert_Cup(uint16 blockNum);
 extern void Display_Down_Time_Bar(void);
+void UI_Language_Window_Insert_Cup(void);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_INSERT_CUP_H_ */

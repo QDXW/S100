@@ -76,6 +76,70 @@ void DisplayDriver_Text16(unsigned int x, unsigned int y, unsigned int Color,u8 
 	}
 }
 
+/******************************************************************************/
+void DisplayDriver_Text12(unsigned int x, unsigned int y, uint16 fc,
+		uint16 bc,u8 *s)
+{
+	unsigned char i,j;
+	unsigned int k;
+	BlockWrite(0,127,0,159);
+    if(*s != '\0')
+	{
+		while(*s)
+		{
+			if( *s < 0x80 )
+			{
+				k=*s;
+				if (k>32)
+					k-=32;
+				else
+					k=0;
+
+				for(i=0;i<16;i++)
+					for(j=0;j<8;j++)
+					{
+						if(asc16[k*16+i]&(0x80>>j))
+							Lcd_ColorSpot(x+j,y+i,fc);
+					}
+				s++;x+=8;
+			}
+			else
+			{
+				for (k=0;k<HZ16_NUM;k++)
+				{
+					if ((hz12[k].Index[0]==*(s))&&(hz12[k].Index[1]==*(s+1)))
+					{
+						for(i=0;i<12;i++)
+						{
+							for(j=0;j<6;j++)
+							{
+								if(hz12[k].Msk[i*2]&(0x80>>j))
+									Lcd_ColorSpot(x+j,y+i,fc);
+								else
+								{
+									if (fc!=bc)
+										Lcd_ColorSpot(x+j,y+i,bc);
+								}
+							}
+							for(j=0;j<6;j++)
+							{
+								if(hz12[k].Msk[i*2+1]&(0x40>>j))
+									Lcd_ColorSpot(x+j+6,y+i,fc);
+								else
+								{
+									if (fc!=bc)
+										Lcd_ColorSpot(x+j+6,y+i,bc);
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 /*****************************************************************************
 函数名：8X16字体显示
 功能：选定Lcd上指定的区域显示一个或多个字符

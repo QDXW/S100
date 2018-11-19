@@ -21,8 +21,6 @@ uint8 Confirm_CUP = 0;
 typedef struct {
 	uint8 rect_enabled; 				/* Support rectangular or not */
 	rect_attr rect_attr;				/* Rectangular attribute */
-	uint8 char_enabled;					/* Support char or not */
-	char_attr char_attr;				/* char attribute */
 } block_attr_Testing;
 
 /******************************************************************************/
@@ -34,6 +32,8 @@ uint16 Get_sampleBuffer_Max_Value(void);
 void Get_sampleBuffer_Start_Position(void);
 void QR_Date_SignalProcess_Alg_data (void);
 uint16 Get_sampleBuffer_Boundary_Value(void);
+void UI_Language_block_Testing (void);
+void UI_Language_Window_Testing(void);
 extern void UI_Draw_Window_Testing(uint16 blockNum);
 uint16 Check_Trend(uint16 *Signal,uint16 Postion,uint8 Flag);
 uint16 Calculate_Postion_Up(uint16* Signal,uint16 Postion);

@@ -212,7 +212,7 @@ void TIM4_IRQHandler(void)
 			Display_Time = 1;
 		}
 
-		if((!MotorDriver_Ctr) && Display_Time)
+		if((!MotorDriver_Ctr) && Display_Time && Power_Open)
 		{
 			Display_Time = 0;
 			Battery_Display();
@@ -252,8 +252,22 @@ void TIM4_IRQHandler(void)
 		if(1 == Check_Lock)
 		{
 			Lcd_ColorBox(0,20,128, 140,White);
-			DisplayDriver_Text16(8, 52, Red,"Error: 001");
-			DisplayDriver_Text16(8, 70, Red,"Screw motor");
+			switch(Font_Switch)
+			{
+			case DISPLAY_FONT_ENGLISH:
+				DisplayDriver_Text16(8, 42, Red,"Error: 001");
+				DisplayDriver_Text16(16, 62, Red,"Screw motor");
+				break;
+
+			case DISPLAY_FONT_CHINESE:
+				DisplayDriver_Text16(8, 42, Red,"错误: 001");
+				DisplayDriver_Text16(24, 62, Red,"丝杆电机故障");
+				break;
+
+			default:
+				break;
+			}
+
 			Check_flag = 1;
 		}
 
@@ -263,10 +277,23 @@ void TIM4_IRQHandler(void)
 			{
 				Lcd_ColorBox(0,20,128, 140,White);
 			}
-			DisplayDriver_Text16(8, 90, Red,"Error: 002");
-			DisplayDriver_Text16(8, 108, Red,"Rotating motor");
-		}
+			switch(Font_Switch)
+			{
+			case DISPLAY_FONT_ENGLISH:
+				DisplayDriver_Text16(8, 92, Red,"Error: 002");
+				DisplayDriver_Text16(8, 112, Red,"Rotating motor");
+				break;
 
+			case DISPLAY_FONT_CHINESE:
+				DisplayDriver_Text16(8, 92, Red,"错误: 002");
+				DisplayDriver_Text16(24, 112, Red,"转动电机故障");
+				break;
+
+			default:
+				break;
+			}
+
+		}
 		Display_Time = 1;
 		Check_motor = 0;
 	}

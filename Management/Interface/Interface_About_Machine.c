@@ -35,85 +35,9 @@ block_attr_About_Machine block_About_Machine_Deep_Blue = {
 };
 
 /******************************************************************************/
-block_attr_About_Machine block_About_Machine_Type = {
-	DISABLE,								/*Display HZ16X8*/
-	{0},
-
-	ENABLE,									/* Display HZ16X8 */
-	{
-		"Type:RL-S100",
-		5,   56,
-		White,White,
-		White
-	},
-};
-
-/******************************************************************************/
-block_attr_About_Machine block_About_Machine_SN = {
-	DISABLE,								/*Display HZ16X8*/
-	{0},
-
-	ENABLE,									/* Display HZ16X8 */
-	{
-		"SN:",
-		5,   76,
-		White,White,
-		White
-	},
-};
-
-/******************************************************************************/
-block_attr_About_Machine block_About_Machine_Data_SN = {
-	DISABLE,								/*Display HZ16X8*/
-	{0},
-
-	ENABLE,									/* Display HZ16X8 */
-	{
-		data_SN,
-		29,   76,
-		White,White,
-		White
-	},
-};
-
-/******************************************************************************/
-block_attr_About_Machine block_About_Machine_HW = {
-	DISABLE,								/*Display HZ16X8*/
-	{0},
-
-	ENABLE,									/* Display HZ16X8 */
-	{
-		"HW:1.0",
-		5,   96,
-		White,White,
-		White
-	},
-};
-
-/******************************************************************************/
-block_attr_About_Machine block_About_Machine_FW = {
-	DISABLE,								/*Display HZ16X8*/
-	{0},
-
-	ENABLE,									/* Display HZ16X8 */
-	{
-		"FW:1.8.0619",
-		5,   116,
-		White,White,
-		White
-	},
-
-};
-
-/******************************************************************************/
 block_attr_About_Machine* UI_WindowBlocksAttrArray_About_Machine[] = {/* Window: Insert_Cup entry */
 		&block_About_Machine_Back,
 		&block_About_Machine_Deep_Blue,
-		&block_About_Machine_Type,
-		&block_About_Machine_HW,
-		&block_About_Machine_FW,
-		&block_About_Machine_Data_SN,
-		&block_About_Machine_SN,
 };
 
 /******************************************************************************/
@@ -124,6 +48,7 @@ uint8 Interface_About_Machine(uint16 KeyCode)
 	Read_SN();
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_About_Machine) >> 2;
 	UI_Draw_Window_About_Machine(UI_WindowBlocks);
+	UI_Language_Window_About_Machine();
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
@@ -152,6 +77,7 @@ void UI_Draw_Block_About_Machine(block_attr_About_Machine* block)
 				block->rect_attr.width, block->rect_attr.height,
 				block->rect_attr.color);
 	}
+
 	if (block->char_enabled)				/* 2. Draw character */
 	{
 
@@ -163,4 +89,30 @@ void UI_Draw_Block_About_Machine(block_attr_About_Machine* block)
 	key_state = DISABLE;
 }
 
+/******************************************************************************/
+void UI_Language_Window_About_Machine(void)
+{
+	Display_Time = 0;
+	switch(Font_Switch)
+	{
+	case DISPLAY_FONT_ENGLISH:
+		DisplayDriver_Text16(4,56,White,"Type:RL-S100");
+		DisplayDriver_Text16(4,76,White,"SN:");
+		DisplayDriver_Text16(28,76,White,data_SN);
+		DisplayDriver_Text16(4,96,White,"HW:1.0");
+		DisplayDriver_Text16(4,116,White,"FW:1.8.0619");
+		break;
 
+	case DISPLAY_FONT_CHINESE:
+		DisplayDriver_Text16(4,56,White,"型号:RL-S100");
+		DisplayDriver_Text16(4,76,White,"批号");
+		DisplayDriver_Text16(39,76,White,data_SN);
+		DisplayDriver_Text16(4,96,White,"固件版本:1.0");
+		DisplayDriver_Text16(4,116,White,"硬件版本:8.1115");
+		break;
+
+	default:
+		break;
+	}
+	Display_Time = 1;
+}

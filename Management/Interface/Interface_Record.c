@@ -31,7 +31,7 @@ block_attr_Record block_Record_Pname = {
 		White
 	},
 
-	ENABLE,								/* Display HZ16X8 */
+	DISABLE,								/* Display HZ16X8 */
 	{
 		"Name",
 		8,   26,
@@ -39,7 +39,7 @@ block_attr_Record block_Record_Pname = {
 	},
 
 
-	ENABLE,								/* Display HZ16X8 */
+	DISABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.Product_name,
 		41,   26,
@@ -52,7 +52,7 @@ block_attr_Record block_Record_SN = {
 	DISABLE,							/* Interface Record rect */
 	{0},
 
-	ENABLE,								/* Display HZ16X8 */
+	DISABLE,								/* Display HZ16X8 */
 	{
 		"SN",
 		8,   42,
@@ -72,7 +72,7 @@ block_attr_Record block_Record_Time = {
 	DISABLE,							/* Interface Record rect */
 	{0},
 
-	ENABLE,								/* Display HZ16X8 */
+	DISABLE,								/* Display HZ16X8 */
 	{
 		"Time",
 		8,   58,
@@ -231,12 +231,7 @@ uint8 Interface_Record(uint16 KeyCode)
 		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Record[Storage_Data.StripNum-1]) >> 2;
 	}
 	UI_Draw_Window_Record(UI_WindowBlocks);
-	Display_Time = 0;
-	DisplayDriver_DrawLine(6,42,120,42,BACKCOLOR_CONTENT_BACK);
-	DisplayDriver_DrawLine(6,58,120,58,BACKCOLOR_CONTENT_BACK);
-	DisplayDriver_DrawLine(6,90,120,90,BACKCOLOR_CONTENT_BACK);
-	DisplayDriver_DrawLine(39,24,39,154,BACKCOLOR_CONTENT_BACK);
-	Display_Time = 1;
+	UI_Language_Window_Record();
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
@@ -264,6 +259,37 @@ void UI_Draw_Window_Record(uint16 blockNum)
 		}
 	}
 }
+
+/******************************************************************************/
+void UI_Language_Window_Record(void)
+{
+	Display_Time = 0;
+	DisplayDriver_DrawLine(6,42,120,42,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(6,58,120,58,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(6,90,120,90,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(39,24,39,154,BACKCOLOR_CONTENT_BACK);
+	switch(Font_Switch)
+	{
+	case DISPLAY_FONT_ENGLISH:
+		DisplayDriver_Text16(8,26,Black,"Name");
+		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
+		DisplayDriver_Text16(8,42,Black,"SN");
+		DisplayDriver_Text16(8,58,Black,"Time");
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		DisplayDriver_Text16(8,26,Black,"名称");
+		DisplayDriver_Text16(41,26,Black,"毒品检测");
+		DisplayDriver_Text16(8,42,Black,"批号");
+		DisplayDriver_Text16(8,58,Black,"时间");
+		break;
+
+	default:
+		break;
+	}
+	Display_Time = 1;
+}
+
 
 /******************************************************************************/
 void UI_Draw_Block_Record(block_attr_Record* block)

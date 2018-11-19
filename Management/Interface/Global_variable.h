@@ -14,7 +14,7 @@
 /******************************************************************************/
 extern float temp;
 extern uint8 cBuffer[20],tBuffer[10],data_SN[12],SignalBuffer[1024];
-extern uint8 Calibration_channel,Poll_Count,Quick_Down_time;
+extern uint8 Calibration_channel,Poll_Count,Quick_Down_time,Font_Switch;
 extern uint8 key_fall_flag,short_key_flag,long_key_flag,Result_Judge;
 extern uint8 Power_Open,Power_Switch,Bluetooth_switch,Enter_Sleep,Time_Count;
 extern uint8 page_Num,page_tatol,Page_Flag,MotorDriver_Ctr,key_open;

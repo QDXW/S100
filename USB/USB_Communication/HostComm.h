@@ -127,6 +127,7 @@ enum cmdCode {
 	CMD_CODE_APP_READ_BOUNDARY,
 	CMD_CODE_APP_SEND_RAWDATA,
 	CMD_CODE_APP_CALIBRATION = 0x76,
+	APP_SET_5V,
 };
 
 /* Bin file attribute */
@@ -163,6 +164,7 @@ extern void HostComm_Init(void);
 extern void HostComm_Process(void);
 extern void ReadBoundary_Value(void);
 extern void ReadResistor_Valid (void);
+extern void Language_Valid (void);
 extern void Set_Fixed_Parameter(void);
 extern uint16 HostComm_Cmd_Respond(void);
 extern void HostComm_Send_LIS(uint8 *data);

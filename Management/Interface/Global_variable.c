@@ -13,7 +13,7 @@
 /******************************************************************************/
 float temp = 0.0;
 uint8 cBuffer[20] = {0},tBuffer[10] = {0},data_SN[12] = {0};
-uint8 Calibration_channel = 0,Poll_Count = 0;
+uint8 Calibration_channel = 0,Poll_Count = 0,Font_Switch = 0;
 uint8 Page_Flag = 0,page_tatol = 1,page_Num = 1,Time_Count = 1;
 uint8 Check_Lock = 0,Existed_Data = 0,Stop_Mode = 0,Result_Judge = 0;
 uint8 UI_runMode = 0,Check_motor = 0,Exti_lock = DISABLE;

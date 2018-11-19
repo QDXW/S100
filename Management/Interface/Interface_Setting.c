@@ -17,14 +17,6 @@ block_attr_Setting block_Setting_1 = {
 		Thint_Blue
 	},
 
-	DISABLE,								/*Display HZ16X8*/
-	{
-		"Time",
-		74,  71,
-		White,BACKCOLOR_CONTENT_BAR,
-		White
-	},
-
 	ENABLE,								/*Display Picture*/
 	{
 		gImage_PIC_System_Time,
@@ -40,14 +32,6 @@ block_attr_Setting block_Setting_2 = {
 		0,    90,
 		128,  90,
 		Light_Gray
-	},
-
-	DISABLE,								/*Display HZ16X8*/
-	{
-		"About",
-		12,  71,
-		White,BACKCOLOR_CONTENT_BAR,
-		White
 	},
 
 	ENABLE,								/*Display Picture*/
@@ -67,14 +51,6 @@ block_attr_Setting block_Setting_3 = {
 		Thint_Blue
 	},
 
-	DISABLE,								/*Display HZ16X8*/
-	{
-		"BLT",
-		20,  141,
-		White,BACKCOLOR_CONTENT_BAR,
-		White
-	},
-
 	ENABLE,								/*Display Picture*/
 	{
 		gImage_Blutooth_Open,
@@ -92,14 +68,6 @@ block_attr_Setting block_Setting_4 = {
 		Light_Gray
 	},
 
-	DISABLE,								/*Display HZ16X8*/
-	{
-		"BLT",
-		20,  141,
-		White,BACKCOLOR_CONTENT_BAR,
-		White
-	},
-
 	DISABLE,								/*Display Picture*/
 	{0},
 };
@@ -109,90 +77,12 @@ block_attr_Setting block_Setting_Calibration = {
 	DISABLE,								/* Parting line */
 	{0},
 
-	DISABLE,									/*Display HZ16X8*/
-	{
-		"Correct",
-		68,  141,
-		White,BACKCOLOR_CONTENT_BAR,
-		White
-	},
-
 	ENABLE,									/*Display Picture*/
 	{
 		gImage_Calibration,
 		71,  92,
 		45,  45
 	},
-};
-
-/******************************************************************************/
-block_attr_Setting_font Setting_block_font = {
-	ENABLE,									/*Display HZ16X8*/
-	{
-		"About",
-		12,  71,
-		White,Magenta,
-		Baby_Blue
-	},
-	ENABLE,									/*Display HZ16X8*/
-	{
-		"Time",
-		80,  71,
-		White,Magenta,
-		Baby_Blue
-	},
-
-	ENABLE,									/*Display HZ16X8*/
-	{
-		"ON",
-		24,  141,
-		White,Magenta,
-		White
-	},
-
-	ENABLE,									/*Display HZ16X8*/
-	{
-		"Correct",
-		68,  141,
-		White,Magenta,
-		Baby_Blue
-	},
-
-};
-
-/******************************************************************************/
-block_attr_Setting_font Setting_block_font_2 = {
-	ENABLE,									/*Display HZ16X8*/
-	{
-		"About",
-		12,  71,
-		White,Magenta,
-		Baby_Blue
-	},
-	ENABLE,									/*Display HZ16X8*/
-	{
-		"Time",
-		80,  71,
-		White,Magenta,
-		Baby_Blue
-	},
-
-	ENABLE,									/*Display HZ16X8*/
-	{
-		"OFF",
-		20,  141,
-		White,Magenta,
-		Baby_Blue
-	},
-
-	ENABLE,									/*Display HZ16X8*/
-	{
-		"Correct",
-		68,  141,
-		White,Magenta,
-		Baby_Blue
-	},
-
 };
 
 /******************************************************************************/
@@ -204,13 +94,6 @@ block_attr_Setting* UI_WindowBlocksAttrArray_Setting[] = {/* Window: Standard en
 		&block_Setting_Calibration,
 };
 
-block_attr_Setting_font* UI_WindowBlocksAttrArray_Setting_font[] = {
-		&Setting_block_font,
-};
-
-block_attr_Setting_font* UI_WindowBlocksAttrArray_Setting_font_2[] = {
-		&Setting_block_font_2,
-};
 /******************************************************************************/
 void UI_Draw_Block_Setting(block_attr_Setting* block);
 void UI_Draw_Block_Setting_font(block_attr_Setting_font* block);
@@ -253,15 +136,6 @@ void UI_Draw_Block_Setting(block_attr_Setting* block)
 				block->Parting_line_attr.color);
 	}
 
-	if (block->char_enabled)				/* 2. Draw character */
-	{
-
-		DisplayDriver_Text16_B(
-				block->char_attr.offsetX,block->char_attr.offsetY,
-				block->char_attr.color,block->char_attr.faceColor,
-				block->char_attr.str);
-	}
-
 	if (block->pic_enabled)				/* 2. Draw picture */
 	{
 		DisplayDriver_DrawPic(block->pic_attr.offsetX,
@@ -277,116 +151,135 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 	uint8 state = 0;
 	Exti_lock = DISABLE;
 	Interface_Key = 5;
-	if(Bluetooth_switch)
-	{
-		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Setting_font) >> 2;
-		UI_Draw_Window_Setting_font(UI_WindowBlocks);
-	}
-	else
-	{
-		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Setting_font_2) >> 2;
-		UI_Draw_Window_Setting_font(UI_WindowBlocks);
-	}
-	Exti_lock = ENABLE;
-	Display_Battery = 1;
-	UI_state = UI_STATE_KEY_STATE;
-	return state;
-}
-/******************************************************************************/
-void UI_Draw_Window_Setting_font(uint16 blockNum)
-{
-	uint8 blockIndex = 0;					/* Draw blocks one by one */
-	for (blockIndex = 0; blockIndex < blockNum; blockIndex++)
-	{
-		if(Bluetooth_switch)
-		{
-			Lcd_ColorBox(20,141,26,18,BACKCOLOR_CONTENT_BACK);
-			UI_Draw_Block_Setting_font(UI_WindowBlocksAttrArray_Setting_font[blockIndex]);
-		}
-		else
-		{
-			UI_Draw_Block_Setting_font(UI_WindowBlocksAttrArray_Setting_font_2[blockIndex]);
-		}
-	}
-}
 
-/******************************************************************************/
-void UI_Draw_Block_Setting_font(block_attr_Setting_font* block)
-{
 	Display_Time = 0;
-	if (block->char_enabled)				/* 2. Draw character */
+	Lcd_ColorBox(14,71,40,18,BACKCOLOR_CONTENT_BACK);
+	Lcd_ColorBox(14,141,48,18,BACKCOLOR_CONTENT_BACK);
+	switch(Font_Switch)
 	{
+	case DISPLAY_FONT_ENGLISH:
 		if(Key_control == 1)
 		{
-			DisplayDriver_Text16_B(
-					block->char_attr.offsetX,block->char_attr.offsetY,
-					block->char_attr.color,block->char_attr.backColor,
-					block->char_attr.str);
+			DisplayDriver_Text16_B(12,71,White,Magenta,"About");
 		}
 		else
 		{
-			DisplayDriver_Text16_B(
-					block->char_attr.offsetX,block->char_attr.offsetY,
-					block->char_attr.color,block->char_attr.faceColor,
-					block->char_attr.str);
+			DisplayDriver_Text16_B(12,71,White,Baby_Blue,"About");
 		}
-	}
 
-	if (block->char1_enabled)				/* 2. Draw character */
-	{
 		if(Key_control == 2)
 		{
-			DisplayDriver_Text16_B(
-					block->char1_attr.offsetX,block->char1_attr.offsetY,
-					block->char1_attr.color,block->char1_attr.backColor,
-					block->char1_attr.str);
+			DisplayDriver_Text16_B(80,71,White,Magenta,"Time");
 		}
 		else
 		{
-			DisplayDriver_Text16_B(
-					block->char1_attr.offsetX,block->char1_attr.offsetY,
-					block->char1_attr.color,block->char1_attr.faceColor,
-					block->char1_attr.str);
+			DisplayDriver_Text16_B(80,71,White,Baby_Blue,"Time");
 		}
-	}
 
-	if (block->char2_enabled)				/* 2. Draw character */
-	{
+		if(Bluetooth_switch)
+		{
+			DisplayDriver_Text16_B(24,141,White,White,"ON");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(20,141,White,Baby_Blue,"OFF");
+		}
+
 		if(Key_control == 3)
 		{
-			DisplayDriver_Text16_B(
-					block->char2_attr.offsetX,block->char2_attr.offsetY,
-					block->char2_attr.color,block->char2_attr.backColor,
-					block->char2_attr.str);
+			if(Bluetooth_switch)
+			{
+				DisplayDriver_Text16_B(24,141,White,Magenta,"ON");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(20,141,White,Magenta,"OFF");
+			}
 		}
 		else
 		{
-			DisplayDriver_Text16_B(
-					block->char2_attr.offsetX,block->char2_attr.offsetY,
-					block->char2_attr.color,block->char2_attr.faceColor,
-					block->char2_attr.str);
+			if(Bluetooth_switch)
+			{
+				DisplayDriver_Text16_B(24,141,White,White,"ON");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(20,141,White,Baby_Blue,"OFF");
+			}
 		}
-	}
 
-	if (block->char3_enabled)				/* 2. Draw character */
-	{
 		if(Key_control == 4)
 		{
-			DisplayDriver_Text16_B(
-					block->char3_attr.offsetX,block->char3_attr.offsetY,
-					block->char3_attr.color,block->char3_attr.backColor,
-					block->char3_attr.str);
+			DisplayDriver_Text16_B(68,141,White,Magenta,"Correct");
 		}
 		else
 		{
-			DisplayDriver_Text16_B(
-					block->char3_attr.offsetX,block->char3_attr.offsetY,
-					block->char3_attr.color,block->char3_attr.faceColor,
-					block->char3_attr.str);
+			DisplayDriver_Text16_B(68,141,White,Baby_Blue,"Correct");
 		}
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		if(Key_control == 1)
+		{
+			DisplayDriver_Text16_B(0,71,White,Magenta,"关于本机");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(0,71,White,Baby_Blue,"关于本机");
+		}
+
+		if(Key_control == 2)
+		{
+			DisplayDriver_Text16_B(64,71,White,Magenta,"系统时间");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(64,71,White,Baby_Blue,"系统时间");
+		}
+
+		if(Key_control == 3)
+		{
+			if(Bluetooth_switch)
+			{
+				DisplayDriver_Text16_B(16,141,White,Magenta,"打开");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(16,141,White,Magenta,"关闭");
+			}
+		}
+		else
+		{
+			if(Bluetooth_switch)
+			{
+				DisplayDriver_Text16_B(16,141,White,White,"打开");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(16,141,White,Baby_Blue,"关闭");
+			}
+		}
+
+		if(Key_control == 4)
+		{
+			DisplayDriver_Text16_B(80,141,White,Magenta,"校准");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(80,141,White,Baby_Blue,"校准");
+		}
+		break;
+
+	default:
+		break;
 	}
+
 	Display_Time = 1;
+	Exti_lock = ENABLE;
+	Display_Battery = 1;
 	key_state = DISABLE;
+	UI_state = UI_STATE_KEY_STATE;
+	return state;
 }
 
 /******************************************************************************/

@@ -36,7 +36,7 @@ block_attr_Result block_Result_Item = {
 		BACKCOLOR_CONTENT_BAR
 	},
 
-	ENABLE,									/*Display HZ16X8*/
+	DISABLE,									/*Display HZ16X8*/
 	{
 		"Item",
 		9,   25,
@@ -204,7 +204,7 @@ block_attr_Result block_Result_Right_arrow = {
 		White
 	},
 
-	ENABLE,									/*Display HZ16X8*/
+	DISABLE,									/*Display HZ16X8*/
 	{
 		"Result",
 		60,  25,
@@ -257,6 +257,7 @@ uint8 Interface_Result(uint16 KeyCode)
 		UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Result[Cup_Count-1]) >> 2;
 	}
 	UI_Draw_Window_Result(UI_WindowBlocks);
+	UI_Language_Window_Result();
 	Exti_lock = ENABLE;
 	loop:
 	if(Cup_Count < 7 && key_state_confirm != 1)
@@ -292,6 +293,28 @@ void UI_Draw_Window_Result(uint16 blockNum)
 			}
 		}
 	}
+}
+
+/******************************************************************************/
+void UI_Language_Window_Result(void)
+{
+	Display_Time = 0;
+	switch(Font_Switch)
+	{
+	case DISPLAY_FONT_ENGLISH:
+		DisplayDriver_Text16_B(9,25,Black,Dark_Blue,"Item");
+		DisplayDriver_Text16_B(60,  25,Black,Dark_Blue,"Result");
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		DisplayDriver_Text16_B(9,25,Black,Dark_Blue,"Ãû³Æ");
+		DisplayDriver_Text16_B(60,  25,Black,Dark_Blue,"½á¹û");
+		break;
+
+	default:
+		break;
+	}
+	Display_Time = 1;
 }
 
 /******************************************************************************/

@@ -23,6 +23,7 @@ typedef struct {
 
 /******************************************************************************/
 extern void UI_Draw_Window_Start(uint16 blockNum);
+void UI_Language_Window_Start(void);
 void UI_Draw_Start_font(uint16 blockNum);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_START_H_ */

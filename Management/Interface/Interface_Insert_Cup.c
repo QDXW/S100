@@ -15,9 +15,6 @@ block_attr_Insert_Cup block_Insert_Cup_Back = {
 		128, 160,
 		BACKCOLOR_CONTENT_BACK
 	},
-
-	DISABLE,								/*Display HZ16X8*/
-	{0},
 };
 
 /******************************************************************************/
@@ -26,14 +23,6 @@ block_attr_Insert_Cup block_Insert_Cup_Cup = {
 	{
 		8,   50,
 		112, 80,
-		White
-	},
-
-	ENABLE,									/* Display HZ16X8 */
-	{
-		"Insert Cup",
-		20,   75,
-		Black,White,
 		White
 	},
 };
@@ -54,6 +43,7 @@ uint8 Interface_Insert_Cup(uint16 KeyCode)
 	Exti_lock = DISABLE;
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Insert_Cup) >> 2;
 	UI_Draw_Window_Insert_Cup(UI_WindowBlocks);
+	UI_Language_Window_Insert_Cup();
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
@@ -73,6 +63,26 @@ void UI_Draw_Window_Insert_Cup(uint16 blockNum)
 }
 
 /******************************************************************************/
+void UI_Language_Window_Insert_Cup(void)
+{
+	Display_Time = 0;
+	switch(Font_Switch)
+	{
+	case DISPLAY_FONT_ENGLISH:
+		DisplayDriver_Text16_B(20,75,Black,White,"Insert Cup");
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		DisplayDriver_Text16_B(32,82,Baby_Blue,White,"²åÈë±­×Ó");
+		break;
+
+	default:
+		break;
+	}
+	Display_Time = 1;
+}
+
+/******************************************************************************/
 void UI_Draw_Block_Insert_Cup(block_attr_Insert_Cup* block)
 {
 	Display_Time = 0;
@@ -81,13 +91,6 @@ void UI_Draw_Block_Insert_Cup(block_attr_Insert_Cup* block)
 		Lcd_ColorBox(block->rect_attr.startX, block->rect_attr.startY,
 				block->rect_attr.width, block->rect_attr.height,
 				block->rect_attr.color);
-	}
-	if (block->char_enabled)				/* 2. Draw character */
-	{
-			DisplayDriver_Text16_B(
-					block->char_attr.offsetX,block->char_attr.offsetY,
-					block->char_attr.color,block->char_attr.faceColor,
-					block->char_attr.str);
 	}
 	Display_Time = 1;
 	key_state = DISABLE;

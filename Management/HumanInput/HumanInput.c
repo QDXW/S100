@@ -306,6 +306,11 @@ void Key_Confirm(void)
 
 			short_key_flag = 0;
 		}
+
+		if(!Power_Open && Exti_lock && long_key_flag)
+		{
+			SystemManage_CheckPowerOff();
+		}
 	}
 }
 

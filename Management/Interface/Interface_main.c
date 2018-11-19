@@ -27,14 +27,6 @@ block_attr block_standard = {
 			45, 45
 		},
 
-		ENABLE,									/* Display HZ16X8 */
-		{
-			"Standard",
-			0,  71,
-			White,Magenta,
-			Baby_Blue
-		},
-
 		ENABLE,									/* Parting line */
 		{
 			63,  20,
@@ -53,14 +45,6 @@ block_attr block_quick = {
 			gImage_PIC_Quick,
 			71,  24,
 			45,  45
-		},
-
-		ENABLE,									/* Display HZ16X8 */
-		{
-			"Quick",
-			74,  71,
-			White,Magenta,
-			Baby_Blue
 		},
 
 		ENABLE,									/* Parting line */
@@ -83,14 +67,6 @@ block_attr block_record = {
 			45, 45
 		},
 
-		ENABLE,									/* Display HZ16X8 */
-		{
-			"Record",
-			12,  141,
-			White,Magenta,
-			Baby_Blue
-		},
-
 		ENABLE,									/* Parting line */
 		{
 			0,    90,
@@ -109,14 +85,6 @@ block_attr block_settings = {
 			gImage_PIC_Setting,
 			71, 94,
 			45, 45
-		},
-
-		ENABLE,									/* Display HZ16X8 */
-		{
-			"Settings",
-			65,  141,
-			White,Magenta,
-			Baby_Blue
 		},
 
 		ENABLE,									/* Parting line */
@@ -228,6 +196,7 @@ uint8 Interface_Main(uint16 KeyCode)
 	key_state = 1,Enter_Sleep = 1,Read_first = 1;
 	QRCode_Trigger_Disabled();
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Main) >> 2;
+//	DisplayDriver_Text12(10,50,White,Magenta,"标准");
 	UI_Draw_Window(UI_WindowBlocks);
 	UI_state = UI_STATE_MAIN_FONT;
 	return state;
@@ -268,14 +237,6 @@ void UI_Draw_Block(block_attr* block)
 				block->Parting_line_attr.endX,
 				block->Parting_line_attr.endY,
 				block->Parting_line_attr.color);
-	}
-
-	if (block->char_enabled)					/* 4. Draw character */
-	{
-			DisplayDriver_Text16_B(
-					block->char_attr.offsetX,block->char_attr.offsetY,
-					block->char_attr.color,block->char_attr.faceColor,
-					block->char_attr.str);
 	}
 	Display_Time = 1;
 }
@@ -620,77 +581,112 @@ void UI_Draw_Window_font(uint16 blockNum)
 void UI_Draw_Block_font(block_font_attr* block)
 {
 	Display_Time = 0;
-	if (block->char1_enabled)				/* 2. Draw character */
+	switch(Font_Switch)
 	{
-		if(Key_control == 1)
+	case DISPLAY_FONT_ENGLISH:
+		if (block->char1_enabled)				/* 2. Draw character */
 		{
-			DisplayDriver_Text16_B(
-					block->char1_attr.offsetX,block->char1_attr.offsetY,
-					block->char1_attr.color,block->char1_attr.backColor,
-					block->char1_attr.str);
+			if(Key_control == 1)
+			{
+				DisplayDriver_Text16_B(0,71,White,Magenta,"Standard");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(0,71,White,Baby_Blue,"Standard");
+			}
 		}
-		else
+
+		if (block->char2_enabled)				/* 2. Draw character */
 		{
-			DisplayDriver_Text16_B(
-					block->char1_attr.offsetX,block->char1_attr.offsetY,
-					block->char1_attr.color,block->char1_attr.faceColor,
-					block->char1_attr.str);
+			if(Key_control == 2)
+			{
+				DisplayDriver_Text16_B(74,71,White,Magenta,"Quick");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(74,71,White,Baby_Blue,"Quick");
+			}
 		}
+
+		if (block->char3_enabled)				/* 2. Draw character */
+		{
+			if(Key_control == 3)
+			{
+				DisplayDriver_Text16_B(12,141,White,Magenta,"Record");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(12,141,White,Baby_Blue,"Record");
+			}
+		}
+
+		if (block->char4_enabled)				/* 2. Draw character */
+		{
+			if(Key_control == 4)
+			{
+				DisplayDriver_Text16_B(65,141,White,Magenta,"Settings");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(65,141,White,Baby_Blue,"Settings");
+			}
+		}
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		if (block->char1_enabled)				/* 2. Draw character */
+		{
+			if(Key_control == 1)
+			{
+				DisplayDriver_Text16_B(0,71,White,Magenta,"标准检测");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(0,71,White,Baby_Blue,"标准检测");
+			}
+		}
+
+		if (block->char2_enabled)				/* 2. Draw character */
+		{
+			if(Key_control == 2)
+			{
+				DisplayDriver_Text16_B(64,71,White,Magenta,"快速检测");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(64,71,White,Baby_Blue,"快速检测");
+			}
+		}
+
+		if (block->char3_enabled)				/* 2. Draw character */
+		{
+			if(Key_control == 3)
+			{
+				DisplayDriver_Text16_B(16,141,White,Magenta,"记录");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(16,141,White,Baby_Blue,"记录");
+			}
+		}
+
+		if (block->char4_enabled)				/* 2. Draw character */
+		{
+			if(Key_control == 4)
+			{
+				DisplayDriver_Text16_B(80,141,White,Magenta,"设置");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(80,141,White,Baby_Blue,"设置");
+			}
+		}
+		break;
+
+	default:
+		break;
 	}
 
-	if (block->char2_enabled)				/* 2. Draw character */
-	{
-		if(Key_control == 2)
-		{
-			DisplayDriver_Text16_B(
-					block->char2_attr.offsetX,block->char2_attr.offsetY,
-					block->char2_attr.color,block->char2_attr.backColor,
-					block->char2_attr.str);
-		}
-		else
-		{
-			DisplayDriver_Text16_B(
-					block->char2_attr.offsetX,block->char2_attr.offsetY,
-					block->char2_attr.color,block->char2_attr.faceColor,
-					block->char2_attr.str);
-		}
-	}
-
-	if (block->char3_enabled)				/* 2. Draw character */
-	{
-		if(Key_control == 3)
-		{
-			DisplayDriver_Text16_B(
-					block->char3_attr.offsetX,block->char3_attr.offsetY,
-					block->char3_attr.color,block->char3_attr.backColor,
-					block->char3_attr.str);
-		}
-		else
-		{
-			DisplayDriver_Text16_B(
-					block->char3_attr.offsetX,block->char3_attr.offsetY,
-					block->char3_attr.color,block->char3_attr.faceColor,
-					block->char3_attr.str);
-		}
-	}
-
-	if (block->char4_enabled)				/* 2. Draw character */
-	{
-		if(Key_control == 4)
-		{
-			DisplayDriver_Text16_B(
-					block->char4_attr.offsetX,block->char4_attr.offsetY,
-					block->char4_attr.color,block->char4_attr.backColor,
-					block->char4_attr.str);
-		}
-		else
-		{
-			DisplayDriver_Text16_B(
-					block->char4_attr.offsetX,block->char4_attr.offsetY,
-					block->char4_attr.color,block->char4_attr.faceColor,
-					block->char4_attr.str);
-		}
-	}
 	Display_Time = 1;
 	key_state = DISABLE;
 }
@@ -769,88 +765,76 @@ void Battery_Display (void)
 
 	Lcd_ColorBox(103,7,15,8,BACKCOLOR_CONTENT_BAR);
 
-//	if((GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12)) && (temp < 3.6))
-//	{
-//		DisplayDriver_DrawPic(88,2,11,17,gImage_statusbar_charging);
-//		for(i= 104;i<117;i++)
-//		{
-//			Lcd_ColorBox(i,8,2,6,0x18FF);
-//		}
-//		return;
-//	}
-//	else
-//	{
-		if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
-		{
-			DisplayDriver_DrawPic(88,2,11,17,gImage_statusbar_charging);
+	if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
+	{
+		DisplayDriver_DrawPic(88,2,11,17,gImage_statusbar_charging);
 
-			for(i= 104;i<117;i++)
-			{
-				Lcd_ColorBox(i,8,2,6,0x18FF);
-			}
-			return;
+		for(i= 104;i<117;i++)
+		{
+			Lcd_ColorBox(i,8,2,6,0x18FF);
+		}
+		return;
+	}
+	else
+	{
+		Lcd_ColorBox(88,1,13,19,BACKCOLOR_CONTENT_BAR);
+	}
+
+	if(temp > 4.1)
+	{
+		for(i= 104;i<118;)
+		{
+			Lcd_ColorBox(i,8,2,6,White);
+			i += 3;
+		}
+	}
+	else if(temp > 4.0)
+	{
+		for(i= 104;i<116;)
+		{
+			Lcd_ColorBox(i,8,2,6,White);
+			i += 3;
+		}
+	}
+	else if(temp > 3.9)
+	{
+		for(i= 104;i<112;)
+		{
+			Lcd_ColorBox(i,8,2,6,White);
+			i += 3;
+		}
+	}
+	else if(temp > 3.8)
+	{
+		for(i= 104;i<108;)
+		{
+			Lcd_ColorBox(i,8,2,6,White);
+			i += 3;
+		}
+	}
+	else if(temp > 3.7)
+	{
+		for(i= 104;i<106;)
+		{
+			Lcd_ColorBox(i,8,2,6,White);
+			i += 3;
+		}
+	}
+	else if(temp > 3.65)
+	{
+		Lcd_ColorBox(103,7,1,8,Red);
+	}
+	else
+	{
+		if((UI_state == UI_STATE_TESTING) || (UI_state == UI_STATE_RESULT))
+		{
+
 		}
 		else
 		{
-			Lcd_ColorBox(88,1,13,19,BACKCOLOR_CONTENT_BAR);
+			SystemManage_CheckPowerOff();
 		}
-
-		if(temp > 4.1)
-		{
-			for(i= 104;i<118;)
-			{
-				Lcd_ColorBox(i,8,2,6,White);
-				i += 3;
-			}
-		}
-		else if(temp > 4.0)
-		{
-			for(i= 104;i<116;)
-			{
-				Lcd_ColorBox(i,8,2,6,White);
-				i += 3;
-			}
-		}
-		else if(temp > 3.9)
-		{
-			for(i= 104;i<112;)
-			{
-				Lcd_ColorBox(i,8,2,6,White);
-				i += 3;
-			}
-		}
-		else if(temp > 3.8)
-		{
-			for(i= 104;i<108;)
-			{
-				Lcd_ColorBox(i,8,2,6,White);
-				i += 3;
-			}
-		}
-		else if(temp > 3.7)
-		{
-			for(i= 104;i<106;)
-			{
-				Lcd_ColorBox(i,8,2,6,White);
-				i += 3;
-			}
-		}
-		else if(temp > 3.65)
-		{
-			Lcd_ColorBox(103,7,1,8,Red);
-		}
-		else
-		{
-			if((UI_state == UI_STATE_TESTING) || (UI_state == UI_STATE_RESULT))
-			{
-
-			}
-			else
-			{
-				SystemManage_CheckPowerOff();
-			}
-		}
-//	}
+	}
 }
 
 /******************************************************************************/

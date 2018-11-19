@@ -52,9 +52,6 @@ void main(void)
 
 	while(1)
 	{
-
-//		SignalSample_SampleStrip();
-
 		HostComm_Process();
 
 		Interface_Process(0);			/* User Interface */
@@ -108,7 +105,6 @@ void Status_Init(void)
 	RotationMotor_SelfCheck_StepDrive();
 	SystemManage_5V_Disabled();
 	Set_Fixed_Parameter();
-	Power_Open = 1;
 	Enter_Sleep = 1;
 	Display_Time = 1;
 	if(Check_Lock)
@@ -123,6 +119,7 @@ void Status_Init(void)
 	UI_Draw_Status_Bar();
 	Display_Time = 0;
 	Battery_Empty_ICO();
+	Power_Open = 1;
 }
 
 /******************************************************************************/
@@ -156,7 +153,6 @@ void Debug_Function(void)
 //	Display_Time = 0;
 //	DisplayDriver_Text16(4, 110, Black,MBuffer);
 //	Display_Time = 1;
-
 
 	memcpy(MBuffer,insk,4);
 

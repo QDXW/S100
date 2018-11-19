@@ -22,8 +22,6 @@ block_attr_Testing block_Testing_1 = {
 		128, 140,
 		BACKCOLOR_CONTENT_BACK
 	},
-	DISABLE,							/* Display HZ16X8 */
-	{0},
 };
 
 /******************************************************************************/
@@ -33,14 +31,6 @@ block_attr_Testing block_Testing_2 = {
 		16,   63,
 		96, 15,
 		White
-	},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		"testing...",
-		26,   80,
-		Black,BACKCOLOR_CONTENT_BACK,
-		BACKCOLOR_CONTENT_BACK
 	},
 };
 
@@ -68,7 +58,21 @@ uint8 Interface_Testing(uint16 KeyCode)
 		{
 			Display_Time = 0;
 			Lcd_ColorBox(0,20,128, 140,White);
-			DisplayDriver_Text16(24, 80, Red,"No Battery!");
+
+			switch(Font_Switch)
+			{
+			case DISPLAY_FONT_ENGLISH:
+				DisplayDriver_Text16(24, 80, Red,"No Battery!");
+				break;
+
+			case DISPLAY_FONT_CHINESE:
+				DisplayDriver_Text16(36, 80, Red,"无电池!");
+				break;
+
+			default:
+				break;
+			}
+
 			Display_Time = 1;
 			UI_state = UI_STATE_MAIN_WINDOW;
 			Delay_ms_SW(1500);
@@ -80,7 +84,19 @@ uint8 Interface_Testing(uint16 KeyCode)
 	{
 		Display_Time = 0;
 		Lcd_ColorBox(0,20,128, 140,White);
-		DisplayDriver_Text16(11, 80, Red,"Low battery!");
+		switch(Font_Switch)
+		{
+		case DISPLAY_FONT_ENGLISH:
+			DisplayDriver_Text16(11, 80, Red,"Low battery!");
+			break;
+
+		case DISPLAY_FONT_CHINESE:
+			DisplayDriver_Text16(28,80, Red,"电量过低!");
+			break;
+
+		default:
+			break;
+		}
 		Display_Time = 1;
 		UI_state = UI_STATE_MAIN_WINDOW;
 		Delay_ms_SW(1500);
@@ -90,6 +106,7 @@ uint8 Interface_Testing(uint16 KeyCode)
 	Key_record = 2;
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Testing) >> 2;
 	UI_Draw_Window_Testing(UI_WindowBlocks);
+	UI_Language_Window_Testing();
 	Display_Battery = 0;
 	SystemManage_5V_Enabled();
 	RotationMotor_Input_StepDrive(Foreward_Rotation,(Get_Start_Postion()));
@@ -112,6 +129,26 @@ uint8 Interface_Testing(uint16 KeyCode)
 void UI_Draw_block_Testing(block_attr_Testing* block);
 
 /******************************************************************************/
+void UI_Language_Window_Testing(void)
+{
+	Display_Time = 0;
+	switch(Font_Switch)
+	{
+	case DISPLAY_FONT_ENGLISH:
+		DisplayDriver_Text16(26,80,White,"testing...");
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		DisplayDriver_Text16(20,84,White,"正在测试...");
+		break;
+
+	default:
+		break;
+	}
+	Display_Time = 1;
+}
+
+/******************************************************************************/
 void UI_Draw_Window_Testing(uint16 blockNum)
 {
 	uint8 blockIndex = 0;					/* Draw blocks one by one */
@@ -130,13 +167,6 @@ void UI_Draw_block_Testing(block_attr_Testing* block)
 		Lcd_ColorBox(block->rect_attr.startX, block->rect_attr.startY,
 				block->rect_attr.width, block->rect_attr.height,
 				block->rect_attr.color);
-	}
-	if (block->char_enabled)				/* 2. Draw character */
-	{
-		DisplayDriver_Text16_B(
-				block->char_attr.offsetX,block->char_attr.offsetY,
-				block->char_attr.color,block->char_attr.faceColor,
-				block->char_attr.str);
 	}
 	Display_Time = 1;
 	key_state = DISABLE;

@@ -15,32 +15,20 @@ block_attr_Quick block_Quick_1 = {
 		BACKCOLOR_CONTENT_BACK
 	},
 
-	DISABLE,							/* Display HZ16X8 */
-	{0},
-
 	DISABLE,							/* Display Picture */
 	{0},
 };
 
 /******************************************************************************/
 block_attr_Quick block_Quick_2 = {
-	ENABLE,								/* Interface Quick rect */
+	ENABLE,									/* Interface Quick rect */
 	{
 		7,   52,
 		114, 78,
 		White
 	},
 
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		"Scan the QR",
-		15,   72,
-		Black,White,
-		White
-	},
-
-	DISABLE,							/* Display Picture */
+	DISABLE,								/* Display Picture */
 	{0},
 };
 
@@ -49,14 +37,6 @@ block_attr_Quick block_Quick_4 = {
 	DISABLE,							/*Interface Quick rect */
 	{0},
 
-	ENABLE,								/*Display HZ16X8*/
-	{
-		"code",
-		52,   90,
-		Black,White,
-		White
-	},
-
 	ENABLE,								/* Display Picture */
 	{
 		gImage_Left_arrow,
@@ -64,41 +44,6 @@ block_attr_Quick block_Quick_4 = {
 		35, 15
 	}
 };
-
-/******************************************************************************/
-block_attr_Quick block_Quick_6 = {
-	DISABLE,							/*Interface Quick rect */
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		"code",
-		52,   88,
-		Red,White,
-		White
-	},
-
-	DISABLE,							/* Display Picture */
-	{0},
-};
-
-/******************************************************************************/
-block_attr_Quick block_Quick_7 = {
-	DISABLE,							/*Interface Quick rect */
-	{0},
-
-	ENABLE,								/*Display HZ16X8*/
-	{
-		"Scan Again!",
-		20,   108,
-		Red,White,
-		White
-	},
-
-	DISABLE,							/* Display Picture */
-	{0},
-};
-
 
 /******************************************************************************/
 block_attr_Quick* UI_WindowBlocksAttrArray_Quick[] = {/* Window: Standard entry */
@@ -121,6 +66,7 @@ uint8 Interface_Quick(uint16 KeyCode)
 	Interface_Key = 3;
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Quick) >> 2;
 	UI_Draw_Window_Quick(UI_WindowBlocks);
+	UI_Language_Window_Quick();
 	QRCode_Trigger_Enabled();
 	Exti_lock = ENABLE;
 	while (!QRCode_received)
@@ -180,14 +126,6 @@ void UI_Draw_Block_Quick(block_attr_Quick* block)
 				block->rect_attr.width, block->rect_attr.height,
 				block->rect_attr.color);
 	}
-	if (block->char_enabled)				/* 2. Draw character */
-	{
-
-			DisplayDriver_Text16_B(
-					block->char_attr.offsetX,block->char_attr.offsetY,
-					block->char_attr.color,block->char_attr.faceColor,
-					block->char_attr.str);
-	}
 
 	if (block->pic_enabled)						/* 2. Draw picture */
 	{
@@ -197,4 +135,25 @@ void UI_Draw_Block_Quick(block_attr_Quick* block)
 	}
 	Display_Time = 1;
 	key_state = DISABLE;
+}
+
+/******************************************************************************/
+void UI_Language_Window_Quick(void)
+{
+	Display_Time = 0;
+	switch(Font_Switch)
+	{
+	case DISPLAY_FONT_ENGLISH:
+		DisplayDriver_Text16_B(15,72,Black,White,"Scan the QR");
+		DisplayDriver_Text16_B(52,90,Black,White,"code");
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		DisplayDriver_Text16_B(24,83,Baby_Blue,White,"É¨Ãè¶þÎ¬Âë");
+		break;
+
+	default:
+		break;
+	}
+	Display_Time = 1;
 }

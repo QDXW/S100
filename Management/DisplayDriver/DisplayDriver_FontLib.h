@@ -31,6 +31,12 @@ struct __HZK_ZK
   u8  HZCODE[32];
 };
 
+struct typFNT_GB122
+{
+	u8 Index[2];
+  char Msk[24];
+};
+
 struct typFNT_GB162
 {
 	u8 Index[2];
@@ -62,6 +68,7 @@ struct typFNT_GB482
 };
 
 /******************************************************************************/
+extern const struct typFNT_GB122 hz12[];
 extern const struct typFNT_GB162 hz16[];
 extern const struct typFNT_GB242 hz24[];
 extern const struct typFNT_GB322 hz32[];

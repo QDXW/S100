@@ -13,7 +13,7 @@
 
 /******************************************************************************/
 #define QRCODE_TEST_NAME_MAX         (8)
-#define QRCODE_BUFFER_SIZE           (400)
+#define QRCODE_BUFFER_SIZE           (500)
 
 #define QRCODE_TRIG_PORT      		 (GPIOA)
 #define QRCODE_TRIG_PIN         	 (GPIO_Pin_3)

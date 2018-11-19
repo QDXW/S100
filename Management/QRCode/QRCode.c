@@ -174,8 +174,21 @@ void QRCode_Received(void)
 			Display_Time = 0;
 			Lcd_ColorBox(5, 142,35,15,BACKCOLOR_CONTENT_BACK);
 			Lcd_ColorBox(7,62,114, 78,White);
-			DisplayDriver_Text16_B(27, 75, Red, White, "Invalid QR");
-			DisplayDriver_Text16_B(47, 95, Red, White, "Code");
+
+			switch(Font_Switch)
+			{
+			case DISPLAY_FONT_ENGLISH:
+				DisplayDriver_Text16_B(27, 75, Red, White, "Invalid QR");
+				DisplayDriver_Text16_B(47, 95, Red, White, "Code");
+				break;
+
+			case DISPLAY_FONT_CHINESE:
+				DisplayDriver_Text16_B(24, 85, Red, White, "无效二维码");
+				break;
+
+			default:
+				break;
+			}
 			Display_Time = 1;
 
 			/* 清空结构体    1、QR接收结构体   2、处理后QR结构体    3、存储结构体 */
@@ -191,8 +204,8 @@ void QRCode_Received(void)
 /******************************************************************************/
 uint8 QRCode_Identify(void)
 {
-	uint8 status = 0, headLineSize = 0, singleLineSize = 0,QR_Date_Analyze_Conut = 0,QR_Date_Conut = 0;
-	uint16 crcCalc = 0, crcRec = 0;
+	uint8 status = 0,QR_Date_Analyze_Conut = 0,QR_Date_Conut = 0;
+	uint16 crcCalc = 0, headLineSize = 0, singleLineSize = 0,crcRec = 0;
 
 	/* Calculate CRC */
 	crcCalc = Common_CalculateCRC(&QRCode_Buffer[2], QRCode_count - 2, 0xFFFF, 0x0000);
@@ -242,6 +255,7 @@ uint8 QRCode_Identify(void)
 			case 1:
 				memcpy(&QR_Date.ch_data[0], &QRCode_Buffer[headLineSize], sizeof(QRCODE_SINGLE_LINE));
 				break;
+
 			default:
 				break;
 		}

@@ -61,8 +61,6 @@ typedef struct {
 	rect_attr rect_attr;				/* Rectangular attribute */
 	uint8 pic_enabled;     				/* Support picture or not */
 	pic_attr pic_attr;     				/* Picture attribute */
-	uint8 char_enabled;					/* Support char or not */
-	char_attr char_attr;				/* char attribute */
 	uint8 line_enabled; 				/* Support Parting line or not */
 	line_attr Parting_line_attr;		/* Parting line attribute */
 } block_attr;
@@ -105,6 +103,14 @@ typedef enum {
 
 	UI_STATE_MAX_STATE_NUM,
 } UI_STATE;
+
+/******************************************************************************/
+typedef enum {
+	DISPLAY_FONT_CHINESE,
+	DISPLAY_FONT_ENGLISH,
+
+	DISPLAY_FONT,
+} FONT_DIASPLAY;
 
 /******************************************************************************/
 void Battery_Display (void);

@@ -40,6 +40,7 @@ static uint16 HostComm_Cmd_Respond_APP_ReadBoundary(void);
 static uint16 HostComm_Cmd_Respond_APP_ReadResistor(void);
 static uint16 HostComm_Cmd_Respond_APP_WriteBoundary(void);
 static uint16 HostComm_Cmd_Respond_APP_WriteResistor(void);
+static uint16 HostComm_Cmd_Respond_APP_SET_5V(void);
 
 /******************************************************************************/
 void HostComm_SendResp(uint8 *Data, uint16 length);
@@ -274,6 +275,9 @@ uint8 HostComm_Cmd_Process(void)
 		case CMD_CODE_APP_CALIBRATION:
 			responseLength = HostComm_Cmd_Respond_APP_Calibration();
 			break;
+		case APP_SET_5V:
+			responseLength = HostComm_Cmd_Respond_APP_SET_5V();
+			break;
 
 		default:
 			responseLength = HostComm_Cmd_Respond_APP_Error(cmdCode);
@@ -398,12 +402,11 @@ static uint16 HostComm_Cmd_Respond_APP_SetMFG(void)
 static uint16 HostComm_Cmd_Respond_APP_SetLanguage(void)
 {
 	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
-	uint16 cmdDataLength = 0;
+	uint16 cmdDataLength = 0,Value = 0;
 
 	/*  */
-	memcpy(&UI_Language, &cmdBuffer[OFFSET_CMD_DATA_RX], 2);
-
-//	STMFlash_Write(FLASH_SET_LANGUAGE_ADDR, &UI_Language, 1);
+	memcpy(&Font_Switch, &cmdBuffer[OFFSET_CMD_DATA_RX], 1);
+	Storage_Write(&Font_Switch, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*3),1);
 
 	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
 			CMD_TYPE_APP, CMD_CODE_APP_SET_LANGUAGE);
@@ -643,6 +646,32 @@ uint16 HostComm_Cmd_Respond_APP_Calibration(void)
 }
 
 /******************************************************************************/
+uint16 HostComm_Cmd_Respond_APP_SET_5V(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+
+	cmdDataLength = 1;
+
+	respBuffer[OFFSET_CMD_DATA_RX] = cmdBuffer[OFFSET_CMD_DATA]? 1:0;
+
+	if(cmdBuffer[OFFSET_CMD_DATA])
+	{
+		SystemManage_5V_Enabled();
+	}
+	else
+	{
+		SystemManage_5V_Disabled();
+	}
+
+	/* CRCÐ£Ñé */
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, APP_SET_5V);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
 void HostComm_Send(USART_TypeDef* USARTx, uint8_t *Data,...)
 {
 	const char *s;
@@ -818,6 +847,16 @@ void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[])
 }
 
 /******************************************************************************/
+void Language_Valid (void)
+{
+	uint8 value[3] = {0};
+	/* Read from flash */
+	Storage_Read(value, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*3),2);
+	Font_Switch = value[0];
+}
+
+
+/******************************************************************************/
 void ReadResistor_Valid (void)
 {
 	uint8 value = 0;
@@ -834,6 +873,7 @@ void Set_Fixed_Parameter(void)
 {
 	ReadBoundary_Value();
 	ReadResistor_Valid();
+	Language_Valid();
 }
 
 /******************************************************************************/
@@ -841,18 +881,11 @@ void ReadBoundary_Value(void)
 {
 	uint16 Boundary = 0;
 	uint8 value[2] = {0};
-//	uint8 MBuffer[2] = {0};
 
 	/* Read from flash */
 	Storage_Read(value,(FLASH_CALI_ADDR+FLASH_OFFSET_ADDR),2);
 	memcpy(&Boundary,value,2);
 	Data_Boundary = Boundary;
-//
-//	sprintf(MBuffer,"%d",Boundary);
-//
-//	Display_Time = 0;
-//	DisplayDriver_Text16_Touch(4, 110, BLACK,BLACK,MBuffer);
-//	Display_Time = 1;
 }
 
 /******************************************************************************/
