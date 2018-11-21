@@ -8,9 +8,12 @@
 #ifndef MAIN_VERSION_SELECTION_H_
 #define MAIN_VERSION_SELECTION_H_
 
-#define Drug_S100 	1
-#define Drug_C100 	0
+/******************************************************************************/
+#define	REALY_ICO		0		/* 睿丽标识  */
+#define	PROTZEK_ICO		0		/* 德国标识  */
+#define	HENGRUI_ICO		1		/* 恒瑞标识  */
 
+/******************************************************************************/
 #include "stm32f10x.h"
 #include "comDef.h"
 #include "Global_variable.h"
@@ -30,5 +33,7 @@
 #include "SignalProcess_Sample.h"
 #include "ScanMotorDriver_PositionSensor.h"
 #include "RotationMotorDriver_PositionSensor.h"
+
+
 
 #endif /* MAIN_VERSION_SELECTION_H_ */

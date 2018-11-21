@@ -98,7 +98,17 @@ void Status_Init(void)
    	GPIO_SetBits(GPIOD,GPIO_Pin_2);
    	Display_Time = 0;
    	Lcd_ColorBox(0,0,128,160,White);
+
+#if PROTZEK_ICO
 	DisplayDriver_DrawPic(14,39,100,82,gImage_START);
+#endif
+#if REALY_ICO
+	DisplayDriver_DrawPic(0,55,128,62,gImage_Realy_ico);
+#endif
+#if HENGRUI_ICO
+	DisplayDriver_DrawPic(4,55,120,60,gImage_HENGRUI_ICO);
+#endif
+
 	Display_Time = 1;
 	SystemManage_5V_Enabled();
 	ScanMotorDriver_SelfCheck_StepDrive();
@@ -106,7 +116,6 @@ void Status_Init(void)
 	SystemManage_5V_Disabled();
 	Set_Fixed_Parameter();
 	Enter_Sleep = 1;
-	Display_Time = 1;
 	if(Check_Lock)
 	{
 		Exti_lock = ENABLE;
@@ -114,10 +123,8 @@ void Status_Init(void)
 	}
 
  	Display_Time = 0;
+ 	UI_Draw_Status_Bar();
 	Lcd_ColorBox(0,0,128,20,Dark_Blue);
-	Display_Time = 1;
-	UI_Draw_Status_Bar();
-	Display_Time = 0;
 	Battery_Empty_ICO();
 	Power_Open = 1;
 }

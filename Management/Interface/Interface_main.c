@@ -143,7 +143,7 @@ block_font_attr* UI_WindowBlocksAttrArray_Main_font[] = {
 
 /******************************************************************************/
 void UI_Draw_Block(block_attr* block);
-void UI_Draw_Block_font(block_font_attr* block);
+void UI_Draw_Block_font(void);
 
 /******************************************************************************/
 uint8 Interface_Process(uint16* KeyCode)
@@ -196,7 +196,6 @@ uint8 Interface_Main(uint16 KeyCode)
 	key_state = 1,Enter_Sleep = 1,Read_first = 1;
 	QRCode_Trigger_Disabled();
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Main) >> 2;
-//	DisplayDriver_Text12(10,50,White,Magenta,"标准");
 	UI_Draw_Window(UI_WindowBlocks);
 	UI_state = UI_STATE_MAIN_FONT;
 	return state;
@@ -557,129 +556,106 @@ uint8 Interface_Main_font(uint16 KeyCode)
 	Exti_lock = DISABLE;
 	UI_WindowBlocks = 0;
 	Read_first = 1;
-	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Main_font) >> 2;
-	UI_Draw_Window_font(UI_WindowBlocks);
+	UI_Draw_Block_font();
+//	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Main_font) >> 2;
+//	UI_Draw_Window_font(UI_WindowBlocks);
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
 }
 
-/******************************************************************************/
-void UI_Draw_Window_font(uint16 blockNum)
-{
-	uint8 blockIndex = 0;
-	if(key_state)								/* Draw blocks one by one */
-	{
-		for (blockIndex = 0; blockIndex < blockNum; blockIndex++)
-		{
-			UI_Draw_Block_font(UI_WindowBlocksAttrArray_Main_font[blockIndex]);
-		}
-	}
-}
+///******************************************************************************/
+//void UI_Draw_Window_font(uint16 blockNum)
+//{
+//	uint8 blockIndex = 0;
+//	if(key_state)								/* Draw blocks one by one */
+//	{
+//		for (blockIndex = 0; blockIndex < blockNum; blockIndex++)
+//		{
+//			UI_Draw_Block_font(UI_WindowBlocksAttrArray_Main_font[blockIndex]);
+//		}
+//	}
+//}
 
 /******************************************************************************/
-void UI_Draw_Block_font(block_font_attr* block)
+void UI_Draw_Block_font(void)
 {
 	Display_Time = 0;
 	switch(Font_Switch)
 	{
 	case DISPLAY_FONT_ENGLISH:
-		if (block->char1_enabled)				/* 2. Draw character */
+		if(Key_control == 1)
 		{
-			if(Key_control == 1)
-			{
-				DisplayDriver_Text16_B(0,71,White,Magenta,"Standard");
-			}
-			else
-			{
-				DisplayDriver_Text16_B(0,71,White,Baby_Blue,"Standard");
-			}
+			DisplayDriver_Text16_B(0,71,White,Magenta,"Standard");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(0,71,White,Baby_Blue,"Standard");
 		}
 
-		if (block->char2_enabled)				/* 2. Draw character */
+		if(Key_control == 2)
 		{
-			if(Key_control == 2)
-			{
-				DisplayDriver_Text16_B(74,71,White,Magenta,"Quick");
-			}
-			else
-			{
-				DisplayDriver_Text16_B(74,71,White,Baby_Blue,"Quick");
-			}
+			DisplayDriver_Text16_B(74,71,White,Magenta,"Quick");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(74,71,White,Baby_Blue,"Quick");
 		}
 
-		if (block->char3_enabled)				/* 2. Draw character */
+		if(Key_control == 3)
 		{
-			if(Key_control == 3)
-			{
-				DisplayDriver_Text16_B(12,141,White,Magenta,"Record");
-			}
-			else
-			{
-				DisplayDriver_Text16_B(12,141,White,Baby_Blue,"Record");
-			}
+			DisplayDriver_Text16_B(12,141,White,Magenta,"Record");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(12,141,White,Baby_Blue,"Record");
 		}
 
-		if (block->char4_enabled)				/* 2. Draw character */
+		if(Key_control == 4)
 		{
-			if(Key_control == 4)
-			{
-				DisplayDriver_Text16_B(65,141,White,Magenta,"Settings");
-			}
-			else
-			{
-				DisplayDriver_Text16_B(65,141,White,Baby_Blue,"Settings");
-			}
+			DisplayDriver_Text16_B(65,141,White,Magenta,"Settings");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(65,141,White,Baby_Blue,"Settings");
 		}
 		break;
 
 	case DISPLAY_FONT_CHINESE:
-		if (block->char1_enabled)				/* 2. Draw character */
+		if(Key_control == 1)
 		{
-			if(Key_control == 1)
-			{
-				DisplayDriver_Text16_B(0,71,White,Magenta,"标准检测");
-			}
-			else
-			{
-				DisplayDriver_Text16_B(0,71,White,Baby_Blue,"标准检测");
-			}
+			DisplayDriver_Text16_B(0,71,White,Magenta,"标准检测");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(0,71,White,Baby_Blue,"标准检测");
 		}
 
-		if (block->char2_enabled)				/* 2. Draw character */
+		if(Key_control == 2)
 		{
-			if(Key_control == 2)
-			{
-				DisplayDriver_Text16_B(64,71,White,Magenta,"快速检测");
-			}
-			else
-			{
-				DisplayDriver_Text16_B(64,71,White,Baby_Blue,"快速检测");
-			}
+			DisplayDriver_Text16_B(64,71,White,Magenta,"快速检测");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(64,71,White,Baby_Blue,"快速检测");
 		}
 
-		if (block->char3_enabled)				/* 2. Draw character */
+		if(Key_control == 3)
 		{
-			if(Key_control == 3)
-			{
-				DisplayDriver_Text16_B(16,141,White,Magenta,"记录");
-			}
-			else
-			{
-				DisplayDriver_Text16_B(16,141,White,Baby_Blue,"记录");
-			}
+			DisplayDriver_Text16_B(16,141,White,Magenta,"记录");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(16,141,White,Baby_Blue,"记录");
 		}
 
-		if (block->char4_enabled)				/* 2. Draw character */
+		if(Key_control == 4)
 		{
-			if(Key_control == 4)
-			{
-				DisplayDriver_Text16_B(80,141,White,Magenta,"设置");
-			}
-			else
-			{
-				DisplayDriver_Text16_B(80,141,White,Baby_Blue,"设置");
-			}
+			DisplayDriver_Text16_B(80,141,White,Magenta,"设置");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(80,141,White,Baby_Blue,"设置");
 		}
 		break;
 

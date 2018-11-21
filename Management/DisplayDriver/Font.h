@@ -8,8 +8,7 @@
 #define MANAGEMENT_DISPLAYDRIVER_FONT_H_
 
 /******************************************************************************/
-#include "stm32f10x.h"
-#include "comDef.h"
+#include "Version_selection.h"
 
 /******************************************************************************/
 void DisplayDriver_Text16(unsigned int x, unsigned int y, unsigned int Color,
