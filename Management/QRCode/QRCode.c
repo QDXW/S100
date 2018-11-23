@@ -161,7 +161,7 @@ void QRCode_Received(void)
 /* Scan interface: receive data from QR code scanner */
 	if (QRCode_received == 1)
 	{
-		if ((QRCode_Identify()) && (1 == QR_Date.head.Model))						/* Decode */
+		if ((QRCode_Identify()) && (3 == QR_Date.head.Model))						/* Decode */
 		{
 			QRCode_received = 1;
 			QRCode_existed = 1;
@@ -221,7 +221,7 @@ uint8 QRCode_Identify(void)
 		memset(&Storage_Data, 0, sizeof(STORAGE_SINGLE_DATA_STRUCT));
 
 		/* 产品头信息复制  */
-		memcpy(&QR_Date.head.name[0], &QRCode_Buffer[2], sizeof(QRCODE_HEAD_STRUCT) - 2);
+		memcpy(&QR_Date.head.Model, &QRCode_Buffer[2], sizeof(QRCODE_HEAD_STRUCT) - 2);
 		memcpy(&QR_Date_Analyze.head.name[0], &QRCode_Buffer[2], sizeof(QRCODE_HEAD_STRUCT) - 2);
 
 		/* 结构体长度计算  */
