@@ -28,6 +28,7 @@ uint16 recCount = 0,respLength = 0,UI_Language = 0,UI_MFG_SN = 0;
 /******************************************************************************/
 uint8 HostComm_Cmd_Process(void);
 static uint16 HostComm_Cmd_Respond_Status(void);
+static uint16 HostComm_Cmd_Respond_APP_SET_5V(void);
 static uint16 HostComm_Cmd_Respond_APP_SetMFG(void);
 static uint16 HostComm_Cmd_Respond_APP_SysInfo(void);
 static uint16 HostComm_Cmd_Respond_APP_SetMode(void);
@@ -40,7 +41,7 @@ static uint16 HostComm_Cmd_Respond_APP_ReadBoundary(void);
 static uint16 HostComm_Cmd_Respond_APP_ReadResistor(void);
 static uint16 HostComm_Cmd_Respond_APP_WriteBoundary(void);
 static uint16 HostComm_Cmd_Respond_APP_WriteResistor(void);
-static uint16 HostComm_Cmd_Respond_APP_SET_5V(void);
+static uint16 HostComm_Cmd_Respond_APP_Clear_Record(void);
 
 /******************************************************************************/
 void HostComm_SendResp(uint8 *Data, uint16 length);
@@ -277,6 +278,10 @@ uint8 HostComm_Cmd_Process(void)
 			break;
 		case APP_SET_5V:
 			responseLength = HostComm_Cmd_Respond_APP_SET_5V();
+			break;
+
+		case APP_CLEAR_RECORD:
+			responseLength = HostComm_Cmd_Respond_APP_Clear_Record();
 			break;
 
 		default:
@@ -672,7 +677,30 @@ uint16 HostComm_Cmd_Respond_APP_SET_5V(void)
 }
 
 /******************************************************************************/
-void HostComm_Send(USART_TypeDef* USARTx, uint8_t *Data,...)
+uint16 HostComm_Cmd_Respond_APP_Clear_Record(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+	uint8 MBuffer[12] = {0};
+	uint16 insk[4] = {65535,65535,65535,65535};
+
+	cmdDataLength = 1;
+
+	respBuffer[OFFSET_CMD_DATA_RX] = 1;
+
+	memcpy(MBuffer,insk,8);
+
+	Storage_Write(MBuffer, 0x00, 8);
+
+	/* CRCÐ£Ñé */
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, APP_CLEAR_RECORD);
+
+	return totalPackageLength;
+}
+
+/******************************************************************************/
+void HostComm_Send(USART_TypeDef* USARTx, uint8 *Data,...)
 {
 	const char *s;
     int d;

@@ -380,7 +380,7 @@ uint8 Read_Record(void)
 		Read_first = 0;
 	}
 
-	if((reagent_Strip[0] > 100) || (reagent_Strip[0] == 0))
+	if((reagent_Strip[0] > 500) || (reagent_Strip[0] == 0))
 	{
 		reagent_Strip[0] = 0;
 		reagent_Strip[1] = 0;
@@ -395,22 +395,22 @@ uint8 Read_Record(void)
 void Get_reagent_TestNum(void)
 {
 	uint8 Information[12] = 0;
+	reagent_Strip[3] = 65535;
 	memset(Information,0,sizeof(Information));
 	Storage_Read(Information,0x00,8);
 	memcpy(reagent_Strip,Information,8);
-
 	if(reagent_Strip[0] == 65535)
 	{
 		reagent_Strip[0] = 0;
 		reagent_Strip[1] = 0;
 		reagent_Strip[2] = 0;
 	}
+	reagent_Strip[0] += 1;
 
-	reagent_Strip[0]++;
-	if(reagent_Strip[0] > 100)
+	if(reagent_Strip[0] > 500)
 	{
 		reagent_Strip[0] = 1;
-		reagent_Strip[1] = 100;
+		reagent_Strip[1] = 500;
 		reagent_Strip[2] = 1;
 	}
 

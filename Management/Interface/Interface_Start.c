@@ -371,6 +371,7 @@ uint8 Interface_Start_font(uint16 KeyCode)
 	QRCode_Trigger_Disabled();
 	Clear_Data();
 	Exti_lock = ENABLE;
+	Quick_Second = 0;
 	UI_state = UI_STATE_QUICK;
 	return 0;
 }

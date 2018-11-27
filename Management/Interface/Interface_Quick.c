@@ -75,6 +75,7 @@ uint8 Interface_Quick(uint16 KeyCode)
 		{
 			UI_state = UI_STATE_KEY_STATE;
 			key_state_confirm = 0;
+			Quick_Down_time = 0;
 			Exti_lock = DISABLE;
 			return state;
 		}
@@ -92,10 +93,12 @@ uint8 Interface_Quick(uint16 KeyCode)
 	if (QRCode_existed)
 	{
 		UI_state = UI_STATE_INSERT_CUP;
+		Quick_Down_time = 0;
 	}
 	else
 	{
 		UI_state = UI_STATE_MAIN_WINDOW;
+		Quick_Down_time = 0;
 		Delay_ms_SW(1200);
 	}
 

@@ -306,6 +306,7 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 						key_state_confirm = DISABLE;
 						Key_control = 1;
 					break;
+
 					case 2:
 						UI_state = UI_STATE_START_FONT;
 						key_state_confirm = DISABLE;
@@ -385,9 +386,9 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 							case 2:
 								if(1 == (reagent_Strip[2]))
 								{
-									if (page_Num == 1 && reagent_Strip[0] > 99 && page_tatol == 1)
+									if (page_Num == 1 && reagent_Strip[0] > 499 && page_tatol == 1)
 									{
-										reagent_Strip[0] = 100;
+										reagent_Strip[0] = 500;
 										UI_state = UI_STATE_RECORD;
 									}
 									else
@@ -395,21 +396,23 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 										if (page_Num == 1 && page_tatol == 1)
 										{
 											reagent_Strip[0]++;
-											if (reagent_Strip[0] > 99)
-												reagent_Strip[0] = 100;
+											if (reagent_Strip[0] > 499)
+												reagent_Strip[0] = 500;
 											UI_state = UI_STATE_RECORD;
 										}
 
 										if (page_Num == 1 && page_tatol == 2)
 										{
+											if (reagent_Strip[0] > reagent_Strip[1])
+												reagent_Strip[0] = reagent_Strip[1];
 											UI_state = UI_STATE_RECORD2;
 										}
 
 										if (page_Num == 2 && page_tatol == 2)
 										{
 											reagent_Strip[0]++;
-											if (reagent_Strip[0] > 99)
-												reagent_Strip[0] = 100;
+											if (reagent_Strip[0] >499)
+												reagent_Strip[0] = 500;
 											UI_state = UI_STATE_RECORD;
 										}
 									}
@@ -418,9 +421,9 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 								{
 									if(reagent_Strip[0] <= reagent_Strip[1])
 									{
-										if (page_Num == 1 && reagent_Strip[0] > 99 && page_tatol == 1)
+										if (page_Num == 1 && reagent_Strip[0] > 499 && page_tatol == 1)
 										{
-											reagent_Strip[0] = 100;
+											reagent_Strip[0] = 500;
 											UI_state = UI_STATE_RECORD;
 										}
 										else
@@ -435,6 +438,8 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 
 											if (page_Num == 1 && page_tatol == 2)
 											{
+												if (reagent_Strip[0] > reagent_Strip[1])
+													reagent_Strip[0] = reagent_Strip[1];
 												UI_state = UI_STATE_RECORD2;
 											}
 
