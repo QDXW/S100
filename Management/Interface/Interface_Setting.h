@@ -34,5 +34,6 @@ uint8 char3_enabled;					/* Support char or not */
 /******************************************************************************/
 void UI_Draw_Window_Setting(uint16 blockNum);
 void UI_Draw_Window_Setting_font(uint16 blockNum);
+void UI_Interface_Language(void);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_SETTING_H_ */

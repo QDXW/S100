@@ -148,13 +148,13 @@ void UI_Draw_Block_Setting(block_attr_Setting* block)
 /******************************************************************************/
 uint8 Interface_Setting_font(uint16 KeyCode)
 {
-	uint8 state = 0;
+	uint8 state = 0,status = 0;
 	Exti_lock = DISABLE;
 	Interface_Key = 5;
-
 	Display_Time = 0;
 	Lcd_ColorBox(14,71,40,18,BACKCOLOR_CONTENT_BACK);
 	Lcd_ColorBox(14,141,48,18,BACKCOLOR_CONTENT_BACK);
+
 	switch(Font_Switch)
 	{
 	case DISPLAY_FONT_ENGLISH:
@@ -190,11 +190,14 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 			if(Bluetooth_switch)
 			{
 				DisplayDriver_Text16_B(24,141,White,Magenta,"ON");
+				status = 0;
 			}
 			else
 			{
 				DisplayDriver_Text16_B(20,141,White,Magenta,"OFF");
+				status = 1;
 			}
+			Storage_Write(&status, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*4),1);
 		}
 		else
 		{
@@ -210,11 +213,11 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 
 		if(Key_control == 4)
 		{
-			DisplayDriver_Text16_B(68,141,White,Magenta,"Correct");
+			DisplayDriver_Text16_B(64,141,White,Magenta,"Language");
 		}
 		else
 		{
-			DisplayDriver_Text16_B(68,141,White,Baby_Blue,"Correct");
+			DisplayDriver_Text16_B(64,141,White,Baby_Blue,"Language");
 		}
 		break;
 
@@ -242,11 +245,14 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 			if(Bluetooth_switch)
 			{
 				DisplayDriver_Text16_B(16,141,White,Magenta,"打开");
+				status = 0;
 			}
 			else
 			{
 				DisplayDriver_Text16_B(16,141,White,Magenta,"关闭");
+				status = 1;
 			}
+			Storage_Write(&status, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*4),1);
 		}
 		else
 		{
@@ -262,13 +268,70 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 
 		if(Key_control == 4)
 		{
-			DisplayDriver_Text16_B(80,141,White,Magenta,"校准");
+			DisplayDriver_Text16_B(80,141,White,Magenta,"语言");
 		}
 		else
 		{
-			DisplayDriver_Text16_B(80,141,White,Baby_Blue,"校准");
+			DisplayDriver_Text16_B(80,141,White,Baby_Blue,"语言");
 		}
 		break;
+
+	case DISPLAY_FONT_GERMAN:
+		if(Key_control == 1)
+		{
+			DisplayDriver_Text16_B(16,71,White,Magenta,"$ber");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(16,71,White,Baby_Blue,"$ber");
+		}
+
+		if(Key_control == 2)
+		{
+			DisplayDriver_Text16_B(80,71,White,Magenta,"Zeit");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(80,71,White,Baby_Blue,"Zeit");
+		}
+
+		if(Key_control == 3)
+		{
+			if(Bluetooth_switch)
+			{
+				DisplayDriver_Text16_B(24,141,White,Magenta,"An");
+				status = 0;
+			}
+			else
+			{
+				DisplayDriver_Text16_B(20,141,White,Magenta,"Aus");
+				status = 1;
+			}
+
+			Storage_Write(&status, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*4),1);
+		}
+		else
+		{
+			if(Bluetooth_switch)
+			{
+				DisplayDriver_Text16_B(24,141,White,White,"An");
+			}
+			else
+			{
+				DisplayDriver_Text16_B(20,141,White,Baby_Blue,"Aus");
+			}
+		}
+		break;
+
+//		if(Key_control == 4)
+//		{
+//			DisplayDriver_Text16_B(68,141,White,Magenta,"Language");
+//		}
+//		else
+//		{
+//			DisplayDriver_Text16_B(68,141,White,Baby_Blue,"Language");
+//		}
+//		break;
 
 	default:
 		break;
@@ -278,7 +341,7 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 	Exti_lock = ENABLE;
 	Display_Battery = 1;
 	key_state = DISABLE;
-	UI_state = UI_STATE_KEY_STATE;
+	UI_state = UI_STATE_SETTING_KEY;
 	return state;
 }
 
@@ -297,6 +360,83 @@ uint8 Interface_Bluet_switch_Process(uint16 blockNum)
 		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 		Bluetooth_switch = 0;
 	}
-	UI_state = UI_STATE_SETTING_FONT;
+	UI_state = UI_STATE_SETTING_KEY;
 	return state;
+}
+
+/******************************************************************************/
+uint8 Interface_Settings_key_Process(uint16 blockNum)
+{
+	uint8 state = 0;
+	Interface_Key = 5;
+	if(key_state)
+	{
+		switch(key_state_confirm)
+		{
+		case 0:
+//			if(5 == Key_control)
+//			{
+//				UI_state = UI_STATE_LANGUAGE_PROCESS;
+//				UI_Interface_Language();
+//				Key_control = 1;
+//			}
+//			else
+			{
+				UI_state = UI_STATE_SETTING_FONT;
+				if(!Key_control)
+				{
+					UI_state = UI_STATE_MAIN_WINDOW;
+					Key_control = 1;
+				}
+			}
+			key_state_confirm = DISABLE;
+		break;
+
+		case 1:
+			switch(Key_control)
+			{
+				case 1:
+					UI_state = UI_STATE_ABOUT_MACHINE;
+					key_state_confirm = DISABLE;
+					Key_control = 1;
+				break;
+				case 2:
+					UI_state = UI_STATE_SYSTEM_TIME;
+					key_state_confirm = DISABLE;
+					Key_control = 1;
+				break;
+
+				case 3:
+					UI_state = UI_STATE_BLUET_SWITCH_PROCESS;
+					key_state_confirm = DISABLE;
+					Key_control = 3;
+				break;
+
+				case 4:
+					UI_state = UI_STATE_LANGUAGE_PROCESS;
+					UI_Interface_Language();
+					key_state_confirm = DISABLE;
+					Key_control = 1;
+				break;
+
+				default:
+				break;
+			}
+			break;
+
+			default:
+			break;
+		}
+	}
+	return state;
+}
+
+/******************************************************************************/
+void UI_Interface_Language(void)
+{
+	Display_Time = 0;
+	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
+	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
+	Lcd_ColorBox(0,26,128,128,Light_Gray);
+	Display_Time = 1;
 }

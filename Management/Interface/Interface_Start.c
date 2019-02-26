@@ -322,8 +322,14 @@ void UI_Language_Window_Start(void)
 
 	case DISPLAY_FONT_CHINESE:
 		DisplayDriver_Text16_B(4,25,Black,White,"Ãû³Æ:");
-		DisplayDriver_Text16_B(44,25,Black,White,"¶¾Æ·¼ì²â");
+		DisplayDriver_Text16_B(44,25,Black,White,QR_Date.head.name);
 		DisplayDriver_Text16_B(4,45,Black,White,"ÅúºÅ:");
+		break;
+
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16_B(4,25,Black,White,"Name:");
+		DisplayDriver_Text16_B(44,25,Black,White,QR_Date.head.name);
+		DisplayDriver_Text16_B(4,45,Black,White,"  SN:");
 		break;
 
 	default:

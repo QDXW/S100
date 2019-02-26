@@ -76,7 +76,7 @@ typedef struct {
 	uint8 Product_SN[10];
 	uint8 StripNum;
 	STORAGE_TIME Product_Time;
-	STORAGE_SINGLE_LINE CH_data[12];
+	STORAGE_SINGLE_LINE CH_data[8];
 } STORAGE_SINGLE_DATA_STRUCT;
 
 /******************************************************************************/

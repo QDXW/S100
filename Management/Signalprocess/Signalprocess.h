@@ -19,18 +19,18 @@
 
 /******************************************************************************/
 typedef struct {
-	volatile uint16 indexC;
-	volatile uint16 indexT;
-	volatile uint16 indexBase1;
-	volatile uint16 indexBase2;
-	volatile uint16 indexBase3;
-	volatile uint16 indexBase4;
-	volatile float coefA;
-	volatile float coefB;
-	volatile uint16 areaC;
-	volatile uint16 areaT;
-	volatile uint8 validity;
-	volatile float ratioC_T;
+	uint16 indexC;
+	uint16 indexT;
+	uint16 indexBase1;
+	uint16 indexBase2;
+	uint16 indexBase3;
+	uint16 indexBase4;
+	float coefA;
+	float coefB;
+	uint16 areaC;
+	uint16 areaT;
+	uint8 validity;
+	float ratioC_T;
 } ALG_CALCINFO;
 
 /******************************************************************************/

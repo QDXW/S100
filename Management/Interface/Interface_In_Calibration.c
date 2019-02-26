@@ -40,6 +40,10 @@ uint8 Interface_In_Calibration_Process(uint16 blockNum)
 			DisplayDriver_Text16(28,82,BACKCOLOR_CONTENT_BACK,"校准成功!");
 			break;
 
+		case DISPLAY_FONT_GERMAN:
+			DisplayDriver_Text16(6,82,BACKCOLOR_CONTENT_BACK,"Erfolgreich!");
+			break;
+
 		default:
 			break;
 		}
@@ -57,6 +61,10 @@ uint8 Interface_In_Calibration_Process(uint16 blockNum)
 
 		case DISPLAY_FONT_CHINESE:
 			DisplayDriver_Text16(28,82,BACKCOLOR_CONTENT_BACK,"校准失败!");
+			break;
+
+		case DISPLAY_FONT_GERMAN:
+			DisplayDriver_Text16(24,82,BACKCOLOR_CONTENT_BACK,"Scheitern!");
 			break;
 
 		default:
@@ -86,6 +94,10 @@ void UI_Background_Plate_In_Calibration(void)
 
 	case DISPLAY_FONT_CHINESE:
 		DisplayDriver_Text16(20,100,White,"正在校准...");
+		break;
+
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16(0,100,White,"Die kalibrierung");
 		break;
 
 	default:
@@ -134,7 +146,7 @@ uint8 Dichotomy_Calculate (void)
 		{
 			for(i = 10;i < 135;i++)
 			{
-				if(SignalProcess_sampleBuffer[i] > 150)
+				if(SignalProcess_sampleBuffer[i] > 300)
 				{
 					Result_Judge = 0;
 					return 0;
@@ -247,6 +259,7 @@ uint8 Dichotomy_Calculate (void)
 		if(Poll_Count > 12)
 		{
 			Result_Judge = 0;
+			return Result_Judge;
 		}
 
 		Result = 1;
@@ -305,7 +318,7 @@ uint8 Dichotomy_Search(uint16 *Signal,uint8 Dichotomy_Value)
 	/* 得到上升沿、下降沿、边界值以下的数据个数  */
 	for(i = 0;i < 511;i++)
 	{
-		if(SignalProcess_sampleBuffer[i] < 2200)
+		if(SignalProcess_sampleBuffer[i] < 2400)
 		{
 			if((SignalProcess_sampleBuffer[i] < Data_Boundary) && (SignalProcess_sampleBuffer[i+1] >= Data_Boundary))
 			{
@@ -319,7 +332,7 @@ uint8 Dichotomy_Search(uint16 *Signal,uint8 Dichotomy_Value)
 
 			if(Data_Boundary > 200)
 			{
-				if(SignalProcess_sampleBuffer[i] < (Data_Boundary - 200))
+				if(SignalProcess_sampleBuffer[i] < Data_Boundary)
 				{
 					Boundary_Down += 1;
 				}

@@ -186,6 +186,11 @@ void QRCode_Received(void)
 				DisplayDriver_Text16_B(24, 85, Red, White, "ÎÞÐ§¶þÎ¬Âë");
 				break;
 
+			case DISPLAY_FONT_GERMAN:
+				DisplayDriver_Text16_B(24, 75, Red, White, "Ung$ltiger");
+				DisplayDriver_Text16_B(36, 95, Red, White, "QR Code");
+				break;
+
 			default:
 				break;
 			}

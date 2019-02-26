@@ -96,49 +96,11 @@ block_attr block_settings = {
 };
 
 /******************************************************************************/
-block_font_attr block_font = {
-		ENABLE,									/* Display HZ16X8 */
-		{
-			"Standard",
-			0,  71,
-			White,Magenta,
-			Baby_Blue
-		},
-
-		ENABLE,									/* Display HZ16X8 */
-		{
-			"Quick",
-			74,  71,
-			White,Magenta,
-			Baby_Blue
-		},
-
-		ENABLE,									/* Display HZ16X8 */
-		{
-			"Record",
-			12,  141,
-			White,Magenta,
-			Baby_Blue
-		},
-
-		ENABLE,									/* Display HZ16X8 */
-		{
-			"Settings",
-			65,  141,
-			White,Magenta,
-			Baby_Blue
-		},
-};
-
-/******************************************************************************/
 block_attr* UI_WindowBlocksAttrArray_Main[] = {		/* Window: Main entry */
 		&block_standard,
 		&block_quick,
 		&block_record,
 		&block_settings,
-};
-block_font_attr* UI_WindowBlocksAttrArray_Main_font[] = {
-		&block_font,
 };
 
 /******************************************************************************/
@@ -172,6 +134,10 @@ uint8 Interface_Process(uint16* KeyCode)
 			Interface_Bluet_switch_Process,	/* Interface Setting font Display */
 			Interface_In_Calibration_Process,	/* Interface In Calibration Display */
 			Interface_Calibration_key_Process,	/* Interface Calibration key Display */
+			Interface_Settings_key_Process,		/* Interface Calibration key Display */
+			Interface_Language_Process,			/* Interface Calibration key Display */
+			Interface_Language_key_Process,			/* Interface Calibration key Display */
+
 	};
 	uint8 state;
 	do										/* Polling each state */
@@ -365,26 +331,61 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 			case 4:
 				switch(key_state_confirm)
 				{
-					case 0:
-						switch(Key_control)
-						{
-							case 1:
-								if (page_Num == 1 && reagent_Strip[0] == 1)
-								{
-									reagent_Strip[0] = 1;
-								}
-								else if (page_Num == 1)
-								{
-									reagent_Strip[0]--;
-									if (reagent_Strip[0] < 1)
-										reagent_Strip[0]  = 1;
-								}
-								UI_state = UI_STATE_RECORD;
+				case 0:
+					switch(Key_control)
+					{
+						case 1:
+							if (page_Num == 1 && reagent_Strip[0] == 1)
+							{
+								reagent_Strip[0] = 1;
+							}
+							else if (page_Num == 1)
+							{
+								reagent_Strip[0]--;
+								if (reagent_Strip[0] < 1)
+									reagent_Strip[0]  = 1;
+							}
+							UI_state = UI_STATE_RECORD;
 
-							break;
+						break;
 
-							case 2:
-								if(1 == (reagent_Strip[2]))
+						case 2:
+							if(1 == (reagent_Strip[2]))
+							{
+								if (page_Num == 1 && reagent_Strip[0] > 499 && page_tatol == 1)
+								{
+									reagent_Strip[0] = 500;
+									UI_state = UI_STATE_RECORD;
+								}
+								else
+								{
+									if (page_Num == 1 && page_tatol == 1)
+									{
+										reagent_Strip[0]++;
+										if (reagent_Strip[0] > 499)
+											reagent_Strip[0] = 500;
+										UI_state = UI_STATE_RECORD;
+									}
+
+									if (page_Num == 1 && page_tatol == 2)
+									{
+										if (reagent_Strip[0] > reagent_Strip[1])
+											reagent_Strip[0] = reagent_Strip[1];
+										UI_state = UI_STATE_RECORD2;
+									}
+
+									if (page_Num == 2 && page_tatol == 2)
+									{
+										reagent_Strip[0]++;
+										if (reagent_Strip[0] >499)
+											reagent_Strip[0] = 500;
+										UI_state = UI_STATE_RECORD;
+									}
+								}
+							}
+							else
+							{
+								if(reagent_Strip[0] <= reagent_Strip[1])
 								{
 									if (page_Num == 1 && reagent_Strip[0] > 499 && page_tatol == 1)
 									{
@@ -396,8 +397,8 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 										if (page_Num == 1 && page_tatol == 1)
 										{
 											reagent_Strip[0]++;
-											if (reagent_Strip[0] > 499)
-												reagent_Strip[0] = 500;
+											if (reagent_Strip[0] > reagent_Strip[1])
+												reagent_Strip[0] = reagent_Strip[1];
 											UI_state = UI_STATE_RECORD;
 										}
 
@@ -411,145 +412,68 @@ uint8 Interface_Key_Event(uint16 KeyCode)
 										if (page_Num == 2 && page_tatol == 2)
 										{
 											reagent_Strip[0]++;
-											if (reagent_Strip[0] >499)
-												reagent_Strip[0] = 500;
+											if (reagent_Strip[0] > reagent_Strip[1])
+												reagent_Strip[0] = reagent_Strip[1];
 											UI_state = UI_STATE_RECORD;
 										}
 									}
 								}
-								else
-								{
-									if(reagent_Strip[0] <= reagent_Strip[1])
-									{
-										if (page_Num == 1 && reagent_Strip[0] > 499 && page_tatol == 1)
-										{
-											reagent_Strip[0] = 500;
-											UI_state = UI_STATE_RECORD;
-										}
-										else
-										{
-											if (page_Num == 1 && page_tatol == 1)
-											{
-												reagent_Strip[0]++;
-												if (reagent_Strip[0] > reagent_Strip[1])
-													reagent_Strip[0] = reagent_Strip[1];
-												UI_state = UI_STATE_RECORD;
-											}
+							}
 
-											if (page_Num == 1 && page_tatol == 2)
-											{
-												if (reagent_Strip[0] > reagent_Strip[1])
-													reagent_Strip[0] = reagent_Strip[1];
-												UI_state = UI_STATE_RECORD2;
-											}
+						break;
 
-											if (page_Num == 2 && page_tatol == 2)
-											{
-												reagent_Strip[0]++;
-												if (reagent_Strip[0] > reagent_Strip[1])
-													reagent_Strip[0] = reagent_Strip[1];
-												UI_state = UI_STATE_RECORD;
-											}
-										}
-									}
-								}
+						default:
+						break;
+					}
 
-							break;
+				break;
 
-							default:
-							break;
-						}
+				case 1:
+					UI_state = UI_STATE_MAIN_WINDOW;
+					Interface_Key = DISABLE;
+					Key_control = 1;
+					key_state_confirm = DISABLE;
+				break;
 
-					break;
+				default:
+				break;
+			}
+		break;
 
-					case 1:
+		case 6:
+			if(key_state_confirm)
+			{
+				UI_state = UI_STATE_SETTING;
+				key_state_confirm = DISABLE;
+				Key_control = 1;
+			}
+		break;
+
+		case 8:
+			switch(key_state_confirm)
+			{
+				case 0:
+					if(Key_control == 1)
+					{
 						UI_state = UI_STATE_MAIN_WINDOW;
-						Interface_Key = DISABLE;
+						key_state_confirm = DISABLE;
 						Key_control = 1;
-						key_state_confirm = DISABLE;
+					}
 					break;
-
-					default:
-					break;
-				}
-			break;
-
-			case 5:
-				switch(key_state_confirm)
-				{
-					case 0:
-						UI_state = UI_STATE_SETTING_FONT;
-						if(!Key_control)
-						{
-							UI_state = UI_STATE_MAIN_WINDOW;
-							Key_control = 1;
-						}
-						key_state_confirm = DISABLE;
-					break;
-					case 1:
-						switch(Key_control)
-						{
-							case 1:
-								UI_state = UI_STATE_ABOUT_MACHINE;
-								key_state_confirm = DISABLE;
-								Key_control = 1;
-							break;
-							case 2:
-								UI_state = UI_STATE_SYSTEM_TIME;
-								key_state_confirm = DISABLE;
-								Key_control = 1;
-							break;
-
-							case 3:
-								UI_state = UI_STATE_BLUET_SWITCH_PROCESS;
-								key_state_confirm = DISABLE;
-								Key_control = 3;
-							break;
-
-							case 4:
-								UI_state = UI_STATE_IN_CALIBRATION_PROCESS;
-								key_state_confirm = DISABLE;
-								Key_control = 1;
-							break;
-
-							default:
-							break;
-						}
-					break;
-
-					default:
-					break;
-				}
-			break;
-			case 6:
-				if(key_state_confirm)
-				{
-					UI_state = UI_STATE_SETTING;
+				case 1:
+					UI_state = UI_STATE_DOWN_TIME_PROCESS;
 					key_state_confirm = DISABLE;
 					Key_control = 2;
-				}
+				break;
+
+				default:
+				break;
+			}
 			break;
 
 			default:
 			break;
-			case 8:
-				switch(key_state_confirm)
-				{
-					case 0:
-						if(Key_control == 1)
-						{
-							UI_state = UI_STATE_MAIN_WINDOW;
-							key_state_confirm = DISABLE;
-							Key_control = 1;
-						}
-						break;
-					case 1:
-						UI_state = UI_STATE_DOWN_TIME_PROCESS;
-						key_state_confirm = DISABLE;
-						Key_control = 2;
-					break;
-				}
-			}
+		}
 	}
 	return state;
 }
@@ -562,25 +486,11 @@ uint8 Interface_Main_font(uint16 KeyCode)
 	UI_WindowBlocks = 0;
 	Read_first = 1;
 	UI_Draw_Block_font();
-//	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Main_font) >> 2;
-//	UI_Draw_Window_font(UI_WindowBlocks);
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
 }
 
-///******************************************************************************/
-//void UI_Draw_Window_font(uint16 blockNum)
-//{
-//	uint8 blockIndex = 0;
-//	if(key_state)								/* Draw blocks one by one */
-//	{
-//		for (blockIndex = 0; blockIndex < blockNum; blockIndex++)
-//		{
-//			UI_Draw_Block_font(UI_WindowBlocksAttrArray_Main_font[blockIndex]);
-//		}
-//	}
-//}
 
 /******************************************************************************/
 void UI_Draw_Block_font(void)
@@ -661,6 +571,44 @@ void UI_Draw_Block_font(void)
 		else
 		{
 			DisplayDriver_Text16_B(80,141,White,Baby_Blue,"ÉèÖÃ");
+		}
+		break;
+
+	case DISPLAY_FONT_GERMAN:
+		if(Key_control == 1)
+		{
+			DisplayDriver_Text16_B(0,71,White,Magenta,"Standard");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(0,71,White,Baby_Blue,"Standard");
+		}
+
+		if(Key_control == 2)
+		{
+			DisplayDriver_Text16_B(68,71,White,Magenta,"Schnell");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(68,71,White,Baby_Blue,"Schnell");
+		}
+
+		if(Key_control == 3)
+		{
+			DisplayDriver_Text16_B(0,141,White,Magenta,"Speicher");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(0,141,White,Baby_Blue,"Speicher");
+		}
+
+		if(Key_control == 4)
+		{
+			DisplayDriver_Text16_B(84,141,White,Magenta,"Set");
+		}
+		else
+		{
+			DisplayDriver_Text16_B(84,141,White,Baby_Blue,"Set");
 		}
 		break;
 

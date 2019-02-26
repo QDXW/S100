@@ -13,6 +13,9 @@ uint16 max = 0,Max_Postion = 0;
 uint8 NowCup_Count = 0,Storage_Data_Conut = 0;
 uint16 BOUNDARY_VALUE = 2500;
 uint8 SignalProcess[1024] = {0};
+//uint8 Record[16] = {0};
+uint16 Old_Record = 1,New_Record = 0;
+uint16 Old_Boundary = 0,New_Boundary = 0,Boundary_Count = 0;
 
 /******************************************************************************/
 block_attr_Testing block_Testing_1 = {
@@ -69,6 +72,10 @@ uint8 Interface_Testing(uint16 KeyCode)
 				DisplayDriver_Text16(36, 80, Red,"无电池!");
 				break;
 
+			case DISPLAY_FONT_GERMAN:
+				DisplayDriver_Text16(4, 80, Red,"Keine batterie!");
+				break;
+
 			default:
 				break;
 			}
@@ -92,6 +99,10 @@ uint8 Interface_Testing(uint16 KeyCode)
 
 		case DISPLAY_FONT_CHINESE:
 			DisplayDriver_Text16(28,80, Red,"电量过低!");
+			break;
+
+		case DISPLAY_FONT_GERMAN:
+			DisplayDriver_Text16(0,80, Red,"Batterie schwach");
 			break;
 
 		default:
@@ -142,6 +153,11 @@ void UI_Language_Window_Testing(void)
 		DisplayDriver_Text16(20,84,White,"正在测试...");
 		break;
 
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16(10,84,White,"Test l]uft...");
+		break;
+
+
 	default:
 		break;
 	}
@@ -181,7 +197,7 @@ void Acquisition_Signal(void)
 	Storage_Time();
 
 	/* 清除结构体信息  */
-	for(i = 0;i < 12;i++)
+	for(i = 0;i < 8;i++)
 	{
 		memset(&Storage_Data.CH_data[i].Result[0],0,6);
 	}
@@ -198,7 +214,7 @@ void Acquisition_Signal(void)
 			SignalSample_SampleStrip();
 
 			/* 运行算法 */
-			memcpy(&SignalProcess_Alg_data.sampleBuffer[0], SignalProcess_sampleBuffer, SignalSample_count << 1);
+			memcpy(&SignalProcess_Alg_data.sampleBuffer[0],SignalProcess_sampleBuffer,SignalSample_count << 1);
 			SignalProcess_Alg_data.sampleNumber = SignalSample_count;
 			SignalProcess_Run();
 
@@ -209,23 +225,18 @@ void Acquisition_Signal(void)
 			/* 调试输出 */
 			if(UI_runMode)
 			{
-				memset(SignalProcess,0,500);
-				memcpy(SignalProcess, &SignalProcess_sampleBuffer[0], SignalSample_count<< 1);
-				HostComm_Cmd_Send_RawData(SignalSample_count << 1, SignalProcess);
-				Delay_ms_SW(50);
+				memset(SignalProcess,0,sizeof(SignalProcess));
+				memcpy(SignalProcess,SignalProcess_sampleBuffer,1024);
+				HostComm_Cmd_Send_RawData((SignalSample_count - 10) << 1, SignalProcess);
+				Delay_ms_SW(30);
+				memset(SignalProcess,0,sizeof(SignalProcess));
 				HostComm_Cmd_Send_C_T(SignalProcess_Alg_data.calcInfo.areaC, SignalProcess_Alg_data.calcInfo.areaT);
+				Delay_ms_SW(30);
 			}
 		}
 
-		/* 转动电机转动30° */
-		if(NowCup_Count%2 == 0)
-		{
-			RotationMotor_Input_StepDrive(Foreward_Rotation,43);
-		}
-		else
-		{
-			RotationMotor_Input_StepDrive(Foreward_Rotation,42);
-		}
+		/* 转动电机转过相应的计算角度 */
+		RotationMotor_Input_StepDrive(Foreward_Rotation,Record_Max_Postion[NowCup_Count]);
 
 		/* 进度条刷新 */
 		for(j = Step_Start;j < Step_Count;j++)		/* 每次进度条走十格 */
@@ -238,6 +249,39 @@ void Acquisition_Signal(void)
 		Step_Start = Step_Count;					/* 重置进度条开始位置 */
 		Step_Count += 12;
 	}
+}
+
+/******************************************************************************/
+void Calculate_Max_Postion(uint16 First_Postion)
+{
+	uint8 i = 0;
+	uint16 Before_Postion = First_Postion,Last_Postion = First_Postion + 42;
+	memset(Record_Max_Postion,0,sizeof(Record_Max_Postion));
+	Record_Max_Postion[7] = 10;
+	memcpy(&SignalProcess_sampleBuffer[512],SignalProcess_sampleBuffer,512);
+	for(i= 0;i < 7;i++)
+	{
+		Last_Postion = Judge_Max(&SignalProcess_sampleBuffer[0],Last_Postion);
+		Record_Max_Postion[i] = Last_Postion - Before_Postion;
+		Before_Postion = Last_Postion;
+		Last_Postion += 42;
+	}
+}
+
+/******************************************************************************/
+uint16 Judge_Max (uint16* Signal,uint16 New_Postion)
+{
+	uint16 Postion_Plus = New_Postion - 10,Postion_Add = New_Postion + 10;
+	uint16 max = Signal[New_Postion],i = New_Postion;
+	for(i = Postion_Plus;i <= Postion_Add;i++)
+	{
+		if(Signal[i] > max)
+		{
+			New_Postion = i;
+		}
+	}
+
+	return New_Postion;
 }
 
 /******************************************************************************/
@@ -293,15 +337,9 @@ uint16 Get_Start_Postion(void)
 			}
 		}
 
-		if (0 == Postion_Up)
-		{
-			Postion_Up = 1;
-		}
+		Postion_Up = (0 == Postion_Up)?1:Postion_Up;
 
-		if (0 == Postion_Down)
-		{
-			Postion_Down = 1;
-		}
+		Postion_Down = (0 == Postion_Down)?1:Postion_Down;
 
 		if(Judge_Trend)
 		{
@@ -320,6 +358,10 @@ uint16 Get_Start_Postion(void)
 	if(!Confirm_CUP)
 	{
 		Start_Postion = 0;
+	}
+	else
+	{
+		Calculate_Max_Postion(Start_Postion);
 	}
 
 	return Start_Postion;
@@ -374,7 +416,8 @@ void Acquisition_StartSignal(void)
 /******************************************************************************/
 uint16 Get_sampleBuffer_Boundary_Value(void)
 {
-	uint16 i = 0;
+	uint16 Old_Record = 1,New_Record = 0;
+	uint16 i = 0,Old_Boundary = 0,New_Boundary = 0,Boundary_Count = 0;
 	BOUNDARY_VALUE = 2500;
 	for(i = 0;i < SIGNALSAMPLE_MAX_COUNT;i++)
 	{
@@ -383,6 +426,61 @@ uint16 Get_sampleBuffer_Boundary_Value(void)
 			BOUNDARY_VALUE = SignalProcess_sampleBuffer[i];
 		}
 	}
+
+	if(BOUNDARY_VALUE > 1500)
+	{
+		BOUNDARY_VALUE = 2500;
+		return BOUNDARY_VALUE;
+	}
+
+	Old_Boundary = BOUNDARY_VALUE;
+	New_Boundary = BOUNDARY_VALUE;
+
+	for(Data_Boundary = BOUNDARY_VALUE;Data_Boundary < 1400;Data_Boundary += 20)
+	{
+		Boundary_Count = 0;
+		for(i = 0;i < 511;i++)
+		{
+			if((Data_Boundary >= SignalProcess_sampleBuffer[i+1]) && (Data_Boundary <= SignalProcess_sampleBuffer[i]))
+			{
+				Boundary_Count++;
+			}
+
+			if((Data_Boundary <= SignalProcess_sampleBuffer[i+1]) && (Data_Boundary >= SignalProcess_sampleBuffer[i]) )
+			{
+				Boundary_Count++;
+			}
+		}
+
+		New_Record = ((Boundary_Count < 3) && (Boundary_Count > 0))?1:0;
+
+		if(Old_Record && (!New_Record))
+		{
+			New_Boundary = Data_Boundary;
+		}
+
+		if((!Old_Record) && New_Record)
+		{
+			Old_Boundary = Data_Boundary;
+		}
+
+		if(Old_Record && New_Record)
+		{
+			New_Boundary = Data_Boundary;
+		}
+
+		Old_Record = New_Record;
+	}
+
+	if(New_Boundary == Old_Boundary)
+	{
+		BOUNDARY_VALUE = 2500;
+		return BOUNDARY_VALUE;
+	}
+
+	Data_Boundary = (New_Boundary + Old_Boundary)/2;
+
+
 	return BOUNDARY_VALUE;
 }
 
@@ -442,7 +540,6 @@ uint16 Calculate_Postion_Up(uint16* Signal,uint16 Postion)
 		{
 			Confirm_Postion = 0;
 		}
-
 	}while(Confirm_Postion);
 
 	if(Reconfirm_Postion)
@@ -460,7 +557,6 @@ uint16 Calculate_Postion_Up(uint16* Signal,uint16 Postion)
 			{
 				Confirm_Postion = 0;
 			}
-
 		}while(Confirm_Postion);
 	}
 
@@ -490,9 +586,8 @@ uint16 Calculate_Postion_Down(uint16* Signal,uint16 Postion)
 			}
 			else
 			{
-				Confirm_Postion = 0;
+				(Signal[i+1] > Data_Boundary)?(Confirm_Postion = 0):(i += 1);
 			}
-
 		}while(Confirm_Postion);
 	}
 	else
@@ -508,9 +603,8 @@ uint16 Calculate_Postion_Down(uint16* Signal,uint16 Postion)
 			}
 			else
 			{
-				Confirm_Postion = 0;
+				(Signal[i+1] > Data_Boundary)?(Confirm_Postion = 0):(i += 1);
 			}
-
 		}while(Confirm_Postion);
 	}
 
@@ -527,9 +621,8 @@ uint16 Calculate_Postion_Down(uint16* Signal,uint16 Postion)
 			}
 			else
 			{
-				Confirm_Postion = 0;
+				(Signal[i+1] > Data_Boundary)?(Confirm_Postion = 0):(i += 1);
 			}
-
 		}while(Confirm_Postion);
 	}
 
@@ -605,6 +698,7 @@ uint16 Check_Trend(uint16 *Signal,uint16 Postion,uint8 Flag)
 	}
 	return state;
 }
+
 /******************************************************************************/
 void QR_Date_SignalProcess_Alg_data (void)
 {

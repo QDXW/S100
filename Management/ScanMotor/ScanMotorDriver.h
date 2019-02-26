@@ -35,8 +35,8 @@
 #define ScanMotorDriver_DIR_IN    	 	1
 
 /******************************************************************************/
-#define MOTOR_TOTAL_STEPS        (180)
-#define MOTOR_HALF_STEPS         (175)
+#define MOTOR_TOTAL_STEPS        (175)
+#define MOTOR_HALF_STEPS         (160)
 #define MOTOR_GOTO_DET_POS_STEPS (50)
 
 #define MOTOR_SAMPLE_STEPS       (MOTOR_TOTAL_STEPS - MOTOR_GOTO_DET_POS_STEPS)

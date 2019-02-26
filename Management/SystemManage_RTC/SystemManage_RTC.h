@@ -47,4 +47,7 @@ extern RTC_DATA SystemManage_UserSetTime;
 /* APP setting time */
 extern RTC_DATA SystemManage_SetTime;
 
+/******************************************************************************/
+extern void Time_Switch (void);
+
 #endif /* MANAGEMENT_SYSTEMMANAGE_RTC_SYSTEMMANAGE_RTC_H_ */

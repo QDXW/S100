@@ -24,6 +24,11 @@ extern const unsigned char gImage_Realy_ico[15872];
 extern const unsigned char gImage_HENGRUI_ICO[14400];
 #endif
 
+#if ULTIMED
+extern const unsigned char gImage_ULTIMED[24200];
+#endif
+
+
 /******************************************************************************/
 extern const unsigned char gImage_Blutooth[252];
 extern const unsigned char gImage_All_Step[2640];

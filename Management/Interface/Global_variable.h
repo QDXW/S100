@@ -22,11 +22,11 @@ extern uint8 UI_state,key_state,Exti_lock,Key_control,Interface_Key;
 extern uint8 UI_runMode,Open_time,key_state_confirm,Key_State_Update;
 extern uint8 Display_Time,Cup_Count,doubleClick,Read_first,Key_record;
 extern uint8 Display_Battery,Check_motor,Check_Lock,Existed_Data,Stop_Mode;
-extern uint8 Cup_Exist,QRCode_received,QRCode_existed,Action_time,Quick_Second;
+extern uint8 Cup_Exist,QRCode_received,QRCode_existed,Quick_Second;
 
-extern uint16 Power_Second,Power_Minute;
+extern uint16 Power_Second,Power_Minute,Record_Max_Postion[8],Action_time;
 extern uint16 SignalSample_count,adcx,Data_Boundary,UI_WindowBlocks,QRCode_count;
-extern uint16 SignalProcess_sampleBuffer[512],reagent_Strip[4];
+extern uint16 SignalProcess_sampleBuffer[1024],reagent_Strip[4];
 
 extern uint32 Data_SN;
 

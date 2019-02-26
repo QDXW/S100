@@ -155,6 +155,11 @@ void UI_Language_Window_Quick(void)
 		DisplayDriver_Text16_B(24,83,Baby_Blue,White,"É¨Ãè¶þÎ¬Âë");
 		break;
 
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16_B(20,73,Baby_Blue,White,"Scannen Sie");
+		DisplayDriver_Text16_B(20,91,Baby_Blue,White,"den QR Code");
+		break;
+
 	default:
 		break;
 	}

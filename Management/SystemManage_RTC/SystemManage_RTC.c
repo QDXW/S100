@@ -10,14 +10,7 @@
 
 /******************************************************************************/
 RTC_DATA SystemManage_CurrentTime;
-RTC_DATA SystemManage_RecordTime = {
-		2018,		 /* year */
-		9,			 /* month */
-		6, 		 /* day */
-		16, 		 /* hour */
-		20, 		 	 /* minute */
-		5
-};
+RTC_DATA SystemManage_RecordTime;
 
 /******************************************************************************/
 /* Setting time */
@@ -293,6 +286,17 @@ uint8 SystemManage_RTC_Set(uint16 syear, uint8 smon, uint8 sday, uint8 hour,
 	PCF8563_Set(syear, smon, sday, hour, min, sec, week);
 
 	return 0;
+}
+
+/******************************************************************************/
+void Time_Switch(void)
+{
+	SystemManage_RecordTime.year = SystemManage_CurrentTime.year;
+	SystemManage_RecordTime.month = SystemManage_CurrentTime.month;
+	SystemManage_RecordTime.day = SystemManage_CurrentTime.day;
+	SystemManage_RecordTime.hour = SystemManage_CurrentTime.hour;
+	SystemManage_RecordTime.min = SystemManage_CurrentTime.min;
+	SystemManage_RecordTime.sec = SystemManage_CurrentTime.sec;
 }
 
 /******************************************************************************/

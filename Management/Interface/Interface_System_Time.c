@@ -56,6 +56,7 @@ uint8 Interface_System_Time(uint16 KeyCode)
 	Interface_Key = 7;
 	Time_Count = 1;
 	key_state_confirm = 0;
+	Time_Switch();
 	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_System_Time) >> 2;
 	UI_Draw_Window_System_Time(UI_WindowBlocks);

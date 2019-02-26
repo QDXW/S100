@@ -71,7 +71,7 @@ void RotationMotor_SelfCheck_StepDrive(void)
 	{
 		RotationMotor_Input_StepDrive(Foreward_Rotation,1);
 		MoveStep_Num++;
-		if(MoveStep_Num > 518)
+		if(MoveStep_Num > 525)
 		{
 			Check_motor = 1;
 			Check_Lock = 2;
@@ -85,7 +85,7 @@ void RotationMotor_SelfCheck_StepDrive(void)
 	{
 		RotationMotor_Input_StepDrive(Foreward_Rotation,1);
 		MoveStep_Num++;
-		if(MoveStep_Num > 518)
+		if(MoveStep_Num > 525)
 		{
 			Check_motor = 1;
 			Check_Lock = 2;

@@ -280,7 +280,6 @@ void Key_Confirm(void)
 				else
 				{
 					key_state_confirm = ENABLE;
-
 				}
 				EXTI_Key_Confirm_Enable();
 			}
@@ -290,7 +289,7 @@ void Key_Confirm(void)
 
 		if(UI_state != UI_STATE_TESTING && Power_Open && long_key_flag)
 		{
-			if(Interface_Key == 2)
+			if(Interface_Key == 2 || Interface_Key == 4)
 			{
 				long_key_flag = 0;
 				if (Printer_isConnected())
@@ -303,7 +302,7 @@ void Key_Confirm(void)
 			{
 				SystemManage_CheckPowerOff();
 			}
-
+//			key_state = DISABLE;
 			short_key_flag = 0;
 		}
 
@@ -366,6 +365,19 @@ void Key_Right(void)
 			key_state = ENABLE;
 		break;
 
+		case 9:
+			key_state_confirm = 0;
+			if(Key_control < 2)
+			{
+				Key_control += 1;
+			}
+			else
+			{
+				Key_control = 2;
+			}
+			key_state = ENABLE;
+		break;
+
 		default:
 		break;
 	}
@@ -425,16 +437,32 @@ void Key_Left(void)
 			}
 			key_state = ENABLE;
 		break;
+
 		case 7:
 			key_state_confirm = 0;
 			Key_control = 1;
 			key_state = ENABLE;
 		break;
+
 		case 8:
 			key_state_confirm = 0;
 			Key_control = 1;
 			key_state = ENABLE;
 		break;
+
+		case 9:
+			key_state_confirm = 0;
+			if(Key_control > 1)
+			{
+				Key_control -= 1;
+			}
+			else
+			{
+				Key_control = 1;
+			}
+			key_state = ENABLE;
+		break;
+
 		default:
 		break;
 	}

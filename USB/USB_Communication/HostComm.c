@@ -243,39 +243,51 @@ uint8 HostComm_Cmd_Process(void)
 		case CMD_CODE_APP_SYSINFO:
 			responseLength = HostComm_Cmd_Respond_APP_SysInfo();
 			break;
+
 		case CMD_CODE_APP_SET_TIME:
 			responseLength = HostComm_Cmd_Respond_APP_SetTime();
 			break;
+
 		case CMD_CODE_APP_SET_MODE:
 			responseLength = HostComm_Cmd_Respond_APP_SetMode();
 			break;
+
 		case CMD_CODE_APP_SET_MFG:
 			responseLength = HostComm_Cmd_Respond_APP_SetMFG();
 			break;
+
 		case CMD_CODE_APP_SET_LANGUAGE:
 			responseLength = HostComm_Cmd_Respond_APP_SetLanguage();
 			break;
+
 		case CMD_CODE_APP_SET_OUT_FAB:
 //			responseLength = HostComm_Cmd_Respond_APP_SetOutFab();
 			break;
+
 		case CMD_CODE_APP_READ_RESISTOR:
 			responseLength = HostComm_Cmd_Respond_APP_ReadResistor();
 			break;
+
 		case CMD_CODE_APP_WRITE_RESISTOR:
 			responseLength = HostComm_Cmd_Respond_APP_WriteResistor();
 			break;
+
 		case CMD_CODE_APP_SEND_QRCODE_DATA:
 			responseLength = HostComm_Cmd_Respond_APP_QRCode_Data();
 			break;
+
 		case CMD_CODE_APP_READ_BOUNDARY:
 			responseLength = HostComm_Cmd_Respond_APP_ReadBoundary();
 			break;
+
 		case CMD_CODE_APP_WRITE_BOUNDARY:
 			responseLength = HostComm_Cmd_Respond_APP_WriteBoundary();
 			break;
+
 		case CMD_CODE_APP_CALIBRATION:
 			responseLength = HostComm_Cmd_Respond_APP_Calibration();
 			break;
+
 		case APP_SET_5V:
 			responseLength = HostComm_Cmd_Respond_APP_SET_5V();
 			break;
@@ -598,9 +610,9 @@ static uint16 HostComm_Cmd_Respond_APP_QRCode_Data(void)
 	/* 数据打包 */
 	if(Existed_Data)
 	{
-		cmdDataLength = 401;
+		cmdDataLength = sizeof(QRCODE_HEAD_STRUCT);
 		respBuffer[OFFSET_CMD_DATA_RX] = 1;
-		memcpy(&respBuffer[OFFSET_CMD_DATA_RX +1],&QR_Date_Analyze,400);
+		memcpy(&respBuffer[OFFSET_CMD_DATA_RX +1],&QR_Date,sizeof(QRCODE_HEAD_STRUCT));
 	}
 	else
 	{
@@ -859,6 +871,7 @@ void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[])
 	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
 	uint16 cmdDataLength = 0;
 
+	memset(respBuffer,0,sizeof(respBuffer));
 	memcpy(&respBuffer[OFFSET_CMD_DATA], dataBuf, length);
 	cmdDataLength = length;
 	if(length >10)
@@ -880,9 +893,10 @@ void Language_Valid (void)
 	uint8 value[3] = {0};
 	/* Read from flash */
 	Storage_Read(value, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*3),2);
-	Font_Switch = value[0];
-}
 
+	Font_Switch = (value[0] == 0xFF)?DISPLAY_FONT_ENGLISH:(value[0]);
+//	Font_Switch = 2;
+}
 
 /******************************************************************************/
 void ReadResistor_Valid (void)
@@ -902,6 +916,7 @@ void Set_Fixed_Parameter(void)
 	ReadBoundary_Value();
 	ReadResistor_Valid();
 	Language_Valid();
+	ReadBlutooth_Status();
 }
 
 /******************************************************************************/
@@ -914,6 +929,29 @@ void ReadBoundary_Value(void)
 	Storage_Read(value,(FLASH_CALI_ADDR+FLASH_OFFSET_ADDR),2);
 	memcpy(&Boundary,value,2);
 	Data_Boundary = Boundary;
+}
+
+/******************************************************************************/
+void ReadBlutooth_Status(void)
+{
+	uint16 Blutooth_status = 0;
+	uint8 value[1] = {0};
+
+	/* Read from flash */
+	Storage_Read(value,(FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*4),1);
+	memcpy(&Blutooth_status,value,1);
+	Bluetooth_switch = Blutooth_status;
+	if(!Bluetooth_switch)
+	{
+		GPIO_SetBits(GPIOE, GPIO_Pin_4);
+		Bluetooth_switch = 1;
+	}
+	else
+	{
+		GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
+		Bluetooth_switch = 0;
+	}
 }
 
 /******************************************************************************/

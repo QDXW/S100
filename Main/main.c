@@ -108,18 +108,20 @@ void Status_Init(void)
 #if HENGRUI_ICO
 	DisplayDriver_DrawPic(4,55,120,60,gImage_HENGRUI_ICO);
 #endif
-
+#if ULTIMED
+	DisplayDriver_DrawPic(7,25,110,110,gImage_ULTIMED);
+#endif
+	Set_Fixed_Parameter();
 	Display_Time = 1;
 	SystemManage_5V_Enabled();
 	ScanMotorDriver_SelfCheck_StepDrive();
 	RotationMotor_SelfCheck_StepDrive();
 	SystemManage_5V_Disabled();
-	Set_Fixed_Parameter();
 	Enter_Sleep = 1;
 	if(Check_Lock)
 	{
 		Exti_lock = ENABLE;
-		while(1);
+  		while(1);
 	}
 
  	Display_Time = 0;

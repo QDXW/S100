@@ -77,7 +77,7 @@ void ScanMotorDriver_Control(uint8 enabled) {
 /******************************************************************************/
 void ScanMotorDriver_MoveOneStep(uint8 dir) {
 #define MOTOR_QUICK_DELAY	 0X2000
-#define MOTOR_SLOW_DELAY 	 0X3000
+#define MOTOR_SLOW_DELAY 	 0X4000
 
 	uint8 index = 0;
 	ScanMotorDriver_Control(MOTOR_ENABLED);
@@ -232,7 +232,7 @@ void ScanMotorDriver_Goto_DetectionPosition(void) {
 void ScanMotorDriver_Goto_CentrePosition(void)
 {
 	/* Move to detection position */
-	ScanMotorDriver_Move(ScanMotorDriver_DIR_OUT, MOTOR_HALF_STEPS);
+	ScanMotorDriver_Move(ScanMotorDriver_DIR_OUT, 180);
 }
 
 /******************************************************************************/
@@ -253,7 +253,7 @@ void ScanMotorDriver_SelfCheck_StepDrive(void)
 	{
 		ScanMotorDriver_MoveOneStep(ScanMotorDriver_DIR_IN);
 		MoveStep_Num++;
-		if(MoveStep_Num > 195)
+		if(MoveStep_Num > 200)
 		{
 			Check_motor = 1;
 			Check_Lock = 1;
@@ -266,7 +266,7 @@ void ScanMotorDriver_SelfCheck_StepDrive(void)
 	{
 		ScanMotorDriver_MoveOneStep(ScanMotorDriver_DIR_IN);
 		MoveStep_Num++;
-		if(MoveStep_Num > 186)
+		if(MoveStep_Num > 200)
 		{
 			Check_motor = 1;
 			Check_Lock = 1;

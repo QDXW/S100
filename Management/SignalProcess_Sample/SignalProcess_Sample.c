@@ -504,11 +504,11 @@ void SignalSample_Sample_ExitCriticalArea(void)
 /******************************************************************************/
 void SignalSample_SampleStrip(void)
 {
-	uint16 moveSteps = MOTOR_SAMPLE_STEPS - 1;
+	uint16 moveSteps = MOTOR_HALF_STEPS;
 
 	/* 1.3 Enter critical area */
 	SignalSample_Sample_EnterCriticalArea();
-	memset(&SignalProcess_sampleBuffer[0],0,512);
+	memset(&SignalProcess_sampleBuffer[0],0,sizeof(SignalProcess_sampleBuffer));
 
 	/* 2nd stage: start timer, move motor per interval then sample */
 	/* 2.1 Initialize timer */
@@ -527,10 +527,10 @@ void SignalSample_SampleStrip(void)
 				/* Move one step */
 				ScanMotorDriver_Move(ScanMotorDriver_DIR_OUT,1);
 				/* Sample one time */
-//				SignalProcess_sampleBuffer[SignalSample_count--]
-//										   = SignalProcess_Collecting_Data();
+				SignalProcess_sampleBuffer[SignalSample_count--]
+										   = SignalProcess_Collecting_Data();
 				/* Determine exit condition */
-				if (!(moveSteps--))
+				if (!SignalSample_count)
 					break;
 			}
 		}
@@ -555,6 +555,7 @@ void SignalSample_SampleStrip(void)
 			/* Timer notifies */
 			ScanMotorDriver_MoveOneStep(ScanMotorDriver_DIR_IN);
 		}
+		ScanMotorDriver_Goto_DetectionPosition();
 	}
 
 	/* 3rd stage: Post process */
@@ -564,5 +565,4 @@ void SignalSample_SampleStrip(void)
 
 	/* 3.2 Exit critical area */
 	SignalSample_Sample_ExitCriticalArea();
-	ScanMotorDriver_Goto_DetectionPosition();
 }

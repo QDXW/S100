@@ -118,7 +118,7 @@ block_attr_Record block_Record_CH1 = {
 	ENABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.CH_data[0].Result,
-		50,   90,
+		70,   90,
 		Black,BACKCOLOR_CONTENT_BACK
 	},
 };
@@ -138,7 +138,7 @@ block_attr_Record block_Record_CH2 = {
 	ENABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.CH_data[1].Result,
-		50,   106,
+		70,   106,
 		Black,BACKCOLOR_CONTENT_BACK
 	},
 };
@@ -158,7 +158,7 @@ block_attr_Record block_Record_CH3 = {
 	ENABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.CH_data[2].Result,
-		50,   122,
+		70,   122,
 		Black,BACKCOLOR_CONTENT_BACK
 	},
 };
@@ -178,7 +178,7 @@ block_attr_Record block_Record_CH4 = {
 	ENABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.CH_data[3].Result,
-		50,   138,
+		70,   138,
 		Black,BACKCOLOR_CONTENT_BACK
 	}
 };
@@ -211,7 +211,23 @@ uint8 Interface_Record(uint16 KeyCode)
 	{
 		Display_Time = 0;
 		Lcd_ColorBox(0,20,128, 140,White);
-		DisplayDriver_Text16(24, 80, Red,"No Record!");
+		switch(Font_Switch)
+		{
+		case DISPLAY_FONT_ENGLISH:
+			DisplayDriver_Text16(24, 80, Red,"No Record!");
+			break;
+
+		case DISPLAY_FONT_CHINESE:
+			DisplayDriver_Text16(36, 80, Red,"无记录!");
+			break;
+
+		case DISPLAY_FONT_GERMAN:
+			DisplayDriver_Text16_B(20,25,Black,Dark_Blue,"Kein rekord");
+			break;
+
+		default:
+			break;
+		}
 		Display_Time = 1;
 		Key_control = 0;
 		Exti_lock = ENABLE;
@@ -267,7 +283,7 @@ void UI_Language_Window_Record(void)
 	DisplayDriver_DrawLine(6,42,120,42,BACKCOLOR_CONTENT_BACK);
 	DisplayDriver_DrawLine(6,58,120,58,BACKCOLOR_CONTENT_BACK);
 	DisplayDriver_DrawLine(6,90,120,90,BACKCOLOR_CONTENT_BACK);
-	DisplayDriver_DrawLine(39,24,39,154,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(39,24,39,90,BACKCOLOR_CONTENT_BACK);
 	switch(Font_Switch)
 	{
 	case DISPLAY_FONT_ENGLISH:
@@ -279,9 +295,16 @@ void UI_Language_Window_Record(void)
 
 	case DISPLAY_FONT_CHINESE:
 		DisplayDriver_Text16(8,26,Black,"名称");
-		DisplayDriver_Text16(41,26,Black,"毒品检测");
+		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
 		DisplayDriver_Text16(8,42,Black,"批号");
 		DisplayDriver_Text16(8,58,Black,"时间");
+		break;
+
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16(8,26,Black,"Name");
+		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
+		DisplayDriver_Text16(8,42,Black,"SN");
+		DisplayDriver_Text16(8,58,Black,"Zeit");
 		break;
 
 	default:
@@ -319,6 +342,11 @@ void UI_Draw_Block_Record(block_attr_Record* block)
 				block->char2_attr.color,block->char2_attr.faceColor,
 				block->char2_attr.str);
 	}
+
+	DisplayDriver_DrawLine(6,121,120,121,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(6,137,120,137,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(6,105,120,105,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(39,24,39,90,BACKCOLOR_CONTENT_BACK);
 	Display_Time = 1;
 	key_state = DISABLE;
 }

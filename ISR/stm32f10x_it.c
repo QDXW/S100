@@ -8,7 +8,7 @@
 
 /******************************************************************************/
 extern uint8 SignalSample_moveThenSample;
-uint8 time_second = 60,Battery_Second = 0,Check_flag = 0;
+uint8 Battery_Second = 0,Check_flag = 0;
 uint16 Stop_Mode_Second = 0;
 uint8 keyUpFlag = 0,short_key_down = 0;
 
@@ -115,10 +115,10 @@ void SysTick_Handler(void)
 	}
 
 
-	 if(key_fall_flag == 1)									//发生按键按下事件
-	 {
-		 if(!GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4))		//按键持续按下
-		 {
+	if(key_fall_flag == 1)									//发生按键按下事件
+	{
+		if(!GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4))		//按键持续按下
+		{
 			 if(key_holdon_ms < 1100)
 			 {
 				 key_holdon_ms++;
@@ -148,16 +148,16 @@ void SysTick_Handler(void)
 				     short_key_flag=0;
 				 }
 				 keyUpFlag = TRUE;							//单击抬起按键后，生成按键抬起标志
-			 }
+			}
 			 else  											//按键持续时间小于50ms，忽略
-			 {
+			{
 				 key_holdon_ms = 0;
 				 short_key_flag = 0;
 				 long_key_flag = 0;
 				 key_fall_flag = 0;
-			 }
-		 }
-	 }
+			}
+		}
+	}
 
 	if(keyUpFlag)											//单击抬起后，启动计数，计数到500ms
 		keyupCnt++;
@@ -223,24 +223,13 @@ void TIM4_IRQHandler(void)
 
 	if(Open_time)
 	{
-		time_second--;
-		Display_Down_Time_second();
-		if(time_second < 1)
+		Action_time --;
+		Display_Down_Time_Msec();
+		if(Action_time < 1)
 		{
-			time_second = 60;
-			Action_time--;
-			Display_Down_Time_Msec();
-			if(Action_time < 1)
-			{
-				Action_time = 0;
-				Open_time = 0;
-				time_second = 60;
-			}
+			Action_time = 0;
+			Open_time = 0;
 		}
-	}
-	else
-	{
-		time_second = 60;
 	}
 
 	if(Check_motor)
@@ -264,6 +253,12 @@ void TIM4_IRQHandler(void)
 				DisplayDriver_Text16(24, 62, Red,"丝杆电机故障");
 				break;
 
+			case DISPLAY_FONT_GERMAN:
+				DisplayDriver_Text16(8, 22, Red,"Fehler: 001");
+				DisplayDriver_Text16(12, 42, Red,"Entfernen Sie");
+				DisplayDriver_Text16(16, 62, Red,"die Kassette");
+				break;
+
 			default:
 				break;
 			}
@@ -280,13 +275,19 @@ void TIM4_IRQHandler(void)
 			switch(Font_Switch)
 			{
 			case DISPLAY_FONT_ENGLISH:
-				DisplayDriver_Text16(8, 92, Red,"Error: 002");
+				DisplayDriver_Text16(8, 92, Red,"Fehler: 002");
 				DisplayDriver_Text16(8, 112, Red,"Rotating motor");
 				break;
 
 			case DISPLAY_FONT_CHINESE:
 				DisplayDriver_Text16(8, 92, Red,"错误: 002");
 				DisplayDriver_Text16(24, 112, Red,"转动电机故障");
+				break;
+
+			case DISPLAY_FONT_GERMAN:
+				DisplayDriver_Text16(8, 82, Red,"Erreur: 002");
+				DisplayDriver_Text16(24, 102, Red,"Drehen Sie");
+				DisplayDriver_Text16(16, 122, Red,"die Kassette");
 				break;
 
 			default:
@@ -432,7 +433,7 @@ void PVD_IRQHandler(void)
 void Display_Down_Time_second (void)
 {
 	char tbuf[4] = {0};
-	sprintf((char*)tbuf,"%02d",time_second);
+//	sprintf((char*)tbuf,"%02d",time_second);
 	Display_Time = 0;
 	DisplayDriver_Text16_B(68,82,Black,Light_Gray,tbuf);
 	Display_Time = 1;
@@ -441,8 +442,12 @@ void Display_Down_Time_second (void)
 /******************************************************************************/
 void Display_Down_Time_Msec (void)
 {
-	char tbuf[4] = {0};
-	sprintf((char*)tbuf,"%02d:",Action_time);
+	char tbuf[8] = {0};
+	uint8 time_second = 0,time_Minute = 0;
+	time_second = Action_time%60;
+	time_Minute = Action_time/60;
+
+	sprintf((char*)tbuf,"%02d:%02d",time_Minute,time_second);
 	Display_Time = 0;
 	DisplayDriver_Text16_B(44,82,Black,Light_Gray,tbuf);
 	Display_Time = 1;

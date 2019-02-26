@@ -311,6 +311,11 @@ void UI_Language_Window_Result(void)
 		DisplayDriver_Text16_B(60,  25,Black,Dark_Blue,"½á¹û");
 		break;
 
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16_B(9,25,Black,Dark_Blue,"Analyt");
+		DisplayDriver_Text16_B(60,  25,Black,Dark_Blue,"Ergebnis");
+		break;
+
 	default:
 		break;
 	}

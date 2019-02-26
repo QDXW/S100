@@ -99,16 +99,24 @@ void UI_Language_Window_About_Machine(void)
 		DisplayDriver_Text16(4,56,White,"Type:RL-S100");
 		DisplayDriver_Text16(4,76,White,"SN:");
 		DisplayDriver_Text16(28,76,White,data_SN);
-		DisplayDriver_Text16(4,96,White,"HW:1.0");
-		DisplayDriver_Text16(4,116,White,"FW:1.8.0619");
+		DisplayDriver_Text16(4,96,White,"HW:1.1");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0226");
 		break;
 
 	case DISPLAY_FONT_CHINESE:
 		DisplayDriver_Text16(4,56,White,"型号:RL-S100");
-		DisplayDriver_Text16(4,76,White,"批号");
+		DisplayDriver_Text16(4,76,White,"SN:");
 		DisplayDriver_Text16(39,76,White,data_SN);
-		DisplayDriver_Text16(4,96,White,"固件版本:1.0");
-		DisplayDriver_Text16(4,116,White,"硬件版本:8.1115");
+		DisplayDriver_Text16(4,96,White,"HW:1.1");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0226");
+		break;
+
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16(4,56,White,"Typ:RL-S100");
+		DisplayDriver_Text16(4,76,White,"SN:");
+		DisplayDriver_Text16(39,76,White,data_SN);
+		DisplayDriver_Text16(4,96,White,"HW:1.1");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0226");
 		break;
 
 	default:

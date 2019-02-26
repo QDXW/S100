@@ -79,27 +79,30 @@ typedef struct {
 
 /******************************************************************************/
 typedef enum {
-	UI_STATE_MAIN_WINDOW, 			/* Interface main display */
-	UI_STATE_KEY_STATE, 			/* Interface key state */
-	UI_STATE_MAIN_FONT, 			/* Interface main font display */
-	UI_STATE_START,					/* Interface Start Display */
-	UI_STATE_QUICK, 				/* Interface Quick Display */
-	UI_STATE_RECORD, 				/* Interface Record Display */
-	UI_STATE_SETTING, 				/* Interface Setting Display */
-	UI_STATE_TESTING,				/* Interface Testing Display */
-	UI_STATE_RESULT,				/* Interface Result Display */
-	UI_STATE_RESULT_2,				/* Interface Start Display */
-	UI_STATE_INSERT_CUP,			/* Interface insert cup Display */
-	UI_STATE_START_FONT,			/* Interface Start font Display */
-	UI_STATE_RECORD2, 				/* Interface Record2 Display */
-	UI_STATE_SETTING_FONT,			/* Interface Start font Display */
-	UI_STATE_ABOUT_MACHINE,			/* Interface about machine Display */
-	UI_STATE_SYSTEM_TIME,			/* Interface system time Display */
-	UI_STATE_TIME_PROCESS,			/* Interface time Display */
-	UI_STATE_DOWN_TIME_PROCESS,		/* Interface down time Display */
-	UI_STATE_BLUET_SWITCH_PROCESS,	/* Interface bluetooth switch Display */
-	UI_STATE_IN_CALIBRATION_PROCESS,/* Interface calibration Display */
+	UI_STATE_MAIN_WINDOW, 				/* Interface main display */
+	UI_STATE_KEY_STATE, 				/* Interface key state */
+	UI_STATE_MAIN_FONT, 				/* Interface main font display */
+	UI_STATE_START,						/* Interface Start Display */
+	UI_STATE_QUICK, 					/* Interface Quick Display */
+	UI_STATE_RECORD, 					/* Interface Record Display */
+	UI_STATE_SETTING, 					/* Interface Setting Display */
+	UI_STATE_TESTING,					/* Interface Testing Display */
+	UI_STATE_RESULT,					/* Interface Result Display */
+	UI_STATE_RESULT_2,					/* Interface Start Display */
+	UI_STATE_INSERT_CUP,				/* Interface insert cup Display */
+	UI_STATE_START_FONT,				/* Interface Start font Display */
+	UI_STATE_RECORD2, 					/* Interface Record2 Display */
+	UI_STATE_SETTING_FONT,				/* Interface Start font Display */
+	UI_STATE_ABOUT_MACHINE,				/* Interface about machine Display */
+	UI_STATE_SYSTEM_TIME,				/* Interface system time Display */
+	UI_STATE_TIME_PROCESS,				/* Interface time Display */
+	UI_STATE_DOWN_TIME_PROCESS,			/* Interface down time Display */
+	UI_STATE_BLUET_SWITCH_PROCESS,		/* Interface bluetooth switch Display */
+	UI_STATE_IN_CALIBRATION_PROCESS,	/* Interface calibration Display */
 	UI_STATE_CALIBRATION_KEY_PROCESS,	/* Interface calibration key Display */
+	UI_STATE_SETTING_KEY,				/* Interface Settings key Display */
+	UI_STATE_LANGUAGE_PROCESS,
+	UI_STATE_LANGUAGE_KEY,
 
 	UI_STATE_MAX_STATE_NUM,
 } UI_STATE;
@@ -108,6 +111,7 @@ typedef enum {
 typedef enum {
 	DISPLAY_FONT_CHINESE,
 	DISPLAY_FONT_ENGLISH,
+	DISPLAY_FONT_GERMAN,
 
 	DISPLAY_FONT,
 } FONT_DIASPLAY;
@@ -140,7 +144,10 @@ extern uint8 Interface_Setting_font(uint16 blockNum);
 extern uint8 Interface_Standard_font(uint16 KeyCode);
 extern uint8 Interface_About_Machine(uint16 KeyCode);
 extern void UI_Draw_Window_Quick_font(uint16 blockNum);
+extern uint8 Interface_Language_Process(uint16 blockNum);
 extern uint8 Interface_Down_Time_Process(uint16 blockNum);
+extern uint8 Interface_Settings_key_Process(uint16 blockNum);
+extern uint8 Interface_Language_key_Process(uint16 blockNum);
 extern uint8 Interface_Bluet_switch_Process(uint16 blockNum);
 extern uint8 Interface_In_Calibration_Process(uint16 blockNum);
 extern uint8 Interface_Calibration_key_Process(uint16 blockNum);

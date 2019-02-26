@@ -42,7 +42,7 @@ block_attr_Record block_Record_CH5 = {
 	ENABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.CH_data[4].Result,
-		50,   26,
+		70,   26,
 		Black,BACKCOLOR_CONTENT_BACK
 	},
 };
@@ -62,7 +62,7 @@ block_attr_Record block_Record_CH6 = {
 	ENABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.CH_data[5].Result,
-		50,   42,
+		70,   42,
 		Black,BACKCOLOR_CONTENT_BACK
 	},
 };
@@ -82,7 +82,7 @@ block_attr_Record block_Record_CH7 = {
 	ENABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.CH_data[6].Result,
-		50,   58,
+		70,   58,
 		Black,BACKCOLOR_CONTENT_BACK
 	},
 
@@ -103,89 +103,9 @@ block_attr_Record block_Record_CH8 = {
 	ENABLE,								/* Display HZ16X8 */
 	{
 		Storage_Data.CH_data[7].Result,
-		50,   74,
+		70,   74,
 		Black,BACKCOLOR_CONTENT_BACK
 	},
-};
-
-/******************************************************************************/
-block_attr_Record block_Record_CH9 = {
-	DISABLE,							/* Interface Record rect */
-	{0},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		Storage_Data.CH_data[8].TName,
-		8,   90,
-		Black,BACKCOLOR_CONTENT_BACK
-	},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		Storage_Data.CH_data[8].Result,
-		50,   90,
-		Black,BACKCOLOR_CONTENT_BACK
-	},
-};
-
-/******************************************************************************/
-block_attr_Record block_Record_CH10 = {
-	DISABLE,							/* Interface Record rect */
-	{0},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		Storage_Data.CH_data[9].TName,
-		8,   106,
-		Black,BACKCOLOR_CONTENT_BACK
-	},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		Storage_Data.CH_data[9].Result,
-		50,   106,
-		Black,BACKCOLOR_CONTENT_BACK
-	},
-};
-
-/******************************************************************************/
-block_attr_Record block_Record_CH11 = {
-	DISABLE,							/* Interface Record rect */
-	{0},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		Storage_Data.CH_data[10].TName,
-		8,   122,
-		Black,BACKCOLOR_CONTENT_BACK
-	},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		Storage_Data.CH_data[10].Result,
-		50,   122,
-		Black,BACKCOLOR_CONTENT_BACK
-	},
-};
-
-/******************************************************************************/
-block_attr_Record block_Record_CH12 = {
-	DISABLE,							/* Interface Record rect */
-	{0},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		Storage_Data.CH_data[11].TName,
-		8,   138,
-		Black,BACKCOLOR_CONTENT_BACK
-	},
-
-	ENABLE,								/* Display HZ16X8 */
-	{
-		Storage_Data.CH_data[11].Result,
-		50,   138,
-		Black,BACKCOLOR_CONTENT_BACK
-	}
 };
 
 /******************************************************************************/
@@ -194,10 +114,6 @@ block_attr_Record* UI_WindowBlocksAttrArray_Record_2[][9] = {/* Window: Standard
 {&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6},
 {&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7},
 {&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8},
-{&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
-		&block_Record_CH9},
-{&block_Record_BACKCOLOR_CONTENT_BACK,&block_Record_CH5,&block_Record_CH6,&block_Record_CH7,&block_Record_CH8,
-		&block_Record_CH9,&block_Record_CH10},
 };
 
 /******************************************************************************/
@@ -214,7 +130,6 @@ uint8 Interface_Record_2(uint16 KeyCode)
 	page_Num = 2;
 	UI_WindowBlocks = sizeof(UI_WindowBlocksAttrArray_Record_2[Storage_Data.StripNum-5]) >> 2;
 	UI_Draw_Window_Record_2(UI_WindowBlocks);
-	DisplayDriver_DrawLine(39,24,39,154,BACKCOLOR_CONTENT_BACK);
 	Exti_lock = ENABLE;
 	UI_state = UI_STATE_KEY_STATE;
 	return state;
@@ -237,6 +152,11 @@ void UI_Draw_Window_Record_2(uint16 blockNum)
 void UI_Draw_Block_Record_2(block_attr_Record* block)
 {
 	Display_Time = 0;
+	DisplayDriver_DrawLine(6,42,120,42,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(6,58,120,58,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(6,90,120,90,BACKCOLOR_CONTENT_BACK);
+	DisplayDriver_DrawLine(6,73,120,73,BACKCOLOR_CONTENT_BACK);
+//	DisplayDriver_DrawLine(39,24,39,90,BACKCOLOR_CONTENT_BACK);
 	if (block->rect_enabled)				/* 1. Draw Rect */
 	{
 		Lcd_ColorBox(block->rect_attr.startX, block->rect_attr.startY,

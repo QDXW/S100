@@ -76,6 +76,10 @@ void UI_Language_Window_Insert_Cup(void)
 		DisplayDriver_Text16_B(32,82,Baby_Blue,White,"²åÈë±­×Ó");
 		break;
 
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16_B(16,82,Baby_Blue,White,"Einf$gen cup");
+		break;
+
 	default:
 		break;
 	}
@@ -101,7 +105,7 @@ uint8 Interface_Down_Time_Process(uint16 blockNum)
 {
 	uint8 state = 0;
 	Interface_Key = 8;
-	Action_time = QR_Date.head.time;
+	Action_time = QR_Date.head.time * 60;
 	Exti_lock = ENABLE;
 	if(Key_record == 1)
 	{
@@ -131,11 +135,17 @@ uint8 Interface_Down_Time_Process(uint16 blockNum)
 void Display_Down_Time_Bar (void)
 {
 	char tbuf[8] = {0};
+	uint8 time_second = 0,time_Minute = 0;
+
+	time_second = Action_time%60;
+	time_Minute = Action_time/60;
+
 	Display_Time = 0;
 	Lcd_ColorBox(0,20,128,140,BACKCOLOR_CONTENT_BACK);
 	Lcd_ColorBox(36,75,56,30,Light_Gray);
 	DisplayDriver_DrawPic(5, 142,35,15,gImage_Left_arrow);
-	sprintf((char*)tbuf,"%02d:%02d",(Action_time-1),59);
+
+	sprintf((char*)tbuf,"%02d:%02d",time_Minute,time_second);
 	DisplayDriver_Text16_B(44,82,Black,Light_Gray,tbuf);
 	Display_Time = 1;
 }

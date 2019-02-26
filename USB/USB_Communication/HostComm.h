@@ -165,6 +165,7 @@ extern void HostComm_Init(void);
 extern void HostComm_Process(void);
 extern void ReadBoundary_Value(void);
 extern void ReadResistor_Valid (void);
+extern void ReadBlutooth_Status(void);
 extern void Language_Valid (void);
 extern void Set_Fixed_Parameter(void);
 extern uint16 HostComm_Cmd_Respond(void);

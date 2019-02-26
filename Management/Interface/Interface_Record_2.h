@@ -22,6 +22,6 @@ typedef struct {
 } block_attr_Record;
 
 /******************************************************************************/
-extern void UI_Draw_Window_Record_2(uint16 blockNum);
+void UI_Draw_Window_Record_2(uint16 blockNum);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_RECORD_2_H_ */
