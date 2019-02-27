@@ -53,64 +53,16 @@ uint8 Interface_Testing(uint16 KeyCode)
 
 	if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_12))
 	{
-		if(temp > 3.6)
+		UI_Language_Testing_Battery();
+		if(temp <= 3.6)
 		{
-
-		}
-		else
-		{
-			Display_Time = 0;
-			Lcd_ColorBox(0,20,128, 140,White);
-
-			switch(Font_Switch)
-			{
-			case DISPLAY_FONT_ENGLISH:
-				DisplayDriver_Text16(24, 80, Red,"No Battery!");
-				break;
-
-			case DISPLAY_FONT_CHINESE:
-				DisplayDriver_Text16(36, 80, Red,"无电池!");
-				break;
-
-			case DISPLAY_FONT_GERMAN:
-				DisplayDriver_Text16(4, 80, Red,"Keine batterie!");
-				break;
-
-			default:
-				break;
-			}
-
-			Display_Time = 1;
-			UI_state = UI_STATE_MAIN_WINDOW;
-			Delay_ms_SW(1500);
 			return state;
 		}
 	}
 
 	if(temp <= 3.67)
 	{
-		Display_Time = 0;
-		Lcd_ColorBox(0,20,128, 140,White);
-		switch(Font_Switch)
-		{
-		case DISPLAY_FONT_ENGLISH:
-			DisplayDriver_Text16(11, 80, Red,"Low battery!");
-			break;
-
-		case DISPLAY_FONT_CHINESE:
-			DisplayDriver_Text16(28,80, Red,"电量过低!");
-			break;
-
-		case DISPLAY_FONT_GERMAN:
-			DisplayDriver_Text16(0,80, Red,"Batterie schwach");
-			break;
-
-		default:
-			break;
-		}
-		Display_Time = 1;
-		UI_state = UI_STATE_MAIN_WINDOW;
-		Delay_ms_SW(1500);
+		UI_Language_Testing_Low_Battery();
 		return state;
 	}
 
@@ -157,6 +109,9 @@ void UI_Language_Window_Testing(void)
 		DisplayDriver_Text16(10,84,White,"Test l]uft...");
 		break;
 
+	case DISPLAY_FONT_PROTUGAL:
+		DisplayDriver_Text16(20,84,White,"Testanto...");
+		break;
 
 	default:
 		break;

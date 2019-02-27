@@ -309,36 +309,6 @@ void UI_Draw_Window_Start(uint16 blockNum)
 }
 
 /******************************************************************************/
-void UI_Language_Window_Start(void)
-{
-	Display_Time = 0;
-	switch(Font_Switch)
-	{
-	case DISPLAY_FONT_ENGLISH:
-		DisplayDriver_Text16_B(4,25,Black,White,"Name:");
-		DisplayDriver_Text16_B(44,25,Black,White,QR_Date.head.name);
-		DisplayDriver_Text16_B(4,45,Black,White,"  SN:");
-		break;
-
-	case DISPLAY_FONT_CHINESE:
-		DisplayDriver_Text16_B(4,25,Black,White,"Ãû³Æ:");
-		DisplayDriver_Text16_B(44,25,Black,White,QR_Date.head.name);
-		DisplayDriver_Text16_B(4,45,Black,White,"ÅúºÅ:");
-		break;
-
-	case DISPLAY_FONT_GERMAN:
-		DisplayDriver_Text16_B(4,25,Black,White,"Name:");
-		DisplayDriver_Text16_B(44,25,Black,White,QR_Date.head.name);
-		DisplayDriver_Text16_B(4,45,Black,White,"  SN:");
-		break;
-
-	default:
-		break;
-	}
-	Display_Time = 1;
-}
-
-/******************************************************************************/
 void UI_Draw_block_Start(block_attr_Start* block)
 {
 	Display_Time = 0;

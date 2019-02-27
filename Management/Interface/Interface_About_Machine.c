@@ -119,6 +119,14 @@ void UI_Language_Window_About_Machine(void)
 		DisplayDriver_Text16(4,116,White,"FW:1.9.0226");
 		break;
 
+	case DISPLAY_FONT_PROTUGAL:
+		DisplayDriver_Text16(4,56,White,"Tipo:RL-S100");
+		DisplayDriver_Text16(4,76,White,"SN:");
+		DisplayDriver_Text16(39,76,White,data_SN);
+		DisplayDriver_Text16(4,96,White,"HW:1.1");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0226");
+		break;
+
 	default:
 		break;
 	}

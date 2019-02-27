@@ -296,33 +296,6 @@ void UI_Draw_Window_Result(uint16 blockNum)
 }
 
 /******************************************************************************/
-void UI_Language_Window_Result(void)
-{
-	Display_Time = 0;
-	switch(Font_Switch)
-	{
-	case DISPLAY_FONT_ENGLISH:
-		DisplayDriver_Text16_B(9,25,Black,Dark_Blue,"Item");
-		DisplayDriver_Text16_B(60,  25,Black,Dark_Blue,"Result");
-		break;
-
-	case DISPLAY_FONT_CHINESE:
-		DisplayDriver_Text16_B(9,25,Black,Dark_Blue,"Ãû³Æ");
-		DisplayDriver_Text16_B(60,  25,Black,Dark_Blue,"½á¹û");
-		break;
-
-	case DISPLAY_FONT_GERMAN:
-		DisplayDriver_Text16_B(9,25,Black,Dark_Blue,"Analyt");
-		DisplayDriver_Text16_B(60,  25,Black,Dark_Blue,"Ergebnis");
-		break;
-
-	default:
-		break;
-	}
-	Display_Time = 1;
-}
-
-/******************************************************************************/
 void UI_Draw_block_Result(block_attr_Result* block)
 {
 	Display_Time = 0;

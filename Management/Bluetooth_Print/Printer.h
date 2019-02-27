@@ -45,7 +45,7 @@ typedef struct {
 extern PRINT_CONTENT Printer_Result;
 
 /******************************************************************************/
-void Printer_BLE_Print(STORAGE_SINGLE_DATA_STRUCT *content);
+extern void Printer_BLE_Print(STORAGE_SINGLE_DATA_STRUCT *content);
 extern void Printer_BLE_Init(void);
 extern void BLE_Timer_Disabled(void);
 extern void BLE_Timer_Enabled(void);

@@ -63,30 +63,6 @@ void UI_Draw_Window_Insert_Cup(uint16 blockNum)
 }
 
 /******************************************************************************/
-void UI_Language_Window_Insert_Cup(void)
-{
-	Display_Time = 0;
-	switch(Font_Switch)
-	{
-	case DISPLAY_FONT_ENGLISH:
-		DisplayDriver_Text16_B(20,75,Black,White,"Insert Cup");
-		break;
-
-	case DISPLAY_FONT_CHINESE:
-		DisplayDriver_Text16_B(32,82,Baby_Blue,White,"²åÈë±­×Ó");
-		break;
-
-	case DISPLAY_FONT_GERMAN:
-		DisplayDriver_Text16_B(16,82,Baby_Blue,White,"Einf$gen cup");
-		break;
-
-	default:
-		break;
-	}
-	Display_Time = 1;
-}
-
-/******************************************************************************/
 void UI_Draw_Block_Insert_Cup(block_attr_Insert_Cup* block)
 {
 	Display_Time = 0;

@@ -20,6 +20,5 @@ typedef struct {
 /******************************************************************************/
 extern void UI_Draw_Window_Insert_Cup(uint16 blockNum);
 extern void Display_Down_Time_Bar(void);
-void UI_Language_Window_Insert_Cup(void);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_INSERT_CUP_H_ */

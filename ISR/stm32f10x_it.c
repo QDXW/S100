@@ -240,29 +240,8 @@ void TIM4_IRQHandler(void)
 		Display_Time = 0;
 		if(1 == Check_Lock)
 		{
-			Lcd_ColorBox(0,20,128, 140,White);
-			switch(Font_Switch)
-			{
-			case DISPLAY_FONT_ENGLISH:
-				DisplayDriver_Text16(8, 42, Red,"Error: 001");
-				DisplayDriver_Text16(16, 62, Red,"Screw motor");
-				break;
 
-			case DISPLAY_FONT_CHINESE:
-				DisplayDriver_Text16(8, 42, Red,"错误: 001");
-				DisplayDriver_Text16(24, 62, Red,"丝杆电机故障");
-				break;
-
-			case DISPLAY_FONT_GERMAN:
-				DisplayDriver_Text16(8, 22, Red,"Fehler: 001");
-				DisplayDriver_Text16(12, 42, Red,"Entfernen Sie");
-				DisplayDriver_Text16(16, 62, Red,"die Kassette");
-				break;
-
-			default:
-				break;
-			}
-
+			UI_Language_Window_Screw_Motor_Fault();
 			Check_flag = 1;
 		}
 
@@ -272,28 +251,7 @@ void TIM4_IRQHandler(void)
 			{
 				Lcd_ColorBox(0,20,128, 140,White);
 			}
-			switch(Font_Switch)
-			{
-			case DISPLAY_FONT_ENGLISH:
-				DisplayDriver_Text16(8, 92, Red,"Fehler: 002");
-				DisplayDriver_Text16(8, 112, Red,"Rotating motor");
-				break;
-
-			case DISPLAY_FONT_CHINESE:
-				DisplayDriver_Text16(8, 92, Red,"错误: 002");
-				DisplayDriver_Text16(24, 112, Red,"转动电机故障");
-				break;
-
-			case DISPLAY_FONT_GERMAN:
-				DisplayDriver_Text16(8, 82, Red,"Erreur: 002");
-				DisplayDriver_Text16(24, 102, Red,"Drehen Sie");
-				DisplayDriver_Text16(16, 122, Red,"die Kassette");
-				break;
-
-			default:
-				break;
-			}
-
+			UI_Language_Window_Rotating_Motor_Fault();
 		}
 		Display_Time = 1;
 		Check_motor = 0;

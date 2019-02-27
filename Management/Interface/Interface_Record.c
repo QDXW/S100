@@ -211,23 +211,7 @@ uint8 Interface_Record(uint16 KeyCode)
 	{
 		Display_Time = 0;
 		Lcd_ColorBox(0,20,128, 140,White);
-		switch(Font_Switch)
-		{
-		case DISPLAY_FONT_ENGLISH:
-			DisplayDriver_Text16(24, 80, Red,"No Record!");
-			break;
-
-		case DISPLAY_FONT_CHINESE:
-			DisplayDriver_Text16(36, 80, Red,"无记录!");
-			break;
-
-		case DISPLAY_FONT_GERMAN:
-			DisplayDriver_Text16_B(20,25,Black,Dark_Blue,"Kein rekord");
-			break;
-
-		default:
-			break;
-		}
+		UI_Language_Window_No_Record();
 		Display_Time = 1;
 		Key_control = 0;
 		Exti_lock = ENABLE;
@@ -275,44 +259,6 @@ void UI_Draw_Window_Record(uint16 blockNum)
 		}
 	}
 }
-
-/******************************************************************************/
-void UI_Language_Window_Record(void)
-{
-	Display_Time = 0;
-	DisplayDriver_DrawLine(6,42,120,42,BACKCOLOR_CONTENT_BACK);
-	DisplayDriver_DrawLine(6,58,120,58,BACKCOLOR_CONTENT_BACK);
-	DisplayDriver_DrawLine(6,90,120,90,BACKCOLOR_CONTENT_BACK);
-	DisplayDriver_DrawLine(39,24,39,90,BACKCOLOR_CONTENT_BACK);
-	switch(Font_Switch)
-	{
-	case DISPLAY_FONT_ENGLISH:
-		DisplayDriver_Text16(8,26,Black,"Name");
-		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
-		DisplayDriver_Text16(8,42,Black,"SN");
-		DisplayDriver_Text16(8,58,Black,"Time");
-		break;
-
-	case DISPLAY_FONT_CHINESE:
-		DisplayDriver_Text16(8,26,Black,"名称");
-		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
-		DisplayDriver_Text16(8,42,Black,"批号");
-		DisplayDriver_Text16(8,58,Black,"时间");
-		break;
-
-	case DISPLAY_FONT_GERMAN:
-		DisplayDriver_Text16(8,26,Black,"Name");
-		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
-		DisplayDriver_Text16(8,42,Black,"SN");
-		DisplayDriver_Text16(8,58,Black,"Zeit");
-		break;
-
-	default:
-		break;
-	}
-	Display_Time = 1;
-}
-
 
 /******************************************************************************/
 void UI_Draw_Block_Record(block_attr_Record* block)

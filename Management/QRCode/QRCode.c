@@ -171,30 +171,7 @@ void QRCode_Received(void)
 		{
 			QRCode_received = 1;
 			QRCode_existed = 0;
-			Display_Time = 0;
-			Lcd_ColorBox(5, 142,35,15,BACKCOLOR_CONTENT_BACK);
-			Lcd_ColorBox(7,62,114, 78,White);
-
-			switch(Font_Switch)
-			{
-			case DISPLAY_FONT_ENGLISH:
-				DisplayDriver_Text16_B(27, 75, Red, White, "Invalid QR");
-				DisplayDriver_Text16_B(47, 95, Red, White, "Code");
-				break;
-
-			case DISPLAY_FONT_CHINESE:
-				DisplayDriver_Text16_B(24, 85, Red, White, "无效二维码");
-				break;
-
-			case DISPLAY_FONT_GERMAN:
-				DisplayDriver_Text16_B(24, 75, Red, White, "Ung$ltiger");
-				DisplayDriver_Text16_B(36, 95, Red, White, "QR Code");
-				break;
-
-			default:
-				break;
-			}
-			Display_Time = 1;
+			UI_Language_Window_Scan_QR_Code();
 
 			/* 清空结构体    1、QR接收结构体   2、处理后QR结构体    3、存储结构体 */
 			Cup_Count = 0;

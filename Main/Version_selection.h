@@ -9,10 +9,10 @@
 #define MAIN_VERSION_SELECTION_H_
 
 /******************************************************************************/
-#define	REALY_ICO		1		/* 睿丽标识  */
+#define	REALY_ICO		0		/* 睿丽标识  */
 #define	PROTZEK_ICO		0		/* 德国标识  */
 #define	HENGRUI_ICO		0		/* 恒瑞标识  */
-#define ULTIMED			0		/* ULTIMED */
+#define ULTIMED			1		/* ULTIMED */
 
 /******************************************************************************/
 #include "stm32f10x.h"
@@ -20,6 +20,7 @@
 #include "Global_variable.h"
 #include "main.h"
 #include "Font.h"
+#include "Language_Display.h"
 #include "QRCode.h"
 #include "string.h"
 #include "HostComm.h"

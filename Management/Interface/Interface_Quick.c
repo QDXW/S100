@@ -139,29 +139,3 @@ void UI_Draw_Block_Quick(block_attr_Quick* block)
 	Display_Time = 1;
 	key_state = DISABLE;
 }
-
-/******************************************************************************/
-void UI_Language_Window_Quick(void)
-{
-	Display_Time = 0;
-	switch(Font_Switch)
-	{
-	case DISPLAY_FONT_ENGLISH:
-		DisplayDriver_Text16_B(15,72,Black,White,"Scan the QR");
-		DisplayDriver_Text16_B(52,90,Black,White,"code");
-		break;
-
-	case DISPLAY_FONT_CHINESE:
-		DisplayDriver_Text16_B(24,83,Baby_Blue,White,"É¨Ãè¶þÎ¬Âë");
-		break;
-
-	case DISPLAY_FONT_GERMAN:
-		DisplayDriver_Text16_B(20,73,Baby_Blue,White,"Scannen Sie");
-		DisplayDriver_Text16_B(20,91,Baby_Blue,White,"den QR Code");
-		break;
-
-	default:
-		break;
-	}
-	Display_Time = 1;
-}

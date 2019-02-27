@@ -109,9 +109,10 @@ typedef enum {
 
 /******************************************************************************/
 typedef enum {
-	DISPLAY_FONT_CHINESE,
-	DISPLAY_FONT_ENGLISH,
-	DISPLAY_FONT_GERMAN,
+	DISPLAY_FONT_CHINESE,				/* 简体中文 */
+	DISPLAY_FONT_ENGLISH,				/* 英语 */
+	DISPLAY_FONT_GERMAN,				/* 德语 */
+	DISPLAY_FONT_PROTUGAL,				/* 葡萄牙语 */
 
 	DISPLAY_FONT,
 } FONT_DIASPLAY;

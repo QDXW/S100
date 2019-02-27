@@ -895,7 +895,7 @@ void Language_Valid (void)
 	Storage_Read(value, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*3),2);
 
 	Font_Switch = (value[0] == 0xFF)?DISPLAY_FONT_ENGLISH:(value[0]);
-//	Font_Switch = 2;
+	Font_Switch = DISPLAY_FONT_PROTUGAL;
 }
 
 /******************************************************************************/

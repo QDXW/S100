@@ -348,13 +348,13 @@ void Key_Right(void)
 
 		case 5:
 			key_state_confirm = 0;
-			if(Key_control < 4)
+			if(Key_control < 3)
 			{
 				Key_control += 1;
 			}
 			else
 			{
-				Key_control = 4;
+				Key_control = 3;
 			}
 			key_state = ENABLE;
 		break;

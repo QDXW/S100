@@ -23,7 +23,6 @@ typedef struct {
 
 /******************************************************************************/
 extern void UI_Draw_Window_Record(uint16 blockNum);
-void UI_Language_Window_Record(void);
 extern void Data_Changer(void);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_RECORD_H_ */
