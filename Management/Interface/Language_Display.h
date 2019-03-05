@@ -22,6 +22,7 @@ extern void UI_Language_Window_No_Record(void);
 extern void UI_Language_Window_Insert_Cup(void);
 extern void UI_Language_Testing_Low_Battery (void);
 extern void UI_Language_Window_Scan_QR_Code (void);
+extern void UI_Language_Window_About_Machine(void);
 extern void UI_Language_Window_Screw_Motor_Fault (void);
 extern void UI_Language_Window_Rotating_Motor_Fault (void);
 

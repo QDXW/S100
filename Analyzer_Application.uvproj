@@ -710,6 +710,11 @@
               <FileType>1</FileType>
               <FilePath>.\Management\Interface\Interface_Language.c</FilePath>
             </File>
+            <File>
+              <FileName>Language_Display.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Management\Interface\Language_Display.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

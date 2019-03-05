@@ -609,6 +609,50 @@ uint8 Interface_Setting_font(uint16 KeyCode)
 }
 
 /******************************************************************************/
+void UI_Language_Window_About_Machine(void)
+{
+	Display_Time = 0;
+	switch(Font_Switch)
+	{
+	case DISPLAY_FONT_ENGLISH:
+		DisplayDriver_Text16(4,56,White,"Type:RL-S100");
+		DisplayDriver_Text16(4,76,White,"SN:");
+		DisplayDriver_Text16(28,76,White,data_SN);
+		DisplayDriver_Text16(4,96,White,"HW:1.1");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0304");
+		break;
+
+	case DISPLAY_FONT_CHINESE:
+		DisplayDriver_Text16(4,56,White,"ÐÍºÅ:RL-S100");
+		DisplayDriver_Text16(4,76,White,"SN:");
+		DisplayDriver_Text16(28,76,White,data_SN);
+		DisplayDriver_Text16(4,96,White,"HW:1.1");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0304");
+		break;
+
+	case DISPLAY_FONT_GERMAN:
+		DisplayDriver_Text16(4,56,White,"Typ:RL-S100");
+		DisplayDriver_Text16(4,76,White,"SN:");
+		DisplayDriver_Text16(28,76,White,data_SN);
+		DisplayDriver_Text16(4,96,White,"HW:1.1");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0304");
+		break;
+
+	case DISPLAY_FONT_PROTUGAL:
+		DisplayDriver_Text16(4,56,White,"Tipo:BR 3000");
+		DisplayDriver_Text16(4,76,White,"SN:");
+		DisplayDriver_Text16(28,76,White,data_SN);
+		DisplayDriver_Text16(4,96,White,"HW:1.1");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0304");
+		break;
+
+	default:
+		break;
+	}
+	Display_Time = 1;
+}
+
+/******************************************************************************/
 void UI_Language_Window_Record(void)
 {
 	Display_Time = 0;
@@ -889,7 +933,7 @@ void Printer_BLE_Print(STORAGE_SINGLE_DATA_STRUCT *content)
 		Printer_BLE_PrintOneLine("-----------Ulti  Med  ----------\r\n");
 		Printer_BLE_PrintOneLine("--------------------------------\r\n");
 		/* Device type */
-		Printer_BLE_PrintOneLine("Tipo de dispositivo: RL-S100\r\n");
+		Printer_BLE_PrintOneLine("Tipo de dispositivo: BR 3000\r\n");
 
 		buffer[35] = '\0';
 		memcpy(&buffer[0], "Nome do Produto: ",17);

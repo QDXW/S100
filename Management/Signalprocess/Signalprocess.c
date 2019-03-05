@@ -77,13 +77,14 @@ void SignalProcess_Run(void)
 			SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_C_T1 - SignalProcess_Alg_data.posInfo.searchHalfRadius_T,
 			SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_C_T1 + SignalProcess_Alg_data.posInfo.searchHalfRadius_T);
 
+	SignalProcess_Alg_data.posInfo.dist_peak1 = 20;
 	/* Get base points: left of C */
 	if (SignalProcess_Alg_data.posInfo.dist_peak1 > 0)
 	{
 		if (SignalProcess_Alg_data.calcInfo.indexC > SignalProcess_Alg_data.posInfo.dist_peak1)
 		{
-			SignalProcess_Alg_data.calcInfo.indexBase1 =
-					SignalProcess_Alg_data.calcInfo.indexC - SignalProcess_Alg_data.posInfo.dist_peak1;
+			SignalProcess_Alg_data.calcInfo.indexBase1 = (SignalProcess_Alg_data.calcInfo.indexC > SignalProcess_Alg_data.posInfo.dist_peak1)?
+					SignalProcess_Alg_data.calcInfo.indexC - SignalProcess_Alg_data.posInfo.dist_peak1:1;
 
 			/* Prepare data for fitting line */
 			fitArraySize = Alg_MoveToFitArray(&SignalProcess_Alg_data.processBuffer[0],
@@ -94,8 +95,7 @@ void SignalProcess_Run(void)
 	/* Get base points: between C and the edge T */
 	if (SignalProcess_Alg_data.posInfo.dist_peak2 > 0)
 	{
-		SignalProcess_Alg_data.calcInfo.indexBase2 =
-				SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_peak2;
+		SignalProcess_Alg_data.calcInfo.indexBase2 = SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_peak2;
 
 		/* Prepare data for fitting line */
 		fitArraySize = Alg_MoveToFitArray(&SignalProcess_Alg_data.processBuffer[0],
@@ -132,8 +132,8 @@ void SignalProcess_Run(void)
 	/* Get base points: between C and the edge T */
 	if (SignalProcess_Alg_data.posInfo.dist_peak3 > 0)
 	{
-		SignalProcess_Alg_data.calcInfo.indexBase3 =
-				SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_peak3;
+		SignalProcess_Alg_data.calcInfo.indexBase3 =  SignalProcess_Alg_data.calcInfo.indexT - SignalProcess_Alg_data.posInfo.areaT_HalfRadius;
+//				SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_peak3;
 
 		/* Prepare data for fitting line */
 		fitArraySize = Alg_MoveToFitArray(&SignalProcess_Alg_data.processBuffer[0],
@@ -143,11 +143,11 @@ void SignalProcess_Run(void)
 	/* Get base points: between T and edge */
 	if (SignalProcess_Alg_data.posInfo.dist_peak4 > 0)
 	{
-		SignalProcess_Alg_data.calcInfo.indexBase4 =
-				SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_peak4;
+		SignalProcess_Alg_data.calcInfo.indexBase4 = SignalProcess_Alg_data.calcInfo.indexT + SignalProcess_Alg_data.posInfo.areaT_HalfRadius;
+//				SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_peak4;
 
-		SignalProcess_Alg_data.calcInfo.indexBase4 =
-				(SignalProcess_Alg_data.calcInfo.indexBase4 > 144)?144:SignalProcess_Alg_data.calcInfo.indexBase4;
+//		SignalProcess_Alg_data.calcInfo.indexBase4 =
+//				(SignalProcess_Alg_data.calcInfo.indexBase4 > (SignalProcess_Alg_data.posInfo.C_center + 80))?(SignalProcess_Alg_data.posInfo.C_center + 80):SignalProcess_Alg_data.calcInfo.indexBase4;
 
 		/* Prepare data for fitting line */
 		fitArraySize = Alg_MoveToFitArray(&SignalProcess_Alg_data.processBuffer[0],
@@ -464,20 +464,14 @@ uint16 Search_T_HalfRadius(uint16 *src, uint16 count,uint16 HalfRadius)
 
 	for(i = (count - HalfRadius);i < (count - 2);i++)
 	{
-		if(src[i] <= src[i+1])
-		{
-			index1 = i+1;
-		}
+		index1 = (src[i] <= src[i+1])?(i+1):index1;
 	}
 
 	index1 = count - index1;
 
 	for(i = (count + HalfRadius);i > (count + 2);i--)
 	{
-		if(src[i] <= src[i-1])
-		{
-			index2 = i-1;
-		}
+		index2 = (src[i] <= src[i-1])?(i-1):index2;
 	}
 
 	index2 = index2 - count;

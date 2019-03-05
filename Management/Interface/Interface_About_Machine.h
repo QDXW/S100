@@ -21,6 +21,5 @@ typedef struct {
 
 /******************************************************************************/
 void UI_Draw_Window_About_Machine(uint16 blockNum);
-void UI_Language_Window_About_Machine(void);
 
 #endif /* MANAGEMENT_INTERFACE_INTERFACE_ABOUT_MACHINE_H_ */
