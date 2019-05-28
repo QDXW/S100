@@ -249,7 +249,7 @@ uint16 Get_Start_Postion(void)
 	{
 		if(0 == Judge_Flag)
 		{
-			RotationMotor_Input_StepDrive(Foreward_Rotation,30);
+			RotationMotor_Input_StepDrive(Foreward_Rotation,40);
 		}
 
 		Acquisition_StartSignal();
@@ -279,7 +279,7 @@ uint16 Get_Start_Postion(void)
 			if((SignalProcess_sampleBuffer[i] > Data_Boundary) && (SignalProcess_sampleBuffer[i+1] <= Data_Boundary))
 			{
 				Trend_FLag = 0;
-				if(Check_Trend(&SignalProcess_sampleBuffer[0],i,Trend_FLag))
+				if(Check_Trend(&SignalProcess_sampleBuffer[1],i,Trend_FLag))
 				{
 					Postion_Down = i;
 					Judge_Trend = 1;
@@ -298,10 +298,10 @@ uint16 Get_Start_Postion(void)
 
 		if(Judge_Trend)
 		{
-			if((Calculate_Postion_Up(&SignalProcess_sampleBuffer[0],Postion_Up)) == Calculate_Postion_Down(&SignalProcess_sampleBuffer[0],Postion_Down))
+			if((Calculate_Postion_Up(&SignalProcess_sampleBuffer[1],Postion_Up)) == Calculate_Postion_Down(&SignalProcess_sampleBuffer[1],Postion_Down))
 			{
 				Judge_Flag = 0;
-				Start_Postion = Calculate_Postion_Up(&SignalProcess_sampleBuffer[0],Postion_Up);
+				Start_Postion = Calculate_Postion_Up(&SignalProcess_sampleBuffer[1],Postion_Up);
 			}
 			else
 			{
@@ -374,7 +374,7 @@ uint16 Get_sampleBuffer_Boundary_Value(void)
 	uint16 Old_Record = 1,New_Record = 0;
 	uint16 i = 0,Old_Boundary = 0,New_Boundary = 0,Boundary_Count = 0;
 	BOUNDARY_VALUE = 2500;
-	for(i = 0;i < SIGNALSAMPLE_MAX_COUNT;i++)
+	for(i = 1;i < SIGNALSAMPLE_MAX_COUNT;i++)
 	{
 		if(BOUNDARY_VALUE >= SignalProcess_sampleBuffer[i])
 		{
@@ -382,7 +382,7 @@ uint16 Get_sampleBuffer_Boundary_Value(void)
 		}
 	}
 
-	if(BOUNDARY_VALUE > 1500)
+	if(BOUNDARY_VALUE > 1000)
 	{
 		BOUNDARY_VALUE = 2500;
 		return BOUNDARY_VALUE;
@@ -391,7 +391,7 @@ uint16 Get_sampleBuffer_Boundary_Value(void)
 	Old_Boundary = BOUNDARY_VALUE;
 	New_Boundary = BOUNDARY_VALUE;
 
-	for(Data_Boundary = BOUNDARY_VALUE;Data_Boundary < 1400;Data_Boundary += 20)
+	for(Data_Boundary = BOUNDARY_VALUE;Data_Boundary < 800;Data_Boundary += 10)
 	{
 		Boundary_Count = 0;
 		for(i = 0;i < 511;i++)
@@ -427,14 +427,13 @@ uint16 Get_sampleBuffer_Boundary_Value(void)
 		Old_Record = New_Record;
 	}
 
-	if(New_Boundary == Old_Boundary)
+	if(New_Boundary == BOUNDARY_VALUE)
 	{
 		BOUNDARY_VALUE = 2500;
 		return BOUNDARY_VALUE;
 	}
 
 	Data_Boundary = (New_Boundary + Old_Boundary)/2;
-
 
 	return BOUNDARY_VALUE;
 }
@@ -523,7 +522,7 @@ uint16 Calculate_Postion_Down(uint16* Signal,uint16 Postion)
 {
 	uint16 Start_Postion = 0,i = 0,Confirm_Postion = 1,Reconfirm_Postion = 0;
 
-	i = (Postion + 175);
+	i = (Postion + 170);
 	if(i < 512)
 	{
 		do
@@ -622,9 +621,9 @@ uint16 Check_Trend(uint16 *Signal,uint16 Postion,uint8 Flag)
 	}
 	else
 	{
-		if((Start_Postion + 6) < 511)
+		if((Start_Postion + 2) < 511)
 		{
-			for(i = Start_Postion;i < (Start_Postion + 6);i++)
+			for(i = Start_Postion;i < (Start_Postion + 1);i++)
 			{
 				if(Signal[i] > Signal[i+1])
 				{
@@ -638,9 +637,9 @@ uint16 Check_Trend(uint16 *Signal,uint16 Postion,uint8 Flag)
 		}
 		else
 		{
-			for(i = Start_Postion;i < 511;i++)
+			for(i = Start_Postion;i < (Start_Postion + 1);i++)
 			{
-				if(Signal[i] > Signal[i+1])
+				if(Signal[1] > Signal[2])
 				{
 					state = 1;
 				}

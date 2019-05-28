@@ -42,6 +42,7 @@ static uint16 HostComm_Cmd_Respond_APP_ReadResistor(void);
 static uint16 HostComm_Cmd_Respond_APP_WriteBoundary(void);
 static uint16 HostComm_Cmd_Respond_APP_WriteResistor(void);
 static uint16 HostComm_Cmd_Respond_APP_Clear_Record(void);
+static uint16 HostComm_Cmd_Respond_APP_Seek_Record(void);
 
 /******************************************************************************/
 void HostComm_SendResp(uint8 *Data, uint16 length);
@@ -146,6 +147,132 @@ void HostComm_Process(void)
 }
 
 /******************************************************************************/
+uint8 HostComm_Cmd_Process(void)
+{
+	uint16 responseLength = 0;
+	uint8 rc = 0;
+
+	/* Command type */
+	cmdType = cmdBuffer[OFFSET_CMD_TYPE_RX];
+	/* Command code */
+	cmdCode = cmdBuffer[OFFSET_CMD_CODE_RX];
+
+	if (cmdType == CMD_TYPE_APP)
+	{
+		switch (cmdCode)
+		{
+		case CMD_CODE_APP_SYSINFO:
+			responseLength = HostComm_Cmd_Respond_APP_SysInfo();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_SET_TIME:
+			responseLength = HostComm_Cmd_Respond_APP_SetTime();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_SET_MODE:
+			responseLength = HostComm_Cmd_Respond_APP_SetMode();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_SET_MFG:
+			responseLength = HostComm_Cmd_Respond_APP_SetMFG();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_SET_LANGUAGE:
+			responseLength = HostComm_Cmd_Respond_APP_SetLanguage();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_SET_OUT_FAB:
+//			responseLength = HostComm_Cmd_Respond_APP_SetOutFab();
+			break;
+
+		case CMD_CODE_APP_READ_RESISTOR:
+			responseLength = HostComm_Cmd_Respond_APP_ReadResistor();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_WRITE_RESISTOR:
+			responseLength = HostComm_Cmd_Respond_APP_WriteResistor();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_SEND_QRCODE_DATA:
+			responseLength = HostComm_Cmd_Respond_APP_QRCode_Data();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_READ_BOUNDARY:
+			responseLength = HostComm_Cmd_Respond_APP_ReadBoundary();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_WRITE_BOUNDARY:
+			responseLength = HostComm_Cmd_Respond_APP_WriteBoundary();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case CMD_CODE_APP_CALIBRATION:
+			responseLength = HostComm_Cmd_Respond_APP_Calibration();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case APP_SET_5V:
+			responseLength = HostComm_Cmd_Respond_APP_SET_5V();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case APP_CLEAR_RECORD:
+			responseLength = HostComm_Cmd_Respond_APP_Clear_Record();
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+
+		case APP_SEEK_RECORD:
+			responseLength = HostComm_Cmd_Respond_APP_Seek_Record();
+			break;
+
+		default:
+			responseLength = HostComm_Cmd_Respond_APP_Error(cmdCode);
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], responseLength);
+			break;
+		}
+	}
+	else if (cmdType == CMD_TYPE_NONE)
+	{
+		/* Get status information */
+		responseLength = HostComm_Cmd_Respond_Status();
+		/* Send data */
+		HostComm_SendResp(&respBuffer[0], responseLength);
+	}
+	else
+	{
+		/* None BL command: respond error */
+		responseLength = HostComm_Cmd_Respond_APP_Error(cmdCode);
+		/* Send data */
+		HostComm_SendResp(&respBuffer[0], responseLength);
+	}
+
+	return rc;
+}
+
+/******************************************************************************/
 static uint16 HostComm_Cmd_Respond_Common(uint16 cmdDataNum, uint8 cmdType,
 		uint8 cmdCode)
 {
@@ -198,7 +325,8 @@ void HostComm_Cmd_Send_C_T(uint16 CValue, uint16 TValue)
 void HostComm_SendResp(uint8 *Data, uint16 length)
 {
 	USART1->SR;
-	while(length-- != 0) {
+	while((length--) != 0)
+	{
 		USART_SendData(HOSTCOMM_USART, *Data++);
 		while(USART_GetFlagStatus(HOSTCOMM_USART, USART_FLAG_TC)==RESET);
 	}
@@ -223,99 +351,6 @@ void HostComm_Send_String(u8 *strPtr)
 		HostComm_Send_Char(*strPtr);
 		strPtr++;
 	}
-}
-
-/******************************************************************************/
-uint8 HostComm_Cmd_Process(void)
-{
-	uint16 responseLength = 0;
-	uint8 rc = 0;
-
-	/* Command type */
-	cmdType = cmdBuffer[OFFSET_CMD_TYPE_RX];
-	/* Command code */
-	cmdCode = cmdBuffer[OFFSET_CMD_CODE_RX];
-
-	if (cmdType == CMD_TYPE_APP)
-	{
-		switch (cmdCode)
-		{
-		case CMD_CODE_APP_SYSINFO:
-			responseLength = HostComm_Cmd_Respond_APP_SysInfo();
-			break;
-
-		case CMD_CODE_APP_SET_TIME:
-			responseLength = HostComm_Cmd_Respond_APP_SetTime();
-			break;
-
-		case CMD_CODE_APP_SET_MODE:
-			responseLength = HostComm_Cmd_Respond_APP_SetMode();
-			break;
-
-		case CMD_CODE_APP_SET_MFG:
-			responseLength = HostComm_Cmd_Respond_APP_SetMFG();
-			break;
-
-		case CMD_CODE_APP_SET_LANGUAGE:
-			responseLength = HostComm_Cmd_Respond_APP_SetLanguage();
-			break;
-
-		case CMD_CODE_APP_SET_OUT_FAB:
-//			responseLength = HostComm_Cmd_Respond_APP_SetOutFab();
-			break;
-
-		case CMD_CODE_APP_READ_RESISTOR:
-			responseLength = HostComm_Cmd_Respond_APP_ReadResistor();
-			break;
-
-		case CMD_CODE_APP_WRITE_RESISTOR:
-			responseLength = HostComm_Cmd_Respond_APP_WriteResistor();
-			break;
-
-		case CMD_CODE_APP_SEND_QRCODE_DATA:
-			responseLength = HostComm_Cmd_Respond_APP_QRCode_Data();
-			break;
-
-		case CMD_CODE_APP_READ_BOUNDARY:
-			responseLength = HostComm_Cmd_Respond_APP_ReadBoundary();
-			break;
-
-		case CMD_CODE_APP_WRITE_BOUNDARY:
-			responseLength = HostComm_Cmd_Respond_APP_WriteBoundary();
-			break;
-
-		case CMD_CODE_APP_CALIBRATION:
-			responseLength = HostComm_Cmd_Respond_APP_Calibration();
-			break;
-
-		case APP_SET_5V:
-			responseLength = HostComm_Cmd_Respond_APP_SET_5V();
-			break;
-
-		case APP_CLEAR_RECORD:
-			responseLength = HostComm_Cmd_Respond_APP_Clear_Record();
-			break;
-
-		default:
-			responseLength = HostComm_Cmd_Respond_APP_Error(cmdCode);
-			break;
-		}
-	}
-	else if (cmdType == CMD_TYPE_NONE)
-	{
-		/* Get status information */
-		responseLength = HostComm_Cmd_Respond_Status();
-	}
-	else
-	{
-		/* None BL command: respond error */
-		responseLength = HostComm_Cmd_Respond_APP_Error(cmdCode);
-	}
-
-	/* Send data */
-	HostComm_SendResp(&respBuffer[0], responseLength);
-
-	return rc;
 }
 
 /******************************************************************************/
@@ -515,18 +550,11 @@ static uint16 HostComm_Cmd_Respond_APP_ReadBoundary(void)
 	uint16 cmdDataLength = 0;
 	uint16 Boundary = 0;
 	uint8 value[3] = {0};
-//	uint8 MBuffer[3] = {0};
 
 	/* Read from flash */
 	Storage_Read(value,(FLASH_CALI_ADDR+FLASH_OFFSET_ADDR),2);
 	memcpy(&Boundary,value,2);
 	Data_Boundary = Boundary;
-//
-//	sprintf(MBuffer,"%d",Boundary);
-//
-//	Display_Time = 0;
-//	DisplayDriver_Text16_Touch(4, 90, BLACK,BLACK,MBuffer);
-//	Display_Time = 1;
 
 	respBuffer[OFFSET_CMD_DATA] = LoByte(Boundary);
 	respBuffer[OFFSET_CMD_DATA + 1] = HiByte(Boundary);
@@ -547,7 +575,6 @@ static uint16 HostComm_Cmd_Respond_APP_WriteBoundary(void)
 	uint16 cmdDataLength = 0;
 	uint16 Boundary = 0;
 	uint8 value[2] = {0};
-//	uint8 MBuffer[2] = {0};
 
 	/* 数据打包 */
 	if (cmdBuffer[OFFSET_CMD_DATA_RX] <= 0xFF)
@@ -557,12 +584,6 @@ static uint16 HostComm_Cmd_Respond_APP_WriteBoundary(void)
 		Storage_Write(value, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR),2);
 		memcpy(&Boundary,value,2);
 		Data_Boundary = Boundary;
-//
-//		sprintf(MBuffer,"%d %d",value[0],value[1]);
-//
-//		Display_Time = 0;
-//		DisplayDriver_Text16_Touch(4, 70, BLACK,BLACK,value);
-//		Display_Time = 1;
 	}
 
 	cmdDataLength = 2;
@@ -709,6 +730,60 @@ uint16 HostComm_Cmd_Respond_APP_Clear_Record(void)
 			CMD_TYPE_APP, APP_CLEAR_RECORD);
 
 	return totalPackageLength;
+}
+
+/******************************************************************************/
+uint16 HostComm_Cmd_Respond_APP_Seek_Record(void)
+{
+	uint16 totalPackageLength = SIZE_HEAD_TAIL; /* Include head and tail */
+	uint16 cmdDataLength = 0;
+	uint16 Data_Size = 0,Information_Count = 0,Information_All = 0;
+	uint8 Information[12] = 0;
+	uint8 Device_S100 = 1;
+
+	/* 读取记录时保持常亮  */
+	Exti_lock = DISABLE;
+	Stop_Mode = 0;
+	GPIO_SetBits(GPIOD, GPIO_Pin_2);
+
+	Storage_Read(Information,0x00,8);
+	memcpy(&Information_Count,Information,2);
+	memcpy(&Information_All,&Information[2],2);
+
+	/* 发送总的测试次数  */
+	memcpy(&respBuffer[OFFSET_CMD_DATA_RX],&Information_All,2);
+	memcpy(&respBuffer[OFFSET_CMD_DATA_RX + 2],&Device_S100,1);
+	cmdDataLength = 3;
+	/* CRC校验 */
+	totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+			CMD_TYPE_APP, APP_RECORD_COUNT);
+	/* Send data */
+	HostComm_SendResp(&respBuffer[0], totalPackageLength);
+
+	cmdDataLength = sizeof(STORAGE_SINGLE_DATA_STRUCT) + 4;
+	if((Information_Count != 0)&&(Information_Count != 65535))
+	{
+		for (Data_Size = 1;Data_Size <= Information_All;Data_Size++)
+		{
+			Power_Minute = 0;
+			Delay_ms_SW(2);
+			memset(respBuffer,0,sizeof(respBuffer));
+			Storage_Read(Storage_writeBuffer,(Data_Size *4096),sizeof(STORAGE_SINGLE_DATA_STRUCT));
+			memcpy(&respBuffer[OFFSET_CMD_DATA_RX],&Data_Size,2);
+			memcpy(&respBuffer[OFFSET_CMD_DATA_RX + 2],&Information_All,2);
+			memcpy(&respBuffer[OFFSET_CMD_DATA_RX + 4],Storage_writeBuffer,sizeof(STORAGE_SINGLE_DATA_STRUCT));
+
+			/* CRC校验 */
+			totalPackageLength = SIZE_HEAD_TAIL;
+			totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
+					CMD_TYPE_APP, APP_SEEK_RECORD);
+
+			/* Send data */
+			HostComm_SendResp(&respBuffer[0], totalPackageLength);
+		}
+	}
+	Exti_lock = ENABLE;
+	return 0;
 }
 
 /******************************************************************************/
@@ -876,11 +951,13 @@ void HostComm_Cmd_Send_RawData(uint16 length, uint8 dataBuf[])
 	cmdDataLength = length;
 	if(length >10)
 	{
+		totalPackageLength = SIZE_HEAD_TAIL;
 		totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
 							CMD_TYPE_APP, CMD_CODE_APP_SEND_RAWDATA);
 	}
 	else
 	{
+		totalPackageLength = SIZE_HEAD_TAIL;
 		totalPackageLength += HostComm_Cmd_Respond_Common(cmdDataLength,
 					CMD_TYPE_APP, CMD_CODE_APP_SEND_C_T);
 	}
@@ -895,7 +972,7 @@ void Language_Valid (void)
 	Storage_Read(value, (FLASH_CALI_ADDR+FLASH_OFFSET_ADDR*3),2);
 
 	Font_Switch = (value[0] == 0xFF)?DISPLAY_FONT_ENGLISH:(value[0]);
-	Font_Switch = DISPLAY_FONT_PROTUGAL;
+//	Font_Switch = DISPLAY_FONT_PROTUGAL;
 }
 
 /******************************************************************************/

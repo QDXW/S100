@@ -29,7 +29,7 @@
 /* Size information */
 #define SIZE_REC_BUFFER              (3*1024)
 #define SIZE_CMD_BUFFER              (2*1024 + 100)
-#define SIZE_RESP_BUFFER             (512)
+#define SIZE_RESP_BUFFER             (600)
 #define SIZE_HEAD_LEN                (3)
 #define SIZE_LEN_HEAD_CMD_CRC        (6)
 #define SIZE_PASSWORD                (14)
@@ -129,6 +129,8 @@ enum cmdCode {
 	CMD_CODE_APP_CALIBRATION = 0x76,
 	APP_SET_5V,
 	APP_CLEAR_RECORD,
+	APP_SEEK_RECORD,
+	APP_RECORD_COUNT,
 };
 
 /* Bin file attribute */

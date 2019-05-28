@@ -8,8 +8,6 @@
 #include "QRCode.h"
 #include "SystemManage_RTC.h"
 
-extern QRCODE_STRUCT QR_Date; 
-
 /******************************************************************************/
 #define STM32_FLASH_SIZE (512) 	 	  /* Flash size, unit is Kbytes */
 

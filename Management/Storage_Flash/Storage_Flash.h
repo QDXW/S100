@@ -42,6 +42,7 @@
 #define W25X_ManufactDeviceID	0x90
 #define W25X_JedecDeviceID		0x9F
 #define ITEM_MAX_ONEPAGE_EXTENSION1 10
+#define BUFFER_SIZE (sizeof(STORAGE_SINGLE_DATA_STRUCT))
 
 /******************************************************************************/
 typedef struct {
@@ -81,6 +82,7 @@ typedef struct {
 
 /******************************************************************************/
 extern STORAGE_SINGLE_DATA_STRUCT Storage_Data;
+extern uint8 Storage_writeBuffer[BUFFER_SIZE + 20];
 
 /******************************************************************************/
 extern void Storage_Flash_Init(void);

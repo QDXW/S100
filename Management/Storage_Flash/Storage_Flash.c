@@ -9,9 +9,7 @@
 
 /******************************************************************************/
 u16 W25QXX_TYPE = W25Q128;
-
-#define BUFFER_SIZE (sizeof(STORAGE_SINGLE_DATA_STRUCT))
-uint8 Storage_writeBuffer[BUFFER_SIZE + 10];
+uint8 Storage_writeBuffer[BUFFER_SIZE + 20] = {0};
 uint8 Storage_readBuffer[BUFFER_SIZE];
 
 #define DEFAULT_VALUE (0XFF)
@@ -365,6 +363,7 @@ uint8 Storage_Record(void)
 	Get_reagent_TestNum();
 	memcpy(Storage_writeBuffer, &Storage_Data, sizeof(STORAGE_SINGLE_DATA_STRUCT));
 	Storage_Write(Storage_writeBuffer, (reagent_Strip[0] *4096),sizeof(STORAGE_SINGLE_DATA_STRUCT));
+	return 0;
 }
 
 /******************************************************************************/
@@ -389,6 +388,7 @@ uint8 Read_Record(void)
 
 	Storage_Read(Storage_writeBuffer,(reagent_Strip[0] *4096),sizeof(STORAGE_SINGLE_DATA_STRUCT));
 	memcpy(&Storage_Data,Storage_writeBuffer,sizeof(STORAGE_SINGLE_DATA_STRUCT));
+	return 0;
 }
 
 /******************************************************************************/

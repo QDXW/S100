@@ -243,7 +243,7 @@ void UI_Language_Window_Start(void)
 	Display_Time = 0;
 
 	DisplayDriver_Text16_B(44,25,Black,White,QR_Date.head.name);
-	DisplayDriver_Text16_B(4,45,Black,White,"  SN:");
+	DisplayDriver_Text16_B(4,45,Black,White," LOT:");
 	switch(Font_Switch)
 	{
 	case DISPLAY_FONT_ENGLISH:
@@ -615,11 +615,16 @@ void UI_Language_Window_About_Machine(void)
 	switch(Font_Switch)
 	{
 	case DISPLAY_FONT_ENGLISH:
+
+#if ULTIMED
+		DisplayDriver_Text16(4,56,White,"Type:BR 3000");
+#else
 		DisplayDriver_Text16(4,56,White,"Type:RL-S100");
+#endif
 		DisplayDriver_Text16(4,76,White,"SN:");
 		DisplayDriver_Text16(28,76,White,data_SN);
 		DisplayDriver_Text16(4,96,White,"HW:1.1");
-		DisplayDriver_Text16(4,116,White,"FW:1.9.0304");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0328");
 		break;
 
 	case DISPLAY_FONT_CHINESE:
@@ -627,7 +632,7 @@ void UI_Language_Window_About_Machine(void)
 		DisplayDriver_Text16(4,76,White,"SN:");
 		DisplayDriver_Text16(28,76,White,data_SN);
 		DisplayDriver_Text16(4,96,White,"HW:1.1");
-		DisplayDriver_Text16(4,116,White,"FW:1.9.0304");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0328");
 		break;
 
 	case DISPLAY_FONT_GERMAN:
@@ -635,7 +640,7 @@ void UI_Language_Window_About_Machine(void)
 		DisplayDriver_Text16(4,76,White,"SN:");
 		DisplayDriver_Text16(28,76,White,data_SN);
 		DisplayDriver_Text16(4,96,White,"HW:1.1");
-		DisplayDriver_Text16(4,116,White,"FW:1.9.0304");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0328");
 		break;
 
 	case DISPLAY_FONT_PROTUGAL:
@@ -643,7 +648,7 @@ void UI_Language_Window_About_Machine(void)
 		DisplayDriver_Text16(4,76,White,"SN:");
 		DisplayDriver_Text16(28,76,White,data_SN);
 		DisplayDriver_Text16(4,96,White,"HW:1.1");
-		DisplayDriver_Text16(4,116,White,"FW:1.9.0304");
+		DisplayDriver_Text16(4,116,White,"FW:1.9.0328");
 		break;
 
 	default:
@@ -665,7 +670,7 @@ void UI_Language_Window_Record(void)
 	case DISPLAY_FONT_ENGLISH:
 		DisplayDriver_Text16(8,26,Black,"Name");
 		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
-		DisplayDriver_Text16(8,42,Black,"SN");
+		DisplayDriver_Text16(8,42,Black,"LOT");
 		DisplayDriver_Text16(8,58,Black,"Time");
 		break;
 
@@ -679,14 +684,14 @@ void UI_Language_Window_Record(void)
 	case DISPLAY_FONT_GERMAN:
 		DisplayDriver_Text16(8,26,Black,"Name");
 		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
-		DisplayDriver_Text16(8,42,Black,"SN");
+		DisplayDriver_Text16(8,42,Black,"LOT");
 		DisplayDriver_Text16(8,58,Black,"Zeit");
 		break;
 
 	case DISPLAY_FONT_PROTUGAL:
 		DisplayDriver_Text16(8,26,Black,"Nome");
 		DisplayDriver_Text16(41,26,Black,Storage_Data.Product_name);
-		DisplayDriver_Text16(8,42,Black,"SN");
+		DisplayDriver_Text16(8,42,Black,"LOT");
 		DisplayDriver_Text16(8,58,Black,"Hora");
 		break;
 
@@ -760,20 +765,29 @@ void Printer_BLE_Print(STORAGE_SINGLE_DATA_STRUCT *content)
 	uint8 index = 0,index1 = 0;
 	memset(buffer,0,sizeof(buffer));
 	memset(tbuf,0,sizeof(buffer));
-	PCF8563_Read(&SystemManage_CurrentTime);
-	sprintf(tbuf,"%d/%02d/%02d %02d:%02d:%02d",SystemManage_CurrentTime.year,
-			SystemManage_CurrentTime.month,SystemManage_CurrentTime.day,SystemManage_CurrentTime.hour,
-			SystemManage_CurrentTime.min,SystemManage_CurrentTime.sec);
+	sprintf(tbuf,"%d/%02d/%02d %02d:%02d",content->Product_Time.year,
+			content->Product_Time.month,content->Product_Time.day,content->Product_Time.hour,
+			content->Product_Time.min);
 
 	switch(Font_Switch)
 	{
 	case DISPLAY_FONT_ENGLISH:
 		/* Head */
 		Printer_BLE_PrintOneLine("--------------------------------\r\n");
+#if ULTIMED
+		Printer_BLE_PrintOneLine("-----------Ulti  Med------------\r\n");
+#else
 		Printer_BLE_PrintOneLine("------------Realy Tech----------\r\n");
+#endif
+
 		Printer_BLE_PrintOneLine("--------------------------------\r\n");
 		/* Device type */
+#if ULTIMED
+		/* Device type */
+		Printer_BLE_PrintOneLine("Device Type: BR 3000\r\n");
+#else
 		Printer_BLE_PrintOneLine("Device Type: RL-S100\r\n");
+#endif
 
 		buffer[35] = '\0';
 		memcpy(&buffer[0], "Product name: ",14);
@@ -783,7 +797,7 @@ void Printer_BLE_Print(STORAGE_SINGLE_DATA_STRUCT *content)
 		memset(buffer,0,sizeof(buffer));
 
 		buffer[15] = '\0';
-		memcpy(&buffer[0], "SN: ",sizeof("SN: "));
+		memcpy(&buffer[0], "LOT: ",sizeof("LOT:"));
 		memcpy(&buffer[4], content->Product_SN,sizeof(content->Product_SN));
 		Printer_BLE_PrintOneLine(&buffer[0]);
 		Printer_BLE_PrintOneLine("\r\n");
@@ -890,7 +904,7 @@ void Printer_BLE_Print(STORAGE_SINGLE_DATA_STRUCT *content)
 		memset(buffer,0,sizeof(buffer));
 
 		buffer[15] = '\0';
-		memcpy(&buffer[0], "SN: ",sizeof("SN: "));
+		memcpy(&buffer[0], "LOT:",sizeof("LOT:"));
 		memcpy(&buffer[4], content->Product_SN,sizeof(content->Product_SN));
 		Printer_BLE_PrintOneLine(&buffer[0]);
 		Printer_BLE_PrintOneLine("\r\n");
@@ -943,7 +957,7 @@ void Printer_BLE_Print(STORAGE_SINGLE_DATA_STRUCT *content)
 		memset(buffer,0,sizeof(buffer));
 
 		buffer[15] = '\0';
-		memcpy(&buffer[0], "SN: ",sizeof("SN: "));
+		memcpy(&buffer[0], "LOT:",sizeof("LOT:"));
 		memcpy(&buffer[4], content->Product_SN,sizeof(content->Product_SN));
 		Printer_BLE_PrintOneLine(&buffer[0]);
 		Printer_BLE_PrintOneLine("\r\n");

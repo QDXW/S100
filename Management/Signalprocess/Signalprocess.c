@@ -48,10 +48,10 @@ void SignalProcess_Run(void)
 			SignalProcess_Alg_data.posInfo.winSize);
 
 	/* Look for C valley */
-	if (SignalProcess_Alg_data.posInfo.C_center >= SignalProcess_Alg_data.posInfo.searchHalfRadius_C)
-		searchStart = SignalProcess_Alg_data.posInfo.C_center - SignalProcess_Alg_data.posInfo.searchHalfRadius_C;
-	else
-		searchStart = 0;
+	searchStart = (SignalProcess_Alg_data.posInfo.C_center >= SignalProcess_Alg_data.posInfo.searchHalfRadius_C)?
+		SignalProcess_Alg_data.posInfo.C_center -
+		SignalProcess_Alg_data.posInfo.searchHalfRadius_C:1;
+
 	SignalProcess_Alg_data.calcInfo.indexC = Alg_GetValleyIndex(
 		&SignalProcess_Alg_data.processBuffer[0], searchStart,
 		SignalProcess_Alg_data.posInfo.C_center + SignalProcess_Alg_data.posInfo.searchHalfRadius_C);
@@ -108,7 +108,8 @@ void SignalProcess_Run(void)
 
 	/* Calculate area */
 	SignalProcess_Alg_data.posInfo.areaC_HalfRadius =
-			(SignalProcess_Alg_data.calcInfo.indexC > SignalProcess_Alg_data.posInfo.areaC_HalfRadius)?SignalProcess_Alg_data.posInfo.areaC_HalfRadius:SignalProcess_Alg_data.calcInfo.indexC;
+			(SignalProcess_Alg_data.calcInfo.indexC > SignalProcess_Alg_data.posInfo.areaC_HalfRadius)?
+					SignalProcess_Alg_data.posInfo.areaC_HalfRadius:SignalProcess_Alg_data.calcInfo.indexC;
 
 	SignalProcess_Alg_data.calcInfo.areaC = (uint32)Alg_CalcualteArea(
 				&SignalProcess_Alg_data.processBuffer[0],
@@ -128,12 +129,10 @@ void SignalProcess_Run(void)
 
 	/**************************************************************************/
 	fitArraySize = 0;
-
 	/* Get base points: between C and the edge T */
 	if (SignalProcess_Alg_data.posInfo.dist_peak3 > 0)
 	{
 		SignalProcess_Alg_data.calcInfo.indexBase3 =  SignalProcess_Alg_data.calcInfo.indexT - SignalProcess_Alg_data.posInfo.areaT_HalfRadius;
-//				SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_peak3;
 
 		/* Prepare data for fitting line */
 		fitArraySize = Alg_MoveToFitArray(&SignalProcess_Alg_data.processBuffer[0],
@@ -144,10 +143,6 @@ void SignalProcess_Run(void)
 	if (SignalProcess_Alg_data.posInfo.dist_peak4 > 0)
 	{
 		SignalProcess_Alg_data.calcInfo.indexBase4 = SignalProcess_Alg_data.calcInfo.indexT + SignalProcess_Alg_data.posInfo.areaT_HalfRadius;
-//				SignalProcess_Alg_data.calcInfo.indexC + SignalProcess_Alg_data.posInfo.dist_peak4;
-
-//		SignalProcess_Alg_data.calcInfo.indexBase4 =
-//				(SignalProcess_Alg_data.calcInfo.indexBase4 > (SignalProcess_Alg_data.posInfo.C_center + 80))?(SignalProcess_Alg_data.posInfo.C_center + 80):SignalProcess_Alg_data.calcInfo.indexBase4;
 
 		/* Prepare data for fitting line */
 		fitArraySize = Alg_MoveToFitArray(&SignalProcess_Alg_data.processBuffer[0],
@@ -459,21 +454,55 @@ uint16 Alg_GetMax(uint16 *src, uint16 count)
 /******************************************************************************/
 uint16 Search_T_HalfRadius(uint16 *src, uint16 count,uint16 HalfRadius)
 {
-	uint16 i = 0;
+	uint8 Index_Count = 0;
+	uint16 i = 0,Index_Judge[20] = 0;
 	uint16 index1 = count - HalfRadius,index2 = count + HalfRadius;
 
+	memset(Index_Judge, 0, sizeof(Index_Judge));
 	for(i = (count - HalfRadius);i < (count - 2);i++)
 	{
-		index1 = (src[i] <= src[i+1])?(i+1):index1;
+		if(src[i] <= src[i+1])
+		{
+			Index_Count += 1;
+			Index_Judge[Index_Count] = i;
+		}
 	}
 
+	for(i = 1;i < 11;i++)
+	{
+		if(Index_Judge[i] != 0)
+		{
+			if((Index_Judge[i] + 1) != (Index_Judge[i + 1]))
+			{
+				index1 = Index_Judge[i];
+				i = 12;
+			}
+		}
+	}
 	index1 = count - index1;
 
+	memset(Index_Judge, 0, sizeof(Index_Judge));
+	Index_Count = 0;
 	for(i = (count + HalfRadius);i > (count + 2);i--)
 	{
-		index2 = (src[i] <= src[i-1])?(i-1):index2;
+		if(src[i] <= src[i-1])
+		{
+			Index_Count += 1;
+			Index_Judge[Index_Count] = i;
+		}
 	}
 
+	for(i = 1;i < 11;i++)
+	{
+		if(Index_Judge[i] != 0)
+		{
+			if((Index_Judge[i] - 1) != (Index_Judge[i + 1]))
+			{
+				index1 = Index_Judge[i];
+				i = 12;
+			}
+		}
+	}
 	index2 = index2 - count;
 
 	return (index1 > index2)?index2:index1;

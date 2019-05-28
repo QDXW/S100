@@ -91,12 +91,11 @@ block_attr_Setting* UI_WindowBlocksAttrArray_Setting[] = {/* Window: Standard en
 		&block_Setting_2,
 		&block_Setting_3,
 		&block_Setting_4,
-//		&block_Setting_Calibration,
+		&block_Setting_Calibration,
 };
 
 /******************************************************************************/
 void UI_Draw_Block_Setting(block_attr_Setting* block);
-void UI_Draw_Block_Setting_font(block_attr_Setting_font* block);
 
 /******************************************************************************/
 uint8 Interface_Setting(uint16 KeyCode)
